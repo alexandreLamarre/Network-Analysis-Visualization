@@ -4,7 +4,7 @@ import {fruchtermanReingold} from "./NetworkAlgorithms/FruchtermanReingold";
 
 import "./Network.css";
 
-var MAX_EDGES = 400;
+var MAX_EDGES = 1200;
 
 class NetworkVisualizer extends React.Component{
   constructor(props){
@@ -148,8 +148,8 @@ class NetworkVisualizer extends React.Component{
   setConnected(v){
     // console.log(v);
     const value = parseInt(v);
-    if(value === 0)this.setState({connected:"False"});
-    if(value === 1)this.setState({connected:"True"})
+    const that = this;
+    waitSetConnected(that, value);
   }
 
   setDisconnectedSubgraphs(v){
@@ -159,7 +159,7 @@ class NetworkVisualizer extends React.Component{
   }
 
   resetNetwork(){
-    const [vertices, edges, maxedges] = createRandomNetwork(this.state.width, this.state.height, this.state.numV, this.state.numE, this.state.width, this.state.height);
+    const [vertices, edges, maxedges] = createRandomNetwork(this.state.width, this.state.height, this.state.numV, this.state.numE, this.state.connected);
 
     this.setState({vertices: vertices, edges: edges, sorted:false, maxEdges:maxedges})
   }
@@ -184,7 +184,7 @@ class NetworkVisualizer extends React.Component{
               <input
               type = "range"
               min = "20"
-              max = "150"
+              max = "200"
               defaultValue = "50"
               step = "1"
               className = "slider"
@@ -195,7 +195,7 @@ class NetworkVisualizer extends React.Component{
               <label> Vertices: {this.state.vertices.length}</label>
               <input
               type = "range"
-              min = {this.state.minEdges}
+              min =  {this.state.connected === "True"? this.state.vertices.length-1: 20}
               max = {this.state.maxEdges}
               defaultValue = {this.state.edges.length}
               step = "1"
@@ -225,7 +225,7 @@ class NetworkVisualizer extends React.Component{
               defaultValue = "1"
               className = "slider"
               onInput = {(event) => this.setDisconnectedSubgraphs(event.target.value)}
-              disabled = {this.state.running}>
+              disabled = {this.state.running || (this.state.connected === "False"? true: false)}>
               </input>
               <label>
               DisconnectedSubgraphs: {this.state.disconnected}
@@ -312,10 +312,9 @@ export default NetworkVisualizer;
 //   return [vertices,edges];
 // }
 
-function createRandomNetwork(maxWidth, maxHeight, numV, numE, maxd, conn){
-  let max_d = maxd === undefined? Infinity: maxd;
-  let connected = conn === undefined? true: conn;
-  const maxDegree = Math.min(numV-1, max_d);
+function createRandomNetwork(maxWidth, maxHeight, numV, numE, conn){
+  let connected = conn === undefined? "False": conn;
+  const maxDegree = numV-1;
   let maxEdges = Math.floor((maxDegree*numV)/2)
   const maxEdgesValue = maxEdges;
   console.log("maxedges")
@@ -331,7 +330,38 @@ function createRandomNetwork(maxWidth, maxHeight, numV, numE, maxd, conn){
   let already_connected = new Map();
   let edges = [];
   let remainingEdges = numE;
-  while(remainingEdges > 0 && maxEdges >= 0){
+  if(connected === "True"){
+    let unvisited = [];
+    for(var i = 0; i < numV; i++){
+      unvisited.push(i);
+    }
+    let visited = [];
+    var vIndex1 = pickRandomVertex(unvisited);
+    var v1 = unvisited[vIndex1];
+    visited.push(v1);
+    unvisited = removeFromArray(unvisited, vIndex1);
+
+    var visited_num = 1;
+    while(visited_num < numV){
+      var vIndex2 = pickRandomVertex(unvisited)
+      var v2 = unvisited[vIndex2];
+      visited.push(v2); //add to visited
+      edges.push([v1,v2]);
+      remainingEdges --;
+      maxEdges --;
+      const indexTo = v1.toString() + v2.toString();
+      const indexFrom = v2.toString() + v1.toString();
+      already_connected.set(indexTo, true);
+      already_connected.set(indexFrom, true);
+      //remove from unvisited
+      unvisited = removeFromArray(unvisited, vIndex2);
+      //reset v1
+      vIndex1 = pickRandomVertex(visited);
+      v1 = visited[vIndex1];
+      visited_num ++;
+    }
+  }
+  while(remainingEdges > 0 && maxEdges > 0){
       const [random1, random2] = connectRandomVertices(vertices.length, vertices);
       const indexTo = random1.toString()+random2.toString();
       const indexFrom = random2.toString()+random1.toString();
@@ -367,4 +397,10 @@ function pickRandomVertex(array){
 
 function removeFromArray(array, index){
   return array.slice(0,index).concat(array.slice(index+1))
+}
+
+async function waitSetConnected(that,value){
+  if(value === 0) await that.setState({connected:"False"});
+  if(value === 1) await that.setState({connected:"True"});
+  that.resetNetwork();
 }
