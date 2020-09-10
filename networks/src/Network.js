@@ -4,6 +4,7 @@ import {fruchtermanReingold} from "./NetworkAlgorithms/FruchtermanReingold";
 
 import "./Network.css";
 
+var MAX_EDGES = 400;
 
 class NetworkVisualizer extends React.Component{
   constructor(props){
@@ -25,20 +26,22 @@ class NetworkVisualizer extends React.Component{
       eps: 0.1,
       iterations: 100,
       maxtimeouts: 0,
-      connected : false,
+      connected : "False",
       maxDegree: Infinity,
       disconnected: 1,
+      maxEdges: 0,
+      minEdges: 30,
     };
 
     this.stateRef = React.createRef(this.state);
   }
 
   componentDidMount(){
-    const w = window.innerWidth * 1;
+    const w = window.innerWidth * 0.97;
     const h = window.innerHeight * 0.55;
 
-    const [vertices, edges] = createRandomNetwork(w, h, this.state.numV, this.state.numE);
-    this.setState({width: w, height: h, vertices: vertices, edges: edges});
+    const [vertices, edges, maxedges] = createRandomNetwork(w, h, this.state.numV, this.state.numE);
+    this.setState({width: w, height: h, vertices: vertices, edges: edges, maxEdges: maxedges});
   }
 
   componentDidUpdate(){
@@ -55,8 +58,8 @@ class NetworkVisualizer extends React.Component{
       ctx.globalAlpha = 0.2;
       const index1 = this.state.edges[j][0];
       const index2 = this.state.edges[j][1];
-      ctx.moveTo(this.state.vertices[index1][0],this.state.vertices[index1][1] );
-      ctx.lineTo(this.state.vertices[index2][0],this.state.vertices[index2][1] );
+      ctx.moveTo(this.state.vertices[index1][0]+3,this.state.vertices[index1][1]+3 );
+      ctx.lineTo(this.state.vertices[index2][0]+3,this.state.vertices[index2][1]+3 );
       // ctx.moveTo(this.state.vertices[j][0][0]+3, this.state.edges[j][0][1]+3);
       // ctx.lineTo(this.state.edges[j][1][0]+3, this.state.edges[j][1][1]+3);
       ctx.stroke();
@@ -108,12 +111,6 @@ class NetworkVisualizer extends React.Component{
     this.setState({maxtimeouts: x});
   }
 
-  resetNetwork(){
-    const [vertices, edges] = createRandomNetwork(this.state.width, this.state.height, this.state.numV, this.state.numE, this.state.width, this.state.height);
-
-    this.setState({vertices: vertices, edges: edges, sorted:false})
-  }
-
   setVertices(v){
     this.setState({numV: v});
     this.resetNetwork();
@@ -147,9 +144,28 @@ class NetworkVisualizer extends React.Component{
   setEpsilon(v){
     this.setState({eps:v})
   }
+
+  setConnected(v){
+    // console.log(v);
+    const value = parseInt(v);
+    if(value === 0)this.setState({connected:"False"});
+    if(value === 1)this.setState({connected:"True"})
+  }
+
+  setDisconnectedSubgraphs(v){
+    console.log(v);
+    const value = parseInt(v);
+    this.setState({disconnected: value})
+  }
+
+  resetNetwork(){
+    const [vertices, edges, maxedges] = createRandomNetwork(this.state.width, this.state.height, this.state.numV, this.state.numE, this.state.width, this.state.height);
+
+    this.setState({vertices: vertices, edges: edges, sorted:false, maxEdges:maxedges})
+  }
   render(){
 
-    return <div>
+    return <div className = "network">
             <canvas
             className = "networkCanvas" ref = {this.canvas}>
             </canvas>
@@ -164,10 +180,10 @@ class NetworkVisualizer extends React.Component{
               onInput = {(event)=> this.setAnimationSpeed(event.target.value)}
               disabled = {this.state.running}>
               </input>
-              <label for="speed"> AnimationSpeed : {this.state.animationSpeed}ms</label>
+              <label> AnimationSpeed : {this.state.animationSpeed}ms</label>
               <input
               type = "range"
-              min = "15"
+              min = "20"
               max = "150"
               defaultValue = "50"
               step = "1"
@@ -176,19 +192,20 @@ class NetworkVisualizer extends React.Component{
               disabled = {this.state.running}
               onInput = {(event) => this.setVertices(event.target.value)}>
               </input>
-              <label> Vertices: {this.state.numV}</label>
+              <label> Vertices: {this.state.vertices.length}</label>
               <input
               type = "range"
-              min = "30"
-              max = "400"
-              defaultValue = "150"
+              min = {this.state.minEdges}
+              max = {this.state.maxEdges}
+              defaultValue = {this.state.edges.length}
               step = "1"
               className = "slider"
               name = "weight"
               disabled = {this.state.running}
               onInput = {(event) => this.setEdges(event.target.value)}>
               </input>
-              <label> Edges: {this.state.numE}</label>
+              <label> Edges: {this.state.edges.length}</label>
+              <br/>
               <input
               type = "range"
               min = "0"
@@ -196,11 +213,27 @@ class NetworkVisualizer extends React.Component{
               defaultValue = "0"
               step = "1"
               className = "slider"
+              onInput = {(event) => this.setConnected(event.target.value)}
               disabled = {this.state.running}>
               </input>
-              <label> Connected </label>
+              <label> Force Connectedness: {this.state.connected} </label>
+              <input
+              type = "range"
+              min = "1"
+              max = "10"
+              step = "1"
+              defaultValue = "1"
+              className = "slider"
+              onInput = {(event) => this.setDisconnectedSubgraphs(event.target.value)}
+              disabled = {this.state.running}>
+              </input>
+              <label>
+              DisconnectedSubgraphs: {this.state.disconnected}
+              </label>
             </div>
             <br/>
+
+
             <div className = "sliders2">
               <label> Force of Attraction: {this.state.cspring}</label>
               <input className = "slider2"
@@ -265,18 +298,57 @@ class NetworkVisualizer extends React.Component{
 
 export default NetworkVisualizer;
 
-function createRandomNetwork(maxWidth, maxHeight, numV, numE){
-  //create random vertices
-  let vertices = [];
-  for(let i = 0; i< numV; i++){
-    vertices.push(createRandomPos(maxWidth, maxHeight))
-  }
-  let edges = [];
-  for(let i = 0; i<numE; i++){
-    edges.push(connectRandomVertices(vertices.length, vertices))
-  }
+// function createRandomNetwork(maxWidth, maxHeight, numV, numE){
+//   //create random vertices
+//   let vertices = [];
+//   for(let i = 0; i< numV; i++){
+//     vertices.push(createRandomPos(maxWidth, maxHeight))
+//   }
+//   let edges = [];
+//   for(let i = 0; i<numE; i++){
+//     edges.push(connectRandomVertices(vertices.length, vertices))
+//   }
+//
+//   return [vertices,edges];
+// }
 
-  return [vertices,edges];
+function createRandomNetwork(maxWidth, maxHeight, numV, numE, maxd, conn){
+  let max_d = maxd === undefined? Infinity: maxd;
+  let connected = conn === undefined? true: conn;
+  const maxDegree = Math.min(numV-1, max_d);
+  let maxEdges = Math.floor((maxDegree*numV)/2)
+  const maxEdgesValue = maxEdges;
+  console.log("maxedges")
+  console.log(maxEdges);
+  let vertices = [];
+  for(let i = 0; i < numV; i ++){
+    vertices.push(createRandomPos(maxWidth, maxHeight));
+  }
+  const degree_array = []; // create adjacency matrix to check duplicate edges/ connectedness/ max degrees
+  for(let i = 0; i < numV; i++){
+    degree_array.push(0);
+  }
+  let already_connected = new Map();
+  let edges = [];
+  let remainingEdges = numE;
+  while(remainingEdges > 0 && maxEdges >= 0){
+      const [random1, random2] = connectRandomVertices(vertices.length, vertices);
+      const indexTo = random1.toString()+random2.toString();
+      const indexFrom = random2.toString()+random1.toString();
+
+      if(already_connected.get(indexTo) === undefined){
+        edges.push([random1, random2]);
+        already_connected.set(indexTo, true);
+        already_connected.set(indexFrom, true);
+        remainingEdges --;
+        maxEdges --;
+      }
+  }
+  console.log("actual edges");
+  console.log(edges.length);
+  console.log("actual number of vertices");
+  console.log(vertices.length);
+  return [vertices,edges,Math.min(maxEdgesValue, MAX_EDGES)];
 }
 
 function createRandomPos(maxWidth, maxHeight){
@@ -287,4 +359,12 @@ function connectRandomVertices(end, vertices){
   var random1 = Math.floor(Math.random()*end);
   var random2 = Math.floor(Math.random()*end);
   return [random1, random2];
+}
+
+function pickRandomVertex(array){
+  return Math.floor(Math.random()*array.length)
+}
+
+function removeFromArray(array, index){
+  return array.slice(0,index).concat(array.slice(index+1))
 }

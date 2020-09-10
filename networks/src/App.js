@@ -5,7 +5,9 @@ import NetworkVisualizer from "./Network";
 function App() {
   return (
     <div className="App">
-      <NetworkVisualizer/>
+      <div className = "AppElements">
+        <NetworkVisualizer/>
+      </div>
     </div>
   );
 }

@@ -1,16 +1,20 @@
 .networkCanvas{
+  margin-top: 2%;
   background-color: #FFFFFF;
   border: #000000 2px solid;
 }
+.network{
 
+}
 .sliders{
-  margin-top: 0%;
+  margin-top: 0px;
   background: #787878;
   width:100%;
   flex-basis: 33%;
 }
 
 .slider{
+  width: 70%;
   margin-left: 7%
 }
 
