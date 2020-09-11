@@ -33,12 +33,12 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
   }
 
   let t = 1;
-  let maxFvt = Infinity;
   let animations = [];
   let previous = [];
 
-  while(t<K && maxFvt > epsilon){
+  while(t<K){
     let force_list = [];
+    let fvt = [];
     for(let i =0; i < new_vertices.length; i++){
       let f = [0,0]; // should be two dimensional
       let vert_connected = []; //represents vertices we should not repulse later
@@ -73,97 +73,54 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
         }
       }
       force_list.push(f)
+      fvt.push(distance([0,0], f));
     }
     const iteration_animation = [];
-
     for(let i = 0; i < new_vertices.length; i++){
       let new_x = new_vertices[i][0] + delta*force_list[i][0];
       let new_y = new_vertices[i][1] + delta*force_list[i][1];
       const old_vertices = new_vertices[i].slice();
-      if(new_x < 0 && new_y < 0){
-        const overFlowDist = distance([new_x,new_y], old_vertices);
-        const wantedDistance = distance([0,0], old_vertices);
-        // console.log("overflow:",overFlowDist);
-        // console.log("wanted", wantedDistance);
-        // console.log("ratio:" , wantedDistance/overFlowDist);
-        new_x = (wantedDistance/overFlowDist) * (new_x - old_vertices[0]);
-        new_y = (wantedDistance/overFlowDist) * (new_y - old_vertices[1]);
+      const x0 = old_vertices[0];
+      const y0 = old_vertices[1];
+      const x1 = new_x;
+      const y1 = new_y;
+      const m = (new_y - y0)/(new_x-x0)
+      if(new_x < 0){
+        const xi = 0;
+        const yi = m * (xi-x0)+y0;
+        new_x = xi;
+        new_y = yi;
       }
-      else if(new_x < 0 && new_y > graph_distancey-6){
-        const overFlowDist = distance([new_x,new_y], old_vertices);
-        const wantedDistance = distance([0,graph_distancey-6], old_vertices);
-        // console.log("overflow:",overFlowDist);
-        // console.log("wanted", wantedDistance);
-        // console.log("ratio:" , wantedDistance/overFlowDist);
-        new_x = (wantedDistance/overFlowDist) * (new_x - old_vertices[0]);
-        new_y = (wantedDistance/overFlowDist) * (new_y - old_vertices[1]);
+      if(new_y < 0){
+        const yi = 0;
+        const xi = (1/m)*(yi-y0) + x0;
+        new_x = xi;
+        new_y = yi;
       }
-      else if(new_x > graph_distancex-6 && new_y < 0){
-        const overFlowDist = distance([new_x,new_y], old_vertices);
-        const wantedDistance = distance([graph_distancex-6,0], old_vertices);
-        // console.log("overflow:",overFlowDist);
-        // console.log("wanted", wantedDistance);
-        // console.log("ratio:" , wantedDistance/overFlowDist);
-        new_x = (wantedDistance/overFlowDist) * (new_x - old_vertices[0]);
-        new_y = (wantedDistance/overFlowDist) * (new_y - old_vertices[1]);
+      if(new_x > graph_distancex - 6){
+        const xi = graph_distancex -6;
+        const yi = m * (xi-x0)+y0;
+        new_x = xi;
+        new_y = yi;
       }
-      else if(new_x > graph_distancex-6 && new_y >graph_distancey -6){
-        const overFlowDist = distance([new_x,new_y], old_vertices);
-        const wantedDistance = distance([graph_distancex-6,graph_distancey-6], old_vertices);
-        // console.log("overflow:",overFlowDist);
-        // console.log("wanted", wantedDistance);
-        // console.log("ratio:" , wantedDistance/overFlowDist);
-        new_x = (wantedDistance/overFlowDist) * (new_x - old_vertices[0]);
-        new_y = (wantedDistance/overFlowDist) * (new_y - old_vertices[1]);
+      if(new_y > graph_distancey -6){
+        const yi = graph_distancey -6;
+        const xi = (1/m)*(yi-y0) + x0;
+        new_x = xi;
+        new_y = yi;
       }
-      else if(new_x < 0){
-        const overFlowDist = distance([new_x,new_y], old_vertices);
-        const wantedDistance = distance([0,new_y], old_vertices);
-        // console.log("overflow:",overFlowDist);
-        // console.log("wanted", wantedDistance);
-        // console.log("ratio:" , wantedDistance/overFlowDist);
-        new_x = (wantedDistance/overFlowDist) * (new_x - old_vertices[0]);
-        new_y = (wantedDistance/overFlowDist) * (new_y - old_vertices[1]);
-      }
-      else if(new_y < 0){
-        const overFlowDist = distance([new_x,new_y], old_vertices);
-        const wantedDistance = distance([new_x,0], old_vertices);
-        // console.log("overflow:",overFlowDist);
-        // console.log("wanted", wantedDistance);
-        // console.log("ratio:" , wantedDistance/overFlowDist);
-        new_x = (wantedDistance/overFlowDist) * (new_x - old_vertices[0]);
-        new_y = (wantedDistance/overFlowDist) * (new_y - old_vertices[1]);
-      }
-      else if(new_x +6 > graph_distancex){
-        const overFlowDist = distance([new_x,new_y], old_vertices);
-        const wantedDistance = distance([graph_distancex-6,new_y], old_vertices);
-        // console.log("overflow:",overFlowDist);
-        // console.log("wanted", wantedDistance);
-        // console.log("ratio:" , wantedDistance/overFlowDist);
-        new_x = (wantedDistance/overFlowDist) * (new_x - old_vertices[0]);
-        new_y = (wantedDistance/overFlowDist) * (new_y - old_vertices[1]);
-      }
-      else if(new_y + 6 > graph_distancey){
-        const overFlowDist = distance([new_x,new_y], old_vertices);
-        const wantedDistance = distance([new_x,graph_distancey-6], old_vertices);
-        // console.log("overflow:",overFlowDist);
-        // console.log("wanted", wantedDistance);
-        // console.log("ratio:" , wantedDistance/overFlowDist);
-        new_x = (wantedDistance/overFlowDist) * (new_x - old_vertices[0]);
-        new_y = (wantedDistance/overFlowDist) * (new_y - old_vertices[1]);
-      }
+
+
       new_vertices[i][0] = new_x//(new_x > graph_distancex-3)? (graph_distancex-3): ((new_x-3) < 0)? 0: (new_x-3); // should be two dimensional
       new_vertices[i][1] = new_y//(new_y > graph_distancey-3)? (graph_distancey-3): ((new_y -3)< 0)? 0: (new_y-3);
       iteration_animation.push(new_vertices[i].slice());
       const max_dist = distance(force_list[i], [0,0]);
-      if(maxFvt === Infinity){
-        maxFvt = max_dist;
-      }
-      else{
-        maxFvt = maxFvt > max_dist? maxFvt: max_dist;
-      }
+
     }
     animations.push(iteration_animation);
+    if(Math.max(...fvt) < epsilon){
+      break;
+    }
     t += 1
   }
   // animations.push(new_vertices.slice());

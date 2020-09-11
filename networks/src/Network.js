@@ -68,7 +68,7 @@ class NetworkVisualizer extends React.Component{
   }
   componentWillUnmount(){
       var id = this.state.maxtimeouts;
-      console.log("unmounting");
+      // console.log("unmounting");
       while(id){
         clearInterval(id);
         id --;
@@ -104,7 +104,7 @@ class NetworkVisualizer extends React.Component{
         console.log("animating")
         if(k === animations.length-1){
           this.setState({running:false, sorted:true, vertices:final_vertices});
-          console.log(final_vertices);
+          // console.log(final_vertices);
         }
       }, k * this.state.animationSpeed)
     }
@@ -228,7 +228,7 @@ class NetworkVisualizer extends React.Component{
               disabled = {this.state.running || (this.state.connected === "False"? true: false)}>
               </input>
               <label>
-              DisconnectedSubgraphs: {this.state.disconnected}
+              Disconnected Subgraphs: {this.state.disconnected}
               </label>
             </div>
             <br/>
@@ -263,7 +263,7 @@ class NetworkVisualizer extends React.Component{
               <input className = "slider2"
               type = "range"
               min = "0.001"
-              max = "0.1"
+              max = "1"
               defaultValue ="0.1"
               step = "0.001"
               name = "speed" disabled = {this.state.running}
@@ -374,10 +374,10 @@ function createRandomNetwork(maxWidth, maxHeight, numV, numE, conn){
         maxEdges --;
       }
   }
-  console.log("actual edges");
-  console.log(edges.length);
-  console.log("actual number of vertices");
-  console.log(vertices.length);
+  // console.log("actual edges");
+  // console.log(edges.length);
+  // console.log("actual number of vertices");
+  // console.log(vertices.length);
   return [vertices,edges,Math.min(maxEdgesValue, MAX_EDGES)];
 }
 
