@@ -33,6 +33,7 @@ class NetworkVisualizer extends React.Component{
       maxDegree: Infinity,
       disconnected: 1,
       algoType: "spring",
+      randomType: "random",
     };
 
     this.help = React.createRef()
@@ -137,8 +138,6 @@ class NetworkVisualizer extends React.Component{
 
   setAnimationSpeed(ms){
     const value = Math.abs(150-ms);
-    // console.log("setting to")
-    // console.log(value)
     this.setState({animationSpeed: value});
   }
 
@@ -159,28 +158,19 @@ class NetworkVisualizer extends React.Component{
   }
 
   setConnected(v){
-    // console.log(v);
     const value = parseInt(v);
     const that = this;
     waitSetConnected(that, value);
   }
-
   setDisconnectedSubgraphs(v){
-    // console.log(v);
     const value = parseInt(v);
     this.setState({disconnected: value})
   }
-
   setAlgoType(v){
-    console.log(v);
     this.setState({algoType: v});
   }
-
-  /**
-   Not implemented yet
-   **/
   setRandomizedType(v){
-
+    this.setState({randomType: v})
   }
 
   setHelp(v){
@@ -209,6 +199,24 @@ class NetworkVisualizer extends React.Component{
       this.help.current.setInfo("This attribute controls whether or not there is a path between every vertex or not. Many layout algorithms operate under the assumption the network/graph is connected, but we have not assumed this by default for the sake of intllectual curiosity.")
       this.help.current.setOpen(true);
     }
+    if(v === "randomType"){
+      this.help.current.setTitle("Network Generation : Random");
+      this.help.current.setInfo("Nothing here for now");
+      this.help.current.setOpen(true);
+    }
+    if(v === "algoType"){
+      if(this.state.algoType === "spring"){
+        this.help.current.setTitle("Basic Spring Embedding Algorithm");
+        this.help.current.setInfo("Based on Peter Eades 1984 paper: 'A graph drawing heuristic' <br/> Models the vertices as steel rings and edges as springs connecting the edges. Transforms the network layout problem into a dynamical system. ");
+        this.help.current.setOpen(true);
+      }
+      if(this.state.algoType === "fruchtermanReingold"){
+        this.help.current.setTitle("Fruchterman Reingold Algorithm");
+        this.help.current.setInfo("Based on Fruchterman-Reingold 1991 paper. Models vertices-edges as a spring system, conceptually considers vertices as atomic nuclei.");
+        this.help.current.setOpen(true);
+      }
+    }
+
   }
 
   resetNetwork(){
@@ -222,6 +230,23 @@ class NetworkVisualizer extends React.Component{
             <canvas
             className = "networkCanvas" ref = {this.canvas}>
             </canvas>
+            <div className = "selectalgorow">
+            <select className = "selectalgo" onChange = {(event) => this.setAlgoType(event.target.value)}>
+              <option value = "spring"> Basic Spring Embedding </option>
+              <option value = "fruchtermanReingold"> FruchtermanReingold </option>
+            </select>
+            <button className = "b" onClick = {() => this.runAlgorithm()} disabled = {this.state.running}> Run Algorithm </button>
+            <button className = "helpbresized" onClick = {() => this.setHelp("algoType")}> ? </button>
+            <select className = "selectalgo">
+              <option value = "random" onChange = {(event) => this.setRandomizedType(event.target.value)}> Random </option>
+              <option value = "randomcircle" disabled = {true}> Random Circle </option>
+              <option value = "randomsymmetry" disabled = {true}> Random Symmetry </option>
+            </select>
+            <button className = "b" disabled = {this.state.running} onClick = {() => this.resetNetwork()}> Reset Network</button>
+            <button className = "helpbresized" onClick = {() => this.setHelp("randomType")}>?</button>
+            </div>
+            <HelpWindow ref = {this.help}></HelpWindow>
+            <p style = {{color: "white"}}> General Network Attributes</p>
             <div className = "sliders">
               <input
               type = "range"
@@ -288,26 +313,10 @@ class NetworkVisualizer extends React.Component{
               </label>
               <button className = "helpb" onClick = {() => this.setHelp("disconnected")}> ?</button>
             </div>
-            <br/>
-            <div className = "selectalgorow">
-            <select className = "selectalgo" onChange = {(event) => this.setAlgoType(event.target.value)}>
-              <option value = "spring"> Basic Spring Embedding </option>
-              <option value = "fruchtermanReingold"> FruchtermanReingold </option>
-            </select>
-            <button className = "b" onClick = {() => this.runAlgorithm()} disabled = {this.state.running}> Run Algorithm </button>
-            <button className = "helpbresized"> ? </button>
-            <select className = "selectalgo">
-              <option value = "random" onChange = {(event) => this.setRandomizedType(event.target.value)}> Random </option>
-              <option value = "randomcircle" disabled = {true}> Random Circle </option>
-              <option value = "randomsymmetry" disabled = {true}> Random Symmetry </option>
-            </select>
-            <button className = "b" disabled = {this.state.running} onClick = {() => this.resetNetwork()}> Reset Network</button>
-            <button className = "helpbresized">?</button>
-            </div>
-            <br/>
 
 
 
+            <p style = {{color: "white"}}>Algorithm Specific Network Attributes</p>
             <div className = "sliders2">
               <label> Force of Attraction: {this.state.cspring}</label>
               <input className = "slider2"
@@ -357,7 +366,7 @@ class NetworkVisualizer extends React.Component{
               </input>
 
             </div>
-            <HelpWindow ref = {this.help}></HelpWindow>
+
            </div>
   }
 }
