@@ -18,6 +18,17 @@
   color:white;
 }
 
+.helpbresized{
+  flex-basis: 6%;
+  padding: 20px 20px;
+  background-color: lightblue;
+}
+
+.helpbresized:hover{
+  background-color: green;
+  color:white;
+}
+
 .sliders{
   margin-top: 0px;
   background: #787878;
@@ -57,7 +68,7 @@
 
 .b{
  margin-top: 0;
- flex-basis: 5%;
+ flex-basis: 22%;
  padding: 15px 32px;
  font-family:'Roboto',sans-serif;
  font-weight:300;
@@ -75,4 +86,22 @@
 
 .b:disabled{
   background-color: lightgrey;
+}
+
+.selectalgo{
+  font-size: 100%;
+  text-align: center;
+  margin-top: 0px;
+  border-radius: 0px;
+  padding: 20px 32px;
+  flex-basis: 22%;
+}
+
+.selectalgorow{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: center;
+  background-color: #787878;
 }

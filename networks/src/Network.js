@@ -32,8 +32,7 @@ class NetworkVisualizer extends React.Component{
       connected : "False",
       maxDegree: Infinity,
       disconnected: 1,
-      maxEdges: 0,
-      minEdges: 30,
+      algoType: "spring",
     };
 
     this.help = React.createRef()
@@ -95,6 +94,11 @@ class NetworkVisualizer extends React.Component{
     console.log(animations);
 
     this.animateNetwork(animations, new_vertices);
+  }
+
+  runAlgorithm(){
+    if(this.state.algoType === "spring") this.generateForceDirectedLayout();
+    if(this.state.algoType === "fruchtermanReingold") this.generateReingold();
   }
 
   animateNetwork(animations, final_vertices){
@@ -165,6 +169,18 @@ class NetworkVisualizer extends React.Component{
     // console.log(v);
     const value = parseInt(v);
     this.setState({disconnected: value})
+  }
+
+  setAlgoType(v){
+    console.log(v);
+    this.setState({algoType: v});
+  }
+
+  /**
+   Not implemented yet
+   **/
+  setRandomizedType(v){
+
   }
 
   setHelp(v){
@@ -273,6 +289,23 @@ class NetworkVisualizer extends React.Component{
               <button className = "helpb" onClick = {() => this.setHelp("disconnected")}> ?</button>
             </div>
             <br/>
+            <div className = "selectalgorow">
+            <select className = "selectalgo" onChange = {(event) => this.setAlgoType(event.target.value)}>
+              <option value = "spring"> Basic Spring Embedding </option>
+              <option value = "fruchtermanReingold"> FruchtermanReingold </option>
+            </select>
+            <button className = "b" onClick = {() => this.runAlgorithm()} disabled = {this.state.running}> Run Algorithm </button>
+            <button className = "helpbresized"> ? </button>
+            <select className = "selectalgo">
+              <option value = "random" onChange = {(event) => this.setRandomizedType(event.target.value)}> Random </option>
+              <option value = "randomcircle" disabled = {true}> Random Circle </option>
+              <option value = "randomsymmetry" disabled = {true}> Random Symmetry </option>
+            </select>
+            <button className = "b" disabled = {this.state.running} onClick = {() => this.resetNetwork()}> Reset Network</button>
+            <button className = "helpbresized">?</button>
+            </div>
+            <br/>
+
 
 
             <div className = "sliders2">
@@ -324,15 +357,6 @@ class NetworkVisualizer extends React.Component{
               </input>
 
             </div>
-            <button className = "b" onClick = {() => this.generateForceDirectedLayout()} disabled = {this.state.running}>
-            Basic Spring Embedding
-            </button>
-            <button className = "b" onClick = {() => this.generateReingold()} disabled = {this.state.running}>
-            Fruchterman & Reingold
-            </button>
-            <button className = "b" onClick = {() => this.resetNetwork()} disabled = {this.state.running}>
-            Reset Network
-            </button>
             <HelpWindow ref = {this.help}></HelpWindow>
            </div>
   }
