@@ -26,11 +26,12 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
     for(let j = 0; j < vertices.length; j++){
       for(let k =0; k < edges.length; k++){
         if(i === edges[k][0] && j === edges[k][1]){
-          new_edges.push(new_vertices[i].slice(),new_vertices[j].slice());
+          new_edges.push([i,j]);
         }
       }
     }
   }
+  // console.log("new_edges",new_edges);
 
   let t = 1;
   let animations = [];

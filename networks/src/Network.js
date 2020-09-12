@@ -91,7 +91,7 @@ class NetworkVisualizer extends React.Component{
     const values = fruchtermanReingold(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations);
     const new_vertices = values[0];
     const animations = values[1];
-    // console.log(animations);
+    console.log(animations);
 
     this.animateNetwork(animations, new_vertices);
   }
@@ -410,6 +410,7 @@ function createRandomNetwork(maxWidth, maxHeight, numV, numE, conn){
       }
     }
   console.log("degree_array", degree_array);
+  console.log("edges", edges);
   return [vertices,edges,Math.min(maxEdgesValue, MAX_EDGES)];
 }
 
