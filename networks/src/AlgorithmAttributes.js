@@ -16,7 +16,8 @@ class AlgorithmAttributes extends React.Component{
       maxY: 0,
       cTemp: 1,
       tempHeuristic: "Linear",
-      tempHeuristicVale: "1",
+      tempHeuristicValue: 1,
+      cPercentage: "0",
     }
   }
 
@@ -44,6 +45,8 @@ class AlgorithmAttributes extends React.Component{
   }
 
   setC(v){
+    const percentage = Math.min(Math.trunc(((parseInt(v)-2)/(this.state.maxX/21)) *100), 100)
+    this.setState({cPercentage: percentage});
     this.setState({C:v});
   }
 
@@ -52,8 +55,8 @@ class AlgorithmAttributes extends React.Component{
   }
 
   setTempHeuristic(v){
-    this.setState({tempHeuristicValue: v});
     const value = parseInt(v);
+    this.setState({tempHeuristicValue: value});
     if(value===1) this.setState({tempHeuristic: "Linear"});
     if(value===2) this.setState({tempHeuristic: "Logarithmic"});
     if(value===3) this.setState({tempHeuristic: "Directional"});
@@ -130,7 +133,7 @@ class AlgorithmAttributes extends React.Component{
                 onInput = {(event)=> this.setC(event.target.value)}
                 disabled = {this.state.running}>
                 </input>
-                <label> Force to Area scaling: {this.state.C}</label>
+                <label> Force to Area scaling: {this.state.cPercentage}%</label>
                 <button className = "helpb"> ?</button>
                 </div>
               </div>
@@ -141,7 +144,7 @@ class AlgorithmAttributes extends React.Component{
                   <input className = "slider"
                   type = "range"
                   min = "0.1"
-                  max = "10"
+                  max = "3"
                   step = "0.1"
                   value = {this.state.cTemp}
                   name = "speed" disabled = {this.state.running}
@@ -155,9 +158,9 @@ class AlgorithmAttributes extends React.Component{
                   <input className = "slider"
                   type = "range"
                   min = "1"
-                  max = "4"
-                  step = "1"
+                  max = "3"
                   value = {this.state.tempHeuristicValue}
+                  step = "1"
                   name = "speed" disabled = {this.state.running}
                   onChange = {(event)=> this.setTempHeuristic(event.target.value)}
                   disabled = {this.state.running}>

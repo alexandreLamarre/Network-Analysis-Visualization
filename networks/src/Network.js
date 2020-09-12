@@ -3,6 +3,7 @@ import HelpWindow from "./HelpWindow";
 import AlgorithmAttributes from "./AlgorithmAttributes";
 import {springEmbedding} from "./NetworkAlgorithms/springEmbedding";
 import {fruchtermanReingold} from "./NetworkAlgorithms/FruchtermanReingold";
+import getHelpInfo from "./helpInfoFunctions";
 
 import "./Network.css";
 
@@ -83,7 +84,7 @@ class NetworkVisualizer extends React.Component{
   }
 
   generateReingold(){
-    const values = fruchtermanReingold(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations);
+    const values = fruchtermanReingold(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations, this.attribute.current.state.tempHeuristic);
     const new_vertices = values[0];
     const animations = values[1];
     console.log(animations);
@@ -153,49 +154,14 @@ class NetworkVisualizer extends React.Component{
   }
 
   setHelp(v){
-    if(v === "disconnected"){
-      this.help.current.setTitle("Disconnected Subgraphs")
-      this.help.current.setInfo("Feature has not been released yet, it is in progress.")
-      this.help.current.setOpen(true);
-    }
-    if(v === "animation"){
-      this.help.current.setTitle("AnimationSpeed")
-      this.help.current.setInfo("Animation Speed controls the speed at which each iteration of the algorithm is shown.")
-      this.help.current.setOpen(true);
-    }
-    if(v === "edges"){
-      this.help.current.setTitle("Edges")
-      this.help.current.setInfo("Edges controls the amount of edges the random network is generated with.")
-      this.help.current.setOpen(true);
-    }
-    if(v === "vertices"){
-      this.help.current.setTitle("Vertices")
-      this.help.current.setInfo("Vertices controls the amount of vertices the random network is generated with.")
-      this.help.current.setOpen(true);
-    }
-    if(v === "connectedness"){
-      this.help.current.setTitle("Force Connectedness")
-      this.help.current.setInfo("This attribute controls whether or not there is a path between every vertex or not. Many layout algorithms operate under the assumption the network/graph is connected, but we have not assumed this by default for the sake of intllectual curiosity.")
-      this.help.current.setOpen(true);
-    }
-    if(v === "randomType"){
-      this.help.current.setTitle("Network Generation : Random");
-      this.help.current.setInfo("Nothing here for now");
-      this.help.current.setOpen(true);
-    }
+    var value = v;
     if(v === "algoType"){
-      if(this.state.algoType === "spring"){
-        this.help.current.setTitle("Basic Spring Embedding Algorithm");
-        this.help.current.setInfo("Based on Peter Eades 1984 paper: 'A graph drawing heuristic' <br/> Models the vertices as steel rings and edges as springs connecting the edges. Transforms the network layout problem into a dynamical system. ");
-        this.help.current.setOpen(true);
-      }
-      if(this.state.algoType === "fruchtermanReingold"){
-        this.help.current.setTitle("Fruchterman Reingold Algorithm");
-        this.help.current.setInfo("Based on Fruchterman-Reingold 1991 paper. Models vertices-edges as a spring system, conceptually considers vertices as atomic nuclei.");
-        this.help.current.setOpen(true);
-      }
+      value = this.state.algoType;
     }
-
+    const [title, info, open] = getHelpInfo(value);
+    this.help.current.setTitle(title);
+    this.help.current.setInfo(info);
+    this.help.current.setOpen(open);
   }
 
   resetNetwork(){

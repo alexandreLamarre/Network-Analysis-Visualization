@@ -3,12 +3,14 @@ var ly = 0;
 var C= 1;
 var K = 0.01; //OPTIMAL DISTANCE
 var tol = 0.01; //TOLERANCE
+var ITERATIONS = 300;
 
-
-export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distancey, iterations){
+export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distancey, iterations, coolingtype){
   const W = graph_distancex -6;
   const L = graph_distancey -6;
   const kIter = iterations === undefined ? 300: iterations;
+  ITERATIONS = kIter;
+  const tempHeuristic = coolingtype === undefined? "Linear": coolingtype;
   C = 0.1;
   K = C* Math.sqrt((W)*(L)/(vertices.length));
   // tol = tolerance === undefined? 0.01: tolerance;
@@ -35,6 +37,7 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
   let t = 1;
   let animations = [];
   let temperature = (1/10)*W;
+  const initial_temperature = temperature;
 
   while(t<kIter){
     let force_list = [];
@@ -90,7 +93,7 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
         let yi = m * (xi-x0)+y0;
         let theta = (Math.PI/2)- 2*Math.atan((new_y - new_vertices[i][1])/(new_x - new_vertices[i][0]));
         let [rx,ry] = reflectionVector(new_x-xi,new_y-yi,theta);
-        console.log(rx,ry);
+        // console.log(rx,ry);
         // while(rx <0 || rx > W || ry < 0 || ry >L){
         //   theta = Math.atan((ry-yi)/(rx-xi));
         //   xi = rx;
@@ -105,7 +108,7 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
         let xi = (1/m)*(yi-y0) + x0;
         let theta = (Math.PI/2)-2*Math.atan((new_y - new_vertices[i][1])/(new_x - new_vertices[i][0]));
         let [rx,ry] = reflectionVector(new_x-xi,new_y-yi,theta);
-        console.log(rx,ry);
+        // console.log(rx,ry);
         // while(rx <0 || rx > W || ry < 0 || ry >L){
         //   theta = Math.atan((ry-yi)/(rx-xi));
         //   xi = rx;
@@ -120,7 +123,7 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
         let yi = m * (xi-x0)+y0;
         let theta = (Math.PI/2)-2*Math.atan((new_y - new_vertices[i][1])/(new_x - new_vertices[i][0]));
         let [rx,ry] = reflectionVector(new_x-xi,new_y-yi,theta);
-        console.log(rx,ry);
+        // console.log(rx,ry);
         // while(rx <0 || rx > W || ry < 0 || ry >L){
         //   theta = Math.atan((ry-yi)/(rx-xi));
         //   xi = rx;
@@ -135,7 +138,7 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
         let xi = (1/m)*(yi-y0) + x0;
         let theta = (Math.PI/2)-2*Math.atan((new_y - new_vertices[i][1])/(new_x - new_vertices[i][0]));
         let [rx,ry] = reflectionVector(new_x-xi,new_y-yi,theta);
-        console.log(rx,ry);
+        // console.log(rx,ry);
         // while(rx <0 || rx > W || ry < 0 || ry >L){
         //   theta = Math.atan((ry-yi)/(rx-xi));
         //   xi = rx;
@@ -153,7 +156,8 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
 
     animations.push(iter_animations);
 
-    temperature = cool(temperature);
+    temperature = cool(temperature, tempHeuristic, initial_temperature);
+    console.log(temperature);
     t+= 1;
   }
 
@@ -183,8 +187,17 @@ function unitVector(x,y){
   return [new_x/dist, new_y/dist];
 }
 
-function cool(t){
-  return 0.90*t
+function cool(t, tempHeuristic, initial_temperature){
+  if(tempHeuristic === "Linear"){
+    return t - initial_temperature/ITERATIONS
+  }
+  if(tempHeuristic === "Logarithmic"){
+    return 0.90*t
+  }
+  if(tempHeuristic === "Directional"){
+    return t
+  }
+  return t
 }
 
 function reflectionVector(x,y,theta){
