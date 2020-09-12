@@ -1,4 +1,5 @@
 import React from "react";
+import HelpWindow from "./HelpWindow";
 import {springEmbedding} from "./NetworkAlgorithms/springEmbedding";
 import {fruchtermanReingold} from "./NetworkAlgorithms/FruchtermanReingold";
 
@@ -35,7 +36,7 @@ class NetworkVisualizer extends React.Component{
       minEdges: 30,
     };
 
-    this.stateRef = React.createRef(this.state);
+    this.help = React.createRef()
   }
 
   componentDidMount(){
@@ -114,15 +115,6 @@ class NetworkVisualizer extends React.Component{
   }
 
   setVertices(v){
-    // while(MAX_TIMEOUT){
-    //   clearTimeout(MAX_TIMEOUT);
-    //   MAX_TIMEOUT --;
-    // }
-    //
-    // MAX_TIMEOUT = setTimeout(()=>{
-    //   const that = this;
-    //   waitSetVertices(that,v);
-    // },10);
     const that = this;
     waitSetVertices(that,v);
   }
@@ -175,6 +167,34 @@ class NetworkVisualizer extends React.Component{
     this.setState({disconnected: value})
   }
 
+  setHelp(v){
+    if(v === "disconnected"){
+      this.help.current.setTitle("Disconnected Subgraphs")
+      this.help.current.setInfo("Feature has not been released yet, it is in progress.")
+      this.help.current.setOpen(true);
+    }
+    if(v === "animation"){
+      this.help.current.setTitle("AnimationSpeed")
+      this.help.current.setInfo("Animation Speed controls the speed at which each iteration of the algorithm is shown.")
+      this.help.current.setOpen(true);
+    }
+    if(v === "edges"){
+      this.help.current.setTitle("Edges")
+      this.help.current.setInfo("Edges controls the amount of edges the random network is generated with.")
+      this.help.current.setOpen(true);
+    }
+    if(v === "vertices"){
+      this.help.current.setTitle("Vertices")
+      this.help.current.setInfo("Vertices controls the amount of vertices the random network is generated with.")
+      this.help.current.setOpen(true);
+    }
+    if(v === "connectedness"){
+      this.help.current.setTitle("Force Connectedness")
+      this.help.current.setInfo("This attribute controls whether or not there is a path between every vertex or not. Many layout algorithms operate under the assumption the network/graph is connected, but we have not assumed this by default for the sake of intllectual curiosity.")
+      this.help.current.setOpen(true);
+    }
+  }
+
   resetNetwork(){
     const [vertices, edges, maxedges] = createRandomNetwork(this.state.width, this.state.height, this.state.numV, this.state.numE, this.state.connected);
 
@@ -198,6 +218,7 @@ class NetworkVisualizer extends React.Component{
               disabled = {this.state.running}>
               </input>
               <label> AnimationSpeed : {this.state.animationSpeed}ms</label>
+              <button className = "helpb" onClick = {() => this.setHelp("animation")}> ?</button>
               <input
               type = "range"
               min = "20"
@@ -210,6 +231,7 @@ class NetworkVisualizer extends React.Component{
               onInput = {(event) => this.setVertices(event.target.value)}>
               </input>
               <label> Vertices: {this.state.vertices.length}</label>
+              <button className = "helpb" onClick = {() => this.setHelp("vertices")}> ?</button>
               <input
               type = "range"
               min =  {this.state.connected === "True"? this.state.vertices.length-1: 20}
@@ -222,7 +244,7 @@ class NetworkVisualizer extends React.Component{
               onInput = {(event) => this.setEdges(event.target.value)}>
               </input>
               <label> Edges: {this.state.edges.length}</label>
-              <br/>
+              <button className = "helpb" onClick = {() => this.setHelp("edges")}> ?</button>
               <input
               type = "range"
               min = "0"
@@ -234,6 +256,7 @@ class NetworkVisualizer extends React.Component{
               disabled = {this.state.running}>
               </input>
               <label> Force Connectedness: {this.state.connected} </label>
+              <button className = "helpb" onClick = {() => this.setHelp("connectedness")}> ?</button>
               <input
               type = "range"
               min = "1"
@@ -242,11 +265,12 @@ class NetworkVisualizer extends React.Component{
               defaultValue = "1"
               className = "slider"
               onInput = {(event) => this.setDisconnectedSubgraphs(event.target.value)}
-              disabled = {this.state.running || (this.state.connected === "False"? true: false)}>
+              disabled = {true}>
               </input>
               <label>
               Disconnected Subgraphs: {this.state.disconnected}
               </label>
+              <button className = "helpb" onClick = {() => this.setHelp("disconnected")}> ?</button>
             </div>
             <br/>
 
@@ -309,25 +333,12 @@ class NetworkVisualizer extends React.Component{
             <button className = "b" onClick = {() => this.resetNetwork()} disabled = {this.state.running}>
             Reset Network
             </button>
+            <HelpWindow ref = {this.help}></HelpWindow>
            </div>
   }
 }
 
 export default NetworkVisualizer;
-
-// function createRandomNetwork(maxWidth, maxHeight, numV, numE){
-//   //create random vertices
-//   let vertices = [];
-//   for(let i = 0; i< numV; i++){
-//     vertices.push(createRandomPos(maxWidth, maxHeight))
-//   }
-//   let edges = [];
-//   for(let i = 0; i<numE; i++){
-//     edges.push(connectRandomVertices(vertices.length, vertices))
-//   }
-//
-//   return [vertices,edges];
-// }
 
 function createRandomNetwork(maxWidth, maxHeight, numV, numE, conn){
   let connected = conn === undefined? "False": conn;
@@ -344,10 +355,7 @@ function createRandomNetwork(maxWidth, maxHeight, numV, numE, conn){
     available_vertices.push(i);
     degree_array.push(0);
   }
-  // const degree_array = []; // create adjacency matrix to check duplicate edges/ connectedness/ max degrees
-  // for(let i = 0; i < numV; i++){
-  //   degree_array.push(0);
-  // }
+
   let already_connected = new Map();
   let edges = [];
   let remainingEdges = numE;
@@ -422,10 +430,7 @@ function connectRandomVertices(vertices){
   var random1 = vertices[Math.floor(Math.random()*vertices.length)];
   vertices.splice(random1,1);
   var random2 = vertices[Math.floor(Math.random()*vertices.length)];
-  // while(random2 === random1){
-  //   console.log("running");
-  //   random2 = random2 = Math.floor(Math.random()*end);
-  // }
+
   return [random1, random2];
 }
 

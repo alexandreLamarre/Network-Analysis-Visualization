@@ -6,6 +6,18 @@
 .network{
 
 }
+
+.helpb{
+  align-self: flex-end;
+  position: absolute;
+  right: 2%;
+  background-color: lightblue;
+}
+.helpb:hover {
+  background-color: green;
+  color:white;
+}
+
 .sliders{
   margin-top: 0px;
   background: #787878;
