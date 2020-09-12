@@ -9,8 +9,8 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
   const W = graph_distancex -6;
   const L = graph_distancey -6;
   const kIter = iterations === undefined ? 300: iterations;
-  C = 100;
-  K = C* Math.sqrt(1/2*(graph_distancex-6)*1/2*(graph_distancey-6)/(vertices.length));
+  C = 0.1;
+  K = C* Math.sqrt((W)*(L)/(vertices.length));
   // tol = tolerance === undefined? 0.01: tolerance;
   console.log("K", K);
 
@@ -34,7 +34,7 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
   // console.log("new_edges", new_edges);
   let t = 1;
   let animations = [];
-  let temperature = vertices.length;
+  let temperature = (1/10)*W;
 
   while(t<kIter){
     let force_list = [];
@@ -86,26 +86,62 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
       const y1 = new_y;
       const m = (new_y - y0)/(new_x-x0)
       if(new_x < 0){
-        const xi = 0;
-        const yi = m * (xi-x0)+y0;
+        let xi = 0;
+        let yi = m * (xi-x0)+y0;
+        let theta = (Math.PI/2)- 2*Math.atan((new_y - new_vertices[i][1])/(new_x - new_vertices[i][0]));
+        let [rx,ry] = reflectionVector(new_x-xi,new_y-yi,theta);
+        console.log(rx,ry);
+        // while(rx <0 || rx > W || ry < 0 || ry >L){
+        //   theta = Math.atan((ry-yi)/(rx-xi));
+        //   xi = rx;
+        //   yi = ry;
+        //   [rx,ry] = reflectionVector(rx,ry,theta);
+        // }
         new_x = xi;
         new_y = yi;
       }
       if(new_y < 0){
-        const yi = 0;
-        const xi = (1/m)*(yi-y0) + x0;
+        let yi = 0;
+        let xi = (1/m)*(yi-y0) + x0;
+        let theta = (Math.PI/2)-2*Math.atan((new_y - new_vertices[i][1])/(new_x - new_vertices[i][0]));
+        let [rx,ry] = reflectionVector(new_x-xi,new_y-yi,theta);
+        console.log(rx,ry);
+        // while(rx <0 || rx > W || ry < 0 || ry >L){
+        //   theta = Math.atan((ry-yi)/(rx-xi));
+        //   xi = rx;
+        //   yi = ry;
+        //   [rx,ry] = reflectionVector(rx,ry,theta);
+        // }
         new_x = xi;
         new_y = yi;
       }
-      if(new_x > graph_distancex - 6){
-        const xi = graph_distancex -6;
-        const yi = m * (xi-x0)+y0;
+      if(new_x > W){
+        let xi = W;
+        let yi = m * (xi-x0)+y0;
+        let theta = (Math.PI/2)-2*Math.atan((new_y - new_vertices[i][1])/(new_x - new_vertices[i][0]));
+        let [rx,ry] = reflectionVector(new_x-xi,new_y-yi,theta);
+        console.log(rx,ry);
+        // while(rx <0 || rx > W || ry < 0 || ry >L){
+        //   theta = Math.atan((ry-yi)/(rx-xi));
+        //   xi = rx;
+        //   yi = ry;
+        //   [rx,ry] = reflectionVector(rx,ry,theta);
+        // }
         new_x = xi;
         new_y = yi;
       }
-      if(new_y > graph_distancey -6){
-        const yi = graph_distancey -6;
-        const xi = (1/m)*(yi-y0) + x0;
+      if(new_y > L){
+        let yi = L;
+        let xi = (1/m)*(yi-y0) + x0;
+        let theta = (Math.PI/2)-2*Math.atan((new_y - new_vertices[i][1])/(new_x - new_vertices[i][0]));
+        let [rx,ry] = reflectionVector(new_x-xi,new_y-yi,theta);
+        console.log(rx,ry);
+        // while(rx <0 || rx > W || ry < 0 || ry >L){
+        //   theta = Math.atan((ry-yi)/(rx-xi));
+        //   xi = rx;
+        //   yi = ry;
+        //   [rx,ry] = reflectionVector(rx,ry,theta);
+        // }
         new_x = xi;
         new_y = yi;
       }
@@ -149,4 +185,9 @@ function unitVector(x,y){
 
 function cool(t){
   return 0.90*t
+}
+
+function reflectionVector(x,y,theta){
+  const reflection_matrix = [[Math.cos(theta), -Math.sin(theta)], [Math.sin(theta), -Math.cos(theta)]];
+  return [reflection_matrix[0][0]*x + reflection_matrix[0][1]*x, reflection_matrix[1][0]*y + reflection_matrix[1][1]*y]
 }
