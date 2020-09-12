@@ -5,10 +5,12 @@ var ly = 0;
 /**
 * Basic spring embedding algorithm
 */
-export function springEmbedding(vertices,edges,graph_distancex, graph_distancey, iterations, threshold, constant, cspring, crep){
+export function springEmbedding(vertices,edges,graph_distancex, graph_distancey, iterations, threshold, constant, cspring, crep, C){
   // relevant constants for spring embedding
-  lx = graph_distancex;
-  ly = graph_distancey;
+  const W = graph_distancex -6;
+  const L = graph_distancey -6;
+  lx = W/C;
+  ly = L/C;
   const K = iterations === undefined ? 300: iterations;
   const epsilon = threshold === undefined? 0.1: threshold;
   const delta = constant === undefined? 1.5: constant;

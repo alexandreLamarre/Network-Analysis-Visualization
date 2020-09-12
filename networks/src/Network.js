@@ -1,5 +1,6 @@
 import React from "react";
 import HelpWindow from "./HelpWindow";
+import AlgorithmAttributes from "./AlgorithmAttributes";
 import {springEmbedding} from "./NetworkAlgorithms/springEmbedding";
 import {fruchtermanReingold} from "./NetworkAlgorithms/FruchtermanReingold";
 
@@ -20,13 +21,9 @@ class NetworkVisualizer extends React.Component{
       edges: [],
       numE: 150,
       numV: 50,
-      delta: 2,
       animationSpeed: 50,
       running: false,
       sorted: false,
-      cspring: 20,
-      crep: 20,
-      eps: 0.1,
       iterations: 100,
       maxtimeouts: 0,
       connected : "False",
@@ -36,7 +33,8 @@ class NetworkVisualizer extends React.Component{
       randomType: "random",
     };
 
-    this.help = React.createRef()
+    this.help = React.createRef();
+    this.attribute = React.createRef();
   }
 
   componentDidMount(){
@@ -71,7 +69,6 @@ class NetworkVisualizer extends React.Component{
   }
   componentWillUnmount(){
       var id = this.state.maxtimeouts;
-      // console.log("unmounting");
       while(id){
         clearInterval(id);
         id --;
@@ -79,12 +76,9 @@ class NetworkVisualizer extends React.Component{
   }
 
   generateForceDirectedLayout(){
-    const values = springEmbedding(this.state.vertices, this.state.edges,this.state.width, this.state.height, this.state.iterations, this.state.eps, this.state.delta, this.state.cspring, this.state.crep);
+    const values = springEmbedding(this.state.vertices, this.state.edges,this.state.width, this.state.height, this.state.iterations, this.attribute.current.state.eps, this.attribute.current.state.delta, this.attribute.current.state.cspring, this.attribute.current.state.crep, this.attribute.current.state.C);
     const new_vertices = values[0];
     const animations = values[1];
-    // console.log(animations);
-    // console.log(animations);
-    // // animateNetwork(animations, this.canvas.current,this.state.vertices, this.state.edges, this.state.delta, this.state.width,this.state.height);
     this.animateNetwork(animations, new_vertices);
   }
 
@@ -141,22 +135,6 @@ class NetworkVisualizer extends React.Component{
     this.setState({animationSpeed: value});
   }
 
-  setCREP(v){
-    this.setState({crep:v})
-  }
-
-  setCSPRING(v){
-    this.setState({cspring:v})
-  }
-
-  setDelta(v){
-    this.setState({delta:v})
-  }
-
-  setEpsilon(v){
-    this.setState({eps:v})
-  }
-
   setConnected(v){
     const value = parseInt(v);
     const that = this;
@@ -167,6 +145,7 @@ class NetworkVisualizer extends React.Component{
     this.setState({disconnected: value})
   }
   setAlgoType(v){
+    this.attribute.current.setLayout(v)
     this.setState({algoType: v});
   }
   setRandomizedType(v){
@@ -252,7 +231,6 @@ class NetworkVisualizer extends React.Component{
               type = "range"
               min = "0"
               max = "130"
-              defaultValue ="100"
               className = "slider"
               name = "speed" disabled = {this.state.running}
               onInput = {(event)=> this.setAnimationSpeed(event.target.value)}
@@ -264,7 +242,7 @@ class NetworkVisualizer extends React.Component{
               type = "range"
               min = "20"
               max = "200"
-              defaultValue = "50"
+              value = {this.state.vertices.length}
               step = "1"
               className = "slider"
               name = "weight"
@@ -277,7 +255,7 @@ class NetworkVisualizer extends React.Component{
               type = "range"
               min =  {this.state.connected === "True"? this.state.vertices.length-1: 20}
               max = {Math.min(Math.floor((this.state.vertices.length*this.state.vertices.length - this.state.vertices.length)/2), MAX_EDGES)}
-              defaultValue = "150"
+              value = {this.state.edges.length}
               step = "1"
               className = "slider"
               name = "weight"
@@ -290,7 +268,7 @@ class NetworkVisualizer extends React.Component{
               type = "range"
               min = "0"
               max = "1"
-              defaultValue = "0"
+              value = {this.state.connected === "True"? "1":"0"}
               step = "1"
               className = "slider"
               onInput = {(event) => this.setConnected(event.target.value)}
@@ -303,7 +281,7 @@ class NetworkVisualizer extends React.Component{
               min = "1"
               max = "3"
               step = "1"
-              defaultValue = "1"
+              value = {this.state.disconnected}
               className = "slider"
               onInput = {(event) => this.setDisconnectedSubgraphs(event.target.value)}
               disabled = {true}>
@@ -317,55 +295,8 @@ class NetworkVisualizer extends React.Component{
 
 
             <p style = {{color: "white"}}>Algorithm Specific Network Attributes</p>
-            <div className = "sliders2">
-              <label> Force of Attraction: {this.state.cspring}</label>
-              <input className = "slider2"
-              type = "range"
-              min = "0.1"
-              max = "30"
-              step = "0.1"
-              defaultValue ="20"
-              name = "speed" disabled = {this.state.running}
-              onInput = {(event)=> this.setCSPRING(event.target.value)}
-              disabled = {this.state.running}>
-              </input>
-              <label className = "label2"> Force of Repulsion : {this.state.crep}</label>
-              <input className = "slider2"
-              type = "range"
-              min = "0.1"
-              max = "30"
-              step = "0.1"
-              defaultValue ="20"
-              name = "speed" disabled = {this.state.running}
-              onInput = {(event)=> this.setCREP(event.target.value)}
-              disabled = {this.state.running}>
-              </input>
-              </div>
-              <div className = "sliders2">
-              <label> Convergence Bound : {this.state.eps}</label>
-              <input className = "slider2"
-              type = "range"
-              min = "0.001"
-              max = "3"
-              defaultValue ="0.1"
-              step = "0.001"
-              name = "speed" disabled = {this.state.running}
-              onInput = {(event)=> this.setEpsilon(event.target.value)}
-              disabled = {this.state.running}>
-              </input>
-              <label className = "label2"> Rate of Convergence: {this.state.delta}</label>
-              <input className = "slider2"
-              type = "range"
-              min = "0.1"
-              max = "5"
-              step = "0.1"
-              defaultValue ="1.5"
-              name = "speed" disabled = {this.state.running}
-              onInput = {(event)=> this.setDelta(event.target.value)}
-              disabled = {this.state.running}>
-              </input>
+            <AlgorithmAttributes ref = {this.attribute}></AlgorithmAttributes>
 
-            </div>
 
            </div>
   }
