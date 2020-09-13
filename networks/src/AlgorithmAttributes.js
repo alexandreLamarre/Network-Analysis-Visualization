@@ -7,17 +7,19 @@ class AlgorithmAttributes extends React.Component{
     super(props);
     this.state = {
       layout : "spring",
-      delta: 2,
+      delta: 0.2,
       eps : 0.1,
-      crep: 20,
-      cspring: 20,
+      crep: 1,
+      cspring: 2,
       C: 2,
       maxX: 0,
       maxY: 0,
       cTemp: 1,
-      tempHeuristic: "Linear",
+      tempHeuristic: "Logarithmic",
       tempHeuristicValue: 1,
       cPercentage: "0",
+      collision: 1,
+      distanceType: 1,
     }
   }
 
@@ -45,9 +47,8 @@ class AlgorithmAttributes extends React.Component{
   }
 
   setC(v){
-    const percentage = Math.min(Math.trunc(((parseInt(v)-2)/(this.state.maxX/21)) *100), 100)
-    this.setState({cPercentage: percentage});
-    this.setState({C:v});
+    const value = parseInt(v)
+    this.setState({cPercentage: value});
   }
 
   setCTEMP(v){
@@ -57,10 +58,20 @@ class AlgorithmAttributes extends React.Component{
   setTempHeuristic(v){
     const value = parseInt(v);
     this.setState({tempHeuristicValue: value});
-    if(value===1) this.setState({tempHeuristic: "Linear"});
-    if(value===2) this.setState({tempHeuristic: "Logarithmic"});
+    if(value===1) this.setState({tempHeuristic: "Logarithmic"});
+    if(value===2) this.setState({tempHeuristic: "Linear"});
     if(value===3) this.setState({tempHeuristic: "Directional"});
     if(value===4) this.setState({tempHeuristic: "None"})
+  }
+
+  setCollision(v){
+    const value = parseInt(v);
+    this.setState({collision: value});
+  }
+
+  setDistanceType(v){
+    const value = parseInt(v);
+    this.setState({distanceType : value});
   }
   render(){
     if(this.state.layout === "spring"){
@@ -69,7 +80,7 @@ class AlgorithmAttributes extends React.Component{
                 <input className = "slider"
                 type = "range"
                 min = "0.1"
-                max = "30"
+                max = "2"
                 step = "0.1"
                 value = {this.state.cspring}
                 name = "speed" disabled = {this.state.running}
@@ -83,7 +94,7 @@ class AlgorithmAttributes extends React.Component{
                 <input className = "slider"
                 type = "range"
                 min = "0.1"
-                max = "30"
+                max = "2"
                 step = "0.1"
                 value ={this.state.crep}
                 name = "speed" disabled = {this.state.running}
@@ -111,7 +122,7 @@ class AlgorithmAttributes extends React.Component{
                 <input className = "slider"
                 type = "range"
                 min = "0.1"
-                max = "5"
+                max = "2"
                 step = "0.1"
                 value = {this.state.delta}
                 name = "speed" disabled = {this.state.running}
@@ -124,9 +135,9 @@ class AlgorithmAttributes extends React.Component{
                 <div className = "sliders">
                 <input className = "slider"
                 type = "range"
-                min = "2"
-                max = {this.state.maxX/20}
-                value = {this.state.C}
+                min = "0"
+                max = "100"
+                value = {this.state.cPercentage}
                 step = "0.1"
                 defaultValue ="1.5"
                 name = "speed" disabled = {this.state.running}
@@ -134,6 +145,19 @@ class AlgorithmAttributes extends React.Component{
                 disabled = {this.state.running}>
                 </input>
                 <label> Force to Area scaling: {this.state.cPercentage}%</label>
+                <button className = "helpb"> ?</button>
+                </div>
+                <div className = "sliders">
+                <input className = "slider"
+                type = "range"
+                min = "0"
+                max = "1"
+                value = {this.state.distanceType}
+                step = "1"
+                onInput = {(event)=> this.setDistanceType(event.target.value)}
+                disabled = {this.state.running}>
+                </input>
+                <label> Distance: {this.state.distanceType === 1? "Continuous": "Graph Theoretic"}</label>
                 <button className = "helpb"> ?</button>
                 </div>
               </div>
@@ -166,6 +190,20 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {this.state.running}>
                   </input>
                   <label> Temperature Cooling: {this.state.tempHeuristic}</label>
+                  <button className = "helpb"> ?</button>
+                </div>
+                <div className = "sliders">
+                  <input className = "slider"
+                  type = "range"
+                  min = "0"
+                  max = "1"
+                  value = {this.state.collision}
+                  step = "1"
+                  name = "speed" disabled = {this.state.running}
+                  onChange = {(event) => this.setCollision(event.target.value)}
+                  disabled = {this.state.running}>
+                  </input>
+                  <label> Elastic Collision: {this.state.collision === 1? "On": "Off"}</label>
                   <button className = "helpb"> ?</button>
                 </div>
 

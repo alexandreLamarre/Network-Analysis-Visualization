@@ -20,8 +20,8 @@ class NetworkVisualizer extends React.Component{
       height: 0,
       vertices: [],
       edges: [],
-      numE: 150,
-      numV: 50,
+      numE: 300,
+      numV: 120,
       animationSpeed: 50,
       running: false,
       sorted: false,
@@ -77,14 +77,14 @@ class NetworkVisualizer extends React.Component{
   }
 
   generateForceDirectedLayout(){
-    const values = springEmbedding(this.state.vertices, this.state.edges,this.state.width, this.state.height, this.state.iterations, this.attribute.current.state.eps, this.attribute.current.state.delta, this.attribute.current.state.cspring, this.attribute.current.state.crep, this.attribute.current.state.C);
+    const values = springEmbedding(this.state.vertices, this.state.edges,this.state.width, this.state.height, this.state.iterations, this.attribute.current.state.eps, this.attribute.current.state.delta, this.attribute.current.state.cspring, this.attribute.current.state.crep, this.attribute.current.state.cPercentage, this.attribute.current.state.distanceType);
     const new_vertices = values[0];
     const animations = values[1];
     this.animateNetwork(animations, new_vertices);
   }
 
   generateReingold(){
-    const values = fruchtermanReingold(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations, this.attribute.current.state.tempHeuristic);
+    const values = fruchtermanReingold(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations, this.attribute.current.state.tempHeuristic, this.attribute.current.state.cTemp);
     const new_vertices = values[0];
     const animations = values[1];
     console.log(animations);
@@ -197,6 +197,7 @@ class NetworkVisualizer extends React.Component{
               type = "range"
               min = "0"
               max = "130"
+              value = {Math.abs(150-this.state.animationSpeed)}
               className = "slider"
               name = "speed" disabled = {this.state.running}
               onInput = {(event)=> this.setAnimationSpeed(event.target.value)}
@@ -206,7 +207,7 @@ class NetworkVisualizer extends React.Component{
               <button className = "helpb" onClick = {() => this.setHelp("animation")}> ?</button>
               <input
               type = "range"
-              min = "20"
+              min = "4"
               max = "200"
               value = {this.state.vertices.length}
               step = "1"
@@ -219,7 +220,7 @@ class NetworkVisualizer extends React.Component{
               <button className = "helpb" onClick = {() => this.setHelp("vertices")}> ?</button>
               <input
               type = "range"
-              min =  {this.state.connected === "True"? this.state.vertices.length-1: 20}
+              min =  {this.state.connected === "True"? this.state.vertices.length-1: Math.min(20, this.state.vertices.length-1)}
               max = {Math.min(Math.floor((this.state.vertices.length*this.state.vertices.length - this.state.vertices.length)/2), MAX_EDGES)}
               value = {this.state.edges.length}
               step = "1"

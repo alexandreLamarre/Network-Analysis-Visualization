@@ -5,18 +5,18 @@ var ly = 0;
 /**
 * Basic spring embedding algorithm
 */
-export function springEmbedding(vertices,edges,graph_distancex, graph_distancey, iterations, threshold, constant, cspring, crep, C){
+export function springEmbedding(vertices,edges,graph_distancex, graph_distancey, iterations, threshold, constant, cspring, crep, forceAreaPercentage, distanceType){
   // relevant constants for spring embedding
   const W = graph_distancex -6;
   const L = graph_distancey -6;
-  lx = W/C;
-  ly = L/C;
+  lx = 1 + ((Math.sqrt(W)/2-1)*forceAreaPercentage)/100;
+  ly = 1 + ((Math.sqrt(L)/2-1)*forceAreaPercentage)/100;
   const K = iterations === undefined ? 300: iterations;
   const epsilon = threshold === undefined? 0.1: threshold;
   const delta = constant === undefined? 1.5: constant;
   CREP = cspring === undefined? 20: cspring;
   CSPRING = crep === undefined? 20: crep;
-
+  const distType = distanceType;
   //make copies of input
   let new_vertices = [];
   for(let i= 0; i < vertices.length; i++){
@@ -48,7 +48,7 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
       for(let j = 0; j < new_edges.length; j++){
         //vertices should attract
         if(i === new_edges[j][0] && i !== new_edges[j][1]){
-          const calcs = fattract(new_vertices[new_edges[j][0]], new_vertices[new_edges[j][1]]);
+          const calcs = fattract(new_vertices[new_edges[j][0]], new_vertices[new_edges[j][1]], distType);
           // console.log(calcs);
           f[0] += calcs[0]; // should be two dimensional
           f[1] += calcs[1];
@@ -56,7 +56,7 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
         }
         //vertices should attract
         if(i === new_edges[j][1] && i !== new_edges[j][0]){
-          const calcs = fattract(new_vertices[new_edges[j][0]], new_vertices[new_edges[j][1]])
+          const calcs = fattract(new_vertices[new_edges[j][0]], new_vertices[new_edges[j][1]], distType)
           f[0] += calcs[0]; // should be two dimensional
           f[1] += calcs[1];
           vert_connected.push(new_edges[j][0]);
@@ -83,36 +83,29 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
       let new_x = new_vertices[i][0] + delta*force_list[i][0];
       let new_y = new_vertices[i][1] + delta*force_list[i][1];
       const old_vertices = new_vertices[i].slice();
-      const x0 = old_vertices[0];
-      const y0 = old_vertices[1];
-      const x1 = new_x;
-      const y1 = new_y;
-      const m = (new_y - y0)/(new_x-x0)
-      if(new_x < 0){
-        const xi = 0;
-        const yi = m * (xi-x0)+y0;
-        new_x = xi;
-        new_y = yi;
+      let x0 = old_vertices[0];
+      let y0 = old_vertices[1];
+      while(new_x < 0 || new_y < 0 || new_x > W || new_y > L){
+        console.log(new_x,new_y);
+        const x1 = new_x;
+        const y1 = new_y;
+        if(new_x < 0){
+          new_x = -(x1);
+          new_y = (y1)
+        }
+        else if(new_y < 0){
+          new_x = (x1);
+          new_y = -(y1);
+        }
+        else if(new_x > W){
+          new_x = W -(x1-W);
+          new_y = (y1);
+        }
+        else if(new_y > L){
+          new_x = (x1);
+          new_y = L - (y1-L);
+        }
       }
-      if(new_y < 0){
-        const yi = 0;
-        const xi = (1/m)*(yi-y0) + x0;
-        new_x = xi;
-        new_y = yi;
-      }
-      if(new_x > graph_distancex - 6){
-        const xi = graph_distancex -6;
-        const yi = m * (xi-x0)+y0;
-        new_x = xi;
-        new_y = yi;
-      }
-      if(new_y > graph_distancey -6){
-        const yi = graph_distancey -6;
-        const xi = (1/m)*(yi-y0) + x0;
-        new_x = xi;
-        new_y = yi;
-      }
-
 
       new_vertices[i][0] = new_x//(new_x > graph_distancex-3)? (graph_distancex-3): ((new_x-3) < 0)? 0: (new_x-3); // should be two dimensional
       new_vertices[i][1] = new_y//(new_y > graph_distancey-3)? (graph_distancey-3): ((new_y -3)< 0)? 0: (new_y-3);
@@ -121,9 +114,9 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
 
     }
     animations.push(iteration_animation);
-    if(Math.max(...fvt) < epsilon){
-      break;
-    }
+    // if(Math.max(...fvt) < epsilon){
+    //   break;
+    // }
     t += 1
   }
   // animations.push(new_vertices.slice());
@@ -140,23 +133,23 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
 }
 
 function frepulse(x,y){
-  const dist = distance(x,y);
+  const dist = distance(y,x);
   if(dist === 0){
      console.log("error");
      console.log(x);
      console.log(y);
    }
   const unitV = unitVector(x,y);
-  return [(unitV[0]*CREP)/dist, (unitV[1]*CREP)/dist];
+  return [(CREP*unitV[0])/Math.sqrt(dist) , (CREP*unitV[1])/Math.sqrt(dist)];
 
 }
 
-function fattract(x,y){
-  const dist = distance(x,y);
+function fattract(x,y, distanceType){
+  const dist = distanceType === 1? distance(x,y): 1;
   const unitV = unitVector(x,y);
 
-  return [CSPRING* (Math.log(distance(x,y))/(lx))* unitV[0],
-          CSPRING* (Math.log(distance(x,y))/(ly))*unitV[1]];
+  return [CSPRING* Math.log(dist/(lx)) * unitV[0],
+          CSPRING* Math.log(dist/(ly)) * unitV[1]];
 }
 
 function distance(x,y){
