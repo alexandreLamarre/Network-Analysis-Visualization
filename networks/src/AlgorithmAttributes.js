@@ -7,19 +7,19 @@ class AlgorithmAttributes extends React.Component{
     super(props);
     this.state = {
       layout : "spring",
-      delta: 0.2,
-      eps : 0.1,
-      crep: 1,
-      cspring: 2,
-      C: 2,
+      delta: 0.2, //spring
+      eps : 0.1, //spring
+      crep: 1, //spring
+      cspring: 2, //spring
+      C: 2, // spring
       maxX: 0,
       maxY: 0,
-      cTemp: 1,
-      tempHeuristic: "Logarithmic",
+      cTemp: 1, //fruchtermanReingold
+      tempHeuristic: "Logarithmic", //fruchtermanReingold
       tempHeuristicValue: 1,
-      cPercentage: "0",
-      collision: 1,
-      distanceType: 1,
+      cPercentage: "0", // spring
+      collision: 1, //fruchterman
+      distanceType: 1, // spring
     }
   }
 

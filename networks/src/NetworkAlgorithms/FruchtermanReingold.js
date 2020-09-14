@@ -5,13 +5,13 @@ var K = 0.01; //OPTIMAL DISTANCE
 var tol = 0.01; //TOLERANCE
 var ITERATIONS = 300;
 
-export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distancey, iterations, coolingtype){
+export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distancey, iterations, coolingtype, tempScale){
   const W = graph_distancex -6;
   const L = graph_distancey -6;
   const kIter = iterations === undefined ? 300: iterations;
   ITERATIONS = kIter;
   const tempHeuristic = coolingtype === undefined? "Linear": coolingtype;
-  C = 0.1;
+  C = 0.00000001;
   K = C* Math.sqrt((W)*(L)/(vertices.length));
   // tol = tolerance === undefined? 0.01: tolerance;
   console.log("K", K);
@@ -36,7 +36,7 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
   // console.log("new_edges", new_edges);
   let t = 1;
   let animations = [];
-  let temperature = (1/10)*W;
+  let temperature = (1/10)*W * tempScale;
   const initial_temperature = temperature;
 
   while(t<kIter){
@@ -85,68 +85,26 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
       const old_vertices = new_vertices[i].slice();
       const x0 = old_vertices[0];
       const y0 = old_vertices[1];
-      const x1 = new_x;
-      const y1 = new_y;
-      const m = (new_y - y0)/(new_x-x0)
-      if(new_x < 0){
-        let xi = 0;
-        let yi = m * (xi-x0)+y0;
-        let theta = (Math.PI/2)- 2*Math.atan((new_y - new_vertices[i][1])/(new_x - new_vertices[i][0]));
-        let [rx,ry] = reflectionVector(new_x-xi,new_y-yi,theta);
-        // console.log(rx,ry);
-        // while(rx <0 || rx > W || ry < 0 || ry >L){
-        //   theta = Math.atan((ry-yi)/(rx-xi));
-        //   xi = rx;
-        //   yi = ry;
-        //   [rx,ry] = reflectionVector(rx,ry,theta);
-        // }
-        new_x = xi;
-        new_y = yi;
-      }
-      if(new_y < 0){
-        let yi = 0;
-        let xi = (1/m)*(yi-y0) + x0;
-        let theta = (Math.PI/2)-2*Math.atan((new_y - new_vertices[i][1])/(new_x - new_vertices[i][0]));
-        let [rx,ry] = reflectionVector(new_x-xi,new_y-yi,theta);
-        // console.log(rx,ry);
-        // while(rx <0 || rx > W || ry < 0 || ry >L){
-        //   theta = Math.atan((ry-yi)/(rx-xi));
-        //   xi = rx;
-        //   yi = ry;
-        //   [rx,ry] = reflectionVector(rx,ry,theta);
-        // }
-        new_x = xi;
-        new_y = yi;
-      }
-      if(new_x > W){
-        let xi = W;
-        let yi = m * (xi-x0)+y0;
-        let theta = (Math.PI/2)-2*Math.atan((new_y - new_vertices[i][1])/(new_x - new_vertices[i][0]));
-        let [rx,ry] = reflectionVector(new_x-xi,new_y-yi,theta);
-        // console.log(rx,ry);
-        // while(rx <0 || rx > W || ry < 0 || ry >L){
-        //   theta = Math.atan((ry-yi)/(rx-xi));
-        //   xi = rx;
-        //   yi = ry;
-        //   [rx,ry] = reflectionVector(rx,ry,theta);
-        // }
-        new_x = xi;
-        new_y = yi;
-      }
-      if(new_y > L){
-        let yi = L;
-        let xi = (1/m)*(yi-y0) + x0;
-        let theta = (Math.PI/2)-2*Math.atan((new_y - new_vertices[i][1])/(new_x - new_vertices[i][0]));
-        let [rx,ry] = reflectionVector(new_x-xi,new_y-yi,theta);
-        // console.log(rx,ry);
-        // while(rx <0 || rx > W || ry < 0 || ry >L){
-        //   theta = Math.atan((ry-yi)/(rx-xi));
-        //   xi = rx;
-        //   yi = ry;
-        //   [rx,ry] = reflectionVector(rx,ry,theta);
-        // }
-        new_x = xi;
-        new_y = yi;
+      while(new_x < 0 || new_y < 0 || new_x > W || new_y > L){
+        console.log(new_x,new_y);
+        const x1 = new_x;
+        const y1 = new_y;
+        if(new_x < 0){
+          new_x = -(x1);
+          new_y = (y1)
+        }
+        else if(new_y < 0){
+          new_x = (x1);
+          new_y = -(y1);
+        }
+        else if(new_x > W){
+          new_x = W -(x1-W);
+          new_y = (y1);
+        }
+        else if(new_y > L){
+          new_x = (x1);
+          new_y = L - (y1-L);
+        }
       }
 
       new_vertices[i][0] = new_x;
