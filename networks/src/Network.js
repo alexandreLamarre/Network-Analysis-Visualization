@@ -41,6 +41,7 @@ class NetworkVisualizer extends React.Component{
   componentDidMount(){
     const w = window.innerWidth * 0.97;
     const h = window.innerHeight * 0.55;
+    this.attribute.current.setState({parentHelp:this.help});
 
     const [vertices, edges, maxedges] = createRandomNetwork(w, h, this.state.numV, this.state.numE);
     this.setState({width: w, height: h, vertices: vertices, edges: edges, maxEdges: maxedges});
@@ -158,9 +159,11 @@ class NetworkVisualizer extends React.Component{
     if(v === "algoType"){
       value = this.state.algoType;
     }
-    const [title, info, open] = getHelpInfo(value);
+    this.attribute.current.help.current.setOpen(false)
+    const [title, info, details, open] = getHelpInfo(value);
     this.help.current.setTitle(title);
     this.help.current.setInfo(info);
+    this.help.current.setDetails(details)
     this.help.current.setOpen(open);
   }
 

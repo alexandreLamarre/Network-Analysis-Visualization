@@ -1,4 +1,6 @@
 import React, {useState} from "react";
+import HelpWindow from "./HelpWindow";
+import getHelpInfo from "./helpInfoFunctions";
 
 import "./AlgorithmAttributes.css";
 
@@ -7,6 +9,7 @@ class AlgorithmAttributes extends React.Component{
     super(props);
     this.state = {
       layout : "spring",
+      parentHelp: null,
       delta: 0.2, //spring
       eps : 0.1, //spring
       crep: 1, //spring
@@ -21,6 +24,7 @@ class AlgorithmAttributes extends React.Component{
       collision: 1, //fruchterman
       distanceType: 1, // spring
     }
+    this.help = React.createRef()
   }
 
   componentDidMount(){
@@ -73,9 +77,19 @@ class AlgorithmAttributes extends React.Component{
     const value = parseInt(v);
     this.setState({distanceType : value});
   }
+
+  setHelp(v){
+    this.state.parentHelp.current.setOpen(false)
+    const [title,info,details,open] = getHelpInfo(v);
+    this.help.current.setTitle(title);
+    this.help.current.setInfo(info);
+    this.help.current.setDetails(details);
+    this.help.current.setOpen(open);
+  }
   render(){
     if(this.state.layout === "spring"){
       return <div className = "Attributes">
+      <HelpWindow ref = {this.help}></HelpWindow>
       <div className = "sliders">
                 <input className = "slider"
                 type = "range"
@@ -88,7 +102,7 @@ class AlgorithmAttributes extends React.Component{
                 disabled = {this.state.running}>
                 </input>
                 <label> Force of Attraction: {this.state.cspring}</label>
-                <button className = "helpb"> ?</button>
+                <button className = "helpb" onClick = {() => this.setHelp("cspring")}> ?</button>
                 </div>
                 <div className = "sliders">
                 <input className = "slider"
@@ -102,7 +116,7 @@ class AlgorithmAttributes extends React.Component{
                 disabled = {this.state.running}>
                 </input>
                 <label> Force of Repulsion : {this.state.crep}</label>
-                <button className = "helpb"> ?</button>
+                <button className = "helpb" onClick = {() => this.setHelp("crep")}> ?</button>
               </div>
                 <div className = "sliders">
                 <input className = "slider"
@@ -116,7 +130,7 @@ class AlgorithmAttributes extends React.Component{
                 disabled = {this.state.running}>
                 </input>
                 <label> Convergence Bound : {this.state.eps}</label>
-                <button className = "helpb"> ?</button>
+                <button className = "helpb" onClick = {() => this.setHelp("eps")}> ?</button>
                 </div>
                 <div className = "sliders">
                 <input className = "slider"
@@ -130,7 +144,7 @@ class AlgorithmAttributes extends React.Component{
                 disabled = {this.state.running}>
                 </input>
                 <label> Rate of Convergence: {this.state.delta}</label>
-                <button className = "helpb"> ?</button>
+                <button className = "helpb" onClick = {() => this.setHelp("delta")}> ?</button>
                 </div>
                 <div className = "sliders">
                 <input className = "slider"
@@ -145,7 +159,7 @@ class AlgorithmAttributes extends React.Component{
                 disabled = {this.state.running}>
                 </input>
                 <label> Force to Area scaling: {this.state.cPercentage}%</label>
-                <button className = "helpb"> ?</button>
+                <button className = "helpb" onClick = {() => this.setHelp("forceArea")}> ?</button>
                 </div>
                 <div className = "sliders">
                 <input className = "slider"
@@ -158,7 +172,7 @@ class AlgorithmAttributes extends React.Component{
                 disabled = {this.state.running}>
                 </input>
                 <label> Distance: {this.state.distanceType === 1? "Continuous": "Graph Theoretic"}</label>
-                <button className = "helpb"> ?</button>
+                <button className = "helpb" onClick = {() => this.setHelp("distanceType")}> ?</button>
                 </div>
               </div>
     }

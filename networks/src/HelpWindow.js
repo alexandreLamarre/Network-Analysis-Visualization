@@ -10,6 +10,7 @@ class HelpWindow extends React.Component{
     this.state = {
       title: "HELP",
       info: "help window",
+      details: "details",
       open: false,
     }
   }
@@ -23,17 +24,24 @@ class HelpWindow extends React.Component{
   }
 
   setOpen(v){
-    this.setState({open: v})
+    this.setState({open: v});
+  }
+
+  setDetails(v){
+    this.setState({details: v});
   }
 
   render(){
     // const = [modalIsOpen, setModalIsOpen] = useState()
     return <div className = "helpwindow">
       <Modal isOpen = {this.state.open} onRequestClose = {() => this.setOpen(false)}
-      overlayClassName = "Overlay">
+      overlayClassName = "Overlay" shouldCloseOnOverlayClick = {true}>
         <button className = "closeb" onClick = {() => this.setOpen(false)}> X </button>
         <h2> {this.state.title}</h2>
+        <h3> Overview </h3>
         <p> {this.state.info}</p>
+        <h3> Details </h3>
+        <p> {this.state.details}</p>
       </Modal>
     </div>
   }
