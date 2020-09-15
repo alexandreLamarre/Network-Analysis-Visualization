@@ -21,7 +21,7 @@ class AlgorithmAttributes extends React.Component{
       tempHeuristic: "Logarithmic", //fruchtermanReingold
       tempHeuristicValue: 1,
       cPercentage: "0", // spring
-      collision: 1, //fruchterman
+      collision: 2, //fruchterman
       distanceType: 1, // spring
     }
     this.help = React.createRef()

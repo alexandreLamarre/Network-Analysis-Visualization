@@ -207,18 +207,18 @@ class NetworkVisualizer extends React.Component{
               <option value = "spring"> Basic Spring Embedding </option>
               <option value = "fruchtermanReingold"> FruchtermanReingold </option>
             </select>
-            <button className = "b" onClick = {() => this.runAlgorithm()} disabled = {this.state.running}> Run Algorithm </button>
             <button className = "helpbresized" onClick = {() => this.setHelp("algoType")}> ? </button>
+            <button className = "b" onClick = {() => this.runAlgorithm()} disabled = {this.state.running}> Run Algorithm </button>
 
             <select className = "selectalgo">
               <option value = "random" onChange = {(event) => this.setRandomizedType(event.target.value)}> Random </option>
               <option value = "randomcircle" disabled = {true}> Random Circle </option>
               <option value = "randomsymmetry" disabled = {true}> Random Symmetry </option>
             </select>
-            <button className = "b" disabled = {this.state.running} onClick = {() => this.resetNetwork()}> Reset Network</button>
             <button className = "helpbresized" onClick = {() => this.setHelp("randomType")}>?</button>
+            <button className = "b" disabled = {this.state.running} onClick = {() => this.resetNetwork()}> Reset Network</button>
 
-            <select className = "selectalgo" onChange = {(event) => this.setLayoutType(event.target.value)}>
+            <select className = "selectalgo" onChange = {(event) => this.setLayoutType(event.target.value)} disabled = {this.state.running}>
               <option value = "0"> Square </option>
               <option value = "1"> Stretch to Fit </option>
             </select>
@@ -228,7 +228,7 @@ class NetworkVisualizer extends React.Component{
             <HelpWindow ref = {this.help}></HelpWindow>
 
 
-            <p style = {{color: "white"}}> General Network Attributes</p>
+            <p className = "sliderHeader" style = {{color: "black"}}> <b>General Network Attributes</b></p>
             <div className = "sliders">
               <input
               type = "range"
@@ -298,7 +298,7 @@ class NetworkVisualizer extends React.Component{
 
 
 
-            <p style = {{color: "white"}}>Algorithm Specific Network Attributes</p>
+            <p className = "sliderHeader" style = {{color: "black"}}> <b>Algorithm Specific Network Attributes</b></p>
             <AlgorithmAttributes ref = {this.attribute}></AlgorithmAttributes>
 
 

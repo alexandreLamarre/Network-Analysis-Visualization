@@ -1,4 +1,5 @@
 .networkCanvas{
+  margin-top: 1%;
   background-color: #FFFFFF;
   padding-left: 0;
   padding-right: 0;
@@ -102,10 +103,15 @@
 }
 
 .selectalgorow{
+  margin-top: 1%;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
   align-content: center;
   background-color: #787878;
+}
+
+.sliderHeader{
+  text-align: center;
 }
