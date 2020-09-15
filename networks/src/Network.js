@@ -8,7 +8,7 @@ import getHelpInfo from "./helpInfoFunctions";
 import "./Network.css";
 
 var MAX_EDGES = 600;
-var MAX_TIMEOUT = 0;
+// var MAX_TIMEOUT = 0;
 
 
 class NetworkVisualizer extends React.Component{
@@ -89,7 +89,7 @@ class NetworkVisualizer extends React.Component{
     const values = fruchtermanReingold(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations, this.attribute.current.state.tempHeuristic, this.attribute.current.state.cTemp, this.attribute.current.state.collision);
     const new_vertices = values[0];
     const animations = values[1];
-    console.log(animations);
+    // console.log(animations);
 
     this.animateNetwork(animations, new_vertices);
   }
@@ -106,7 +106,7 @@ class NetworkVisualizer extends React.Component{
 
       x = setTimeout(() => {
         this.setState({vertices: animations[k]});
-        console.log("animating")
+        // console.log("animating")
         if(k === animations.length-1){
           this.setState({running:false, sorted:true, vertices:final_vertices});
           // console.log(final_vertices);
@@ -122,14 +122,8 @@ class NetworkVisualizer extends React.Component{
   }
 
   setEdges(e){
-    while(MAX_TIMEOUT){
-      clearTimeout(MAX_TIMEOUT);
-      MAX_TIMEOUT --;
-    }
-    MAX_TIMEOUT = setTimeout(() =>{
-      const that = this;
-      waitSetEdges(that,e);
-    },10);
+    const that = this;
+    waitSetEdges(that,e);
   }
 
 
@@ -236,8 +230,7 @@ class NetworkVisualizer extends React.Component{
               max = "130"
               value = {Math.abs(150-this.state.animationSpeed)}
               className = "slider"
-              name = "speed" disabled = {this.state.running}
-              onInput = {(event)=> this.setAnimationSpeed(event.target.value)}
+              onChange = {(event)=> this.setAnimationSpeed(event.target.value)}
               disabled = {this.state.running}>
               </input>
               <label> AnimationSpeed : {this.state.animationSpeed}ms</label>
@@ -251,7 +244,7 @@ class NetworkVisualizer extends React.Component{
               className = "slider"
               name = "weight"
               disabled = {this.state.running}
-              onInput = {(event) => this.setVertices(event.target.value)}>
+              onChange = {(event) => this.setVertices(event.target.value)}>
               </input>
               <label> Vertices: {this.state.vertices.length}</label>
               <button className = "helpb" onClick = {() => this.setHelp("vertices")}> ?</button>
@@ -264,7 +257,7 @@ class NetworkVisualizer extends React.Component{
               className = "slider"
               name = "weight"
               disabled = {this.state.running}
-              onInput = {(event) => this.setEdges(event.target.value)}>
+              onChange = {(event) => this.setEdges(event.target.value)}>
               </input>
               <label> Edges: {this.state.edges.length}</label>
               <button className = "helpb" onClick = {() => this.setHelp("edges")}> ?</button>
@@ -275,7 +268,7 @@ class NetworkVisualizer extends React.Component{
               value = {this.state.connected === "True"? "1":"0"}
               step = "1"
               className = "slider"
-              onInput = {(event) => this.setConnected(event.target.value)}
+              onChange = {(event) => this.setConnected(event.target.value)}
               disabled = {this.state.running}>
               </input>
               <label> Force Connectedness: {this.state.connected} </label>
@@ -287,7 +280,7 @@ class NetworkVisualizer extends React.Component{
               step = "1"
               value = {this.state.disconnected}
               className = "slider"
-              onInput = {(event) => this.setDisconnectedSubgraphs(event.target.value)}
+              onChange = {(event) => this.setDisconnectedSubgraphs(event.target.value)}
               disabled = {true}>
               </input>
               <label>
@@ -315,7 +308,7 @@ function createRandomNetwork(maxWidth, maxHeight, numV, numE, conn, randomType){
   let maxEdges = Math.floor((maxDegree*numV)/2)
   const maxEdgesValue = maxEdges;
   // console.log("maxedges")
-  console.log("vertices", numV, "maxedges", maxEdgesValue);
+  // console.log("vertices", numV, "maxedges", maxEdgesValue);
   let vertices = [];
   let available_vertices = [];
   let degree_array = [];
@@ -326,7 +319,6 @@ function createRandomNetwork(maxWidth, maxHeight, numV, numE, conn, randomType){
     var point = [0,0]
     if(seed === "random") point = createRandomPos(maxWidth, maxHeight);
     if(seed === "randomcircle") point = createRandomPosCircle(center, radius);
-    console.log(point);
     vertices.push(point);
     available_vertices.push(i);
     degree_array.push(0);
@@ -393,8 +385,8 @@ function createRandomNetwork(maxWidth, maxHeight, numV, numE, conn, randomType){
       maxEdges --;
       }
     }
-  console.log("degree_array", degree_array);
-  console.log("edges", edges);
+  // console.log("degree_array", degree_array);
+  // console.log("edges", edges);
   return [vertices,edges,Math.min(maxEdgesValue, MAX_EDGES)];
 }
 

@@ -37,7 +37,6 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
 
   let t = 1;
   let animations = [];
-  let previous = [];
 
   while(t<K){
     let force_list = [];
@@ -115,7 +114,6 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
       new_vertices[i][0] = new_x//(new_x > graph_distancex-3)? (graph_distancex-3): ((new_x-3) < 0)? 0: (new_x-3); // should be two dimensional
       new_vertices[i][1] = new_y//(new_y > graph_distancey-3)? (graph_distancey-3): ((new_y -3)< 0)? 0: (new_y-3);
       iteration_animation.push(new_vertices[i].slice());
-      const max_dist = distance(force_list[i], [0,0]);
 
     }
     if(maxF < epsilon) break;
@@ -167,8 +165,4 @@ function unitVector(x,y){
   const new_y = y[1] - x[1];
   const dist = distance(x,y);
   return [new_x/dist, new_y/dist];
-}
-
-function calcAngle(x,y){
-  return Math.atan2((y[1] - y[0]),(x[1]-x[0]))
 }

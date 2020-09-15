@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import HelpWindow from "./HelpWindow";
 import getHelpInfo from "./helpInfoFunctions";
 
@@ -97,8 +97,7 @@ class AlgorithmAttributes extends React.Component{
                 max = "2"
                 step = "0.1"
                 value = {this.state.cspring}
-                name = "speed" disabled = {this.state.running}
-                onInput = {(event)=> this.setCSPRING(event.target.value)}
+                onChange = {(event)=> this.setCSPRING(event.target.value)}
                 disabled = {this.state.running}>
                 </input>
                 <label> Force of Attraction: {this.state.cspring}</label>
@@ -111,8 +110,7 @@ class AlgorithmAttributes extends React.Component{
                 max = "2"
                 step = "0.1"
                 value ={this.state.crep}
-                name = "speed" disabled = {this.state.running}
-                onInput = {(event)=> this.setCREP(event.target.value)}
+                onChange = {(event)=> this.setCREP(event.target.value)}
                 disabled = {this.state.running}>
                 </input>
                 <label> Force of Repulsion : {this.state.crep}</label>
@@ -125,8 +123,7 @@ class AlgorithmAttributes extends React.Component{
                 max = "3"
                 value = {this.state.eps}
                 step = "0.001"
-                name = "speed" disabled = {this.state.running}
-                onInput = {(event)=> this.setEpsilon(event.target.value)}
+                onChange = {(event)=> this.setEpsilon(event.target.value)}
                 disabled = {this.state.running}>
                 </input>
                 <label> Convergence Bound : {this.state.eps}</label>
@@ -139,8 +136,7 @@ class AlgorithmAttributes extends React.Component{
                 max = "2"
                 step = "0.1"
                 value = {this.state.delta}
-                name = "speed" disabled = {this.state.running}
-                onInput = {(event)=> this.setDelta(event.target.value)}
+                onChange = {(event)=> this.setDelta(event.target.value)}
                 disabled = {this.state.running}>
                 </input>
                 <label> Rate of Convergence: {this.state.delta}</label>
@@ -153,9 +149,7 @@ class AlgorithmAttributes extends React.Component{
                 max = "100"
                 value = {this.state.cPercentage}
                 step = "0.1"
-                defaultValue ="1.5"
-                name = "speed" disabled = {this.state.running}
-                onInput = {(event)=> this.setC(event.target.value)}
+                onChange = {(event)=> this.setC(event.target.value)}
                 disabled = {this.state.running}>
                 </input>
                 <label> Force to Area scaling: {this.state.cPercentage}%</label>
@@ -168,7 +162,7 @@ class AlgorithmAttributes extends React.Component{
                 max = "1"
                 value = {this.state.distanceType}
                 step = "1"
-                onInput = {(event)=> this.setDistanceType(event.target.value)}
+                onChange = {(event)=> this.setDistanceType(event.target.value)}
                 disabled = {this.state.running}>
                 </input>
                 <label> Distance: {this.state.distanceType === 1? "Continuous": "Graph Theoretic"}</label>
@@ -186,8 +180,7 @@ class AlgorithmAttributes extends React.Component{
                   max = "3"
                   step = "0.1"
                   value = {this.state.cTemp}
-                  name = "speed" disabled = {this.state.running}
-                  onInput = {(event)=> this.setCTEMP(event.target.value)}
+                  onChange = {(event)=> this.setCTEMP(event.target.value)}
                   disabled = {this.state.running}>
                   </input>
                   <label> Initial Temperature Scaling: {this.state.cTemp}</label>
@@ -200,7 +193,6 @@ class AlgorithmAttributes extends React.Component{
                   max = "3"
                   value = {this.state.tempHeuristicValue}
                   step = "1"
-                  name = "speed" disabled = {this.state.running}
                   onChange = {(event)=> this.setTempHeuristic(event.target.value)}
                   disabled = {this.state.running}>
                   </input>
@@ -214,7 +206,6 @@ class AlgorithmAttributes extends React.Component{
                   max = "2"
                   value = {this.state.collision}
                   step = "1"
-                  name = "speed" disabled = {this.state.running}
                   onChange = {(event) => this.setCollision(event.target.value)}
                   disabled = {this.state.running}>
                   </input>

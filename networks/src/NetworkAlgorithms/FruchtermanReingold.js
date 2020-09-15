@@ -1,8 +1,5 @@
-var lx =0;
-var ly = 0;
 var C= 1;
 var K = 0.01; //OPTIMAL DISTANCE
-var tol = 0.01; //TOLERANCE
 var ITERATIONS = 300;
 
 export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distancey, iterations, coolingtype, tempScale, collisionType){
@@ -246,9 +243,4 @@ function cool(t, tempHeuristic, initial_temperature){
     return t
   }
   return t
-}
-
-function reflectionVector(x,y,theta){
-  const reflection_matrix = [[Math.cos(theta), -Math.sin(theta)], [Math.sin(theta), -Math.cos(theta)]];
-  return [reflection_matrix[0][0]*x + reflection_matrix[0][1]*x, reflection_matrix[1][0]*y + reflection_matrix[1][1]*y]
 }
