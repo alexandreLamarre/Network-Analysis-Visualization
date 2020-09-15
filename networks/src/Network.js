@@ -32,6 +32,7 @@ class NetworkVisualizer extends React.Component{
       disconnected: 1,
       algoType: "spring",
       randomType: "random",
+      layoutType: 0,
     };
 
     this.help = React.createRef();
@@ -39,7 +40,7 @@ class NetworkVisualizer extends React.Component{
   }
 
   componentDidMount(){
-    const w = window.innerWidth * 0.97;
+    const w = window.innerHeight * 0.55;
     const h = window.innerHeight * 0.55;
     this.attribute.current.setState({parentHelp:this.help});
 
@@ -167,6 +168,28 @@ class NetworkVisualizer extends React.Component{
     this.help.current.setOpen(open);
   }
 
+  setLayoutType(v){
+    const value = parseInt(v);
+    this.setState({layoutType:value});
+    if(value === 0){
+      const w =  0.55*window.innerHeight;
+      const h = 0.55*window.innerHeight;
+      this.canvas.current.height = h;
+      this.canvas.current.width = w;
+      const that = this;
+      waitSetLayout(that, w, h);
+    }
+    if(value === 1){
+      const w =  0.97*window.innerWidth;
+      const h = 0.55*window.innerHeight;
+      this.canvas.current.height = h;
+      this.canvas.current.width = w;
+      const that = this;
+      waitSetLayout(that, w, h);
+      this.attribute.current.setState({delta: 0.2})
+    }
+  }
+
   resetNetwork(){
     const [vertices, edges, maxedges] = createRandomNetwork(this.state.width, this.state.height, this.state.numV, this.state.numE, this.state.connected);
 
@@ -179,12 +202,14 @@ class NetworkVisualizer extends React.Component{
             className = "networkCanvas" ref = {this.canvas}>
             </canvas>
             <div className = "selectalgorow">
+
             <select className = "selectalgo" onChange = {(event) => this.setAlgoType(event.target.value)}>
               <option value = "spring"> Basic Spring Embedding </option>
               <option value = "fruchtermanReingold"> FruchtermanReingold </option>
             </select>
             <button className = "b" onClick = {() => this.runAlgorithm()} disabled = {this.state.running}> Run Algorithm </button>
             <button className = "helpbresized" onClick = {() => this.setHelp("algoType")}> ? </button>
+
             <select className = "selectalgo">
               <option value = "random" onChange = {(event) => this.setRandomizedType(event.target.value)}> Random </option>
               <option value = "randomcircle" disabled = {true}> Random Circle </option>
@@ -192,8 +217,17 @@ class NetworkVisualizer extends React.Component{
             </select>
             <button className = "b" disabled = {this.state.running} onClick = {() => this.resetNetwork()}> Reset Network</button>
             <button className = "helpbresized" onClick = {() => this.setHelp("randomType")}>?</button>
+
+            <select className = "selectalgo" onChange = {(event) => this.setLayoutType(event.target.value)}>
+              <option value = "0"> Square </option>
+              <option value = "1"> Stretch to Fit </option>
+            </select>
+            <button className = "helpbresized" onClick = {() => this.setHelp("Layout")}>?</button>
+
             </div>
             <HelpWindow ref = {this.help}></HelpWindow>
+
+
             <p style = {{color: "white"}}> General Network Attributes</p>
             <div className = "sliders">
               <input
@@ -389,5 +423,10 @@ async function waitSetVertices(that, v){
 
 async function waitSetEdges(that,e){
   await that.setState({numE: e});
+  that.resetNetwork();
+}
+
+async function waitSetLayout(that,w,h){
+  await that.setState({height: h,width: w});
   that.resetNetwork();
 }

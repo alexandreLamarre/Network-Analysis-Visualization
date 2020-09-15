@@ -1,7 +1,11 @@
 .networkCanvas{
   background-color: #FFFFFF;
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  display:block;
   border: #000000 2px solid;
-  margin-top: 1%;
 }
 .network{
 
@@ -19,7 +23,7 @@
 }
 
 .helpbresized{
-  flex-basis: 6%;
+  flex-basis: 5%;
   padding: 20px 20px;
   background-color: lightblue;
 }
@@ -68,7 +72,7 @@
 
 .b{
  margin-top: 0;
- flex-basis: 22%;
+ flex-basis: 17%;
  padding: 15px 32px;
  font-family:'Roboto',sans-serif;
  font-weight:300;
@@ -94,7 +98,7 @@
   margin-top: 0px;
   border-radius: 0px;
   padding: 20px 32px;
-  flex-basis: 22%;
+  flex-basis: 17%;
 }
 
 .selectalgorow{

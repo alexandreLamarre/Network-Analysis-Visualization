@@ -10,7 +10,7 @@ class AlgorithmAttributes extends React.Component{
     this.state = {
       layout : "spring",
       parentHelp: null,
-      delta: 0.2, //spring
+      delta: 0.1, //spring
       eps : 0.1, //spring
       crep: 1, //spring
       cspring: 2, //spring
@@ -211,14 +211,14 @@ class AlgorithmAttributes extends React.Component{
                   <input className = "slider"
                   type = "range"
                   min = "0"
-                  max = "1"
+                  max = "2"
                   value = {this.state.collision}
                   step = "1"
                   name = "speed" disabled = {this.state.running}
                   onChange = {(event) => this.setCollision(event.target.value)}
                   disabled = {this.state.running}>
                   </input>
-                  <label> Elastic Collision: {this.state.collision === 1? "On": "Off"}</label>
+                  <label> Collision: {this.state.collision ===2? "Orthogonal":this.state.collision === 1? "Elastic": "Inelastic"}</label>
                   <button className = "helpb" onClick = {() => this.setHelp("collision")}> ?</button>
                 </div>
 

@@ -18,8 +18,16 @@ export default function getHelpInfo(attribute){
   if(attribute === "cTemp") [title, details, info] = getHelpCtemp()
   if(attribute === "tempHeuristic") [title, details, info] = getHelpTempHeuristic()
   if(attribute === "collision") [title, details, info] = getHelpCollision()
+  if(attribute === "Layout") [title, details, info] = getHelpLayout()
 
   return [title, info, details, open];
+}
+
+function getHelpLayout(){
+  const t = "Layout Type" ;
+  const i = "Choose whether or not to display the network within a square or a rectangle that stretches to fit the browser window";
+  const d = "None.";
+  return [t,d,i];
 }
 
 function getHelpDisconnected(){
@@ -130,6 +138,6 @@ function getHelpTempHeuristic(){
 function getHelpCollision(){
   const t = "Collision Type";
   const i = "Collision Type affects how particles handle border collisions";
-  const d = "Inelastic means the particles movement and acceleration will be stopped upon collision with the border. Elastic collision means the particle will bounce back from the boundary, preserving the angle of collision."
+  const d = "Inelastic means the particles movement and acceleration will be stopped upon collision with the border. Elastic collision means the particle will bounce back from the boundary, preserving the angle of collision. Orthogonal means upon collision with the border, the remaining force will be projected onto the border of the frame perpendicularly."
   return [t, d,i];
 }
