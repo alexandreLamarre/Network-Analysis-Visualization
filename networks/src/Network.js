@@ -191,7 +191,7 @@ class NetworkVisualizer extends React.Component{
   }
 
   resetNetwork(){
-    const [vertices, edges, maxedges] = createRandomNetwork(this.state.width, this.state.height, this.state.numV, this.state.numE, this.state.connected);
+    const [vertices, edges, maxedges] = createRandomNetwork(this.state.width, this.state.height, this.state.numV, this.state.numE, this.state.connected, this.state.randomType);
 
     this.setState({vertices: vertices, edges: edges, sorted:false, maxEdges:maxedges})
   }
@@ -210,9 +210,9 @@ class NetworkVisualizer extends React.Component{
             <button className = "helpbresized" onClick = {() => this.setHelp("algoType")}> ? </button>
             <button className = "b" onClick = {() => this.runAlgorithm()} disabled = {this.state.running}> Run Algorithm </button>
 
-            <select className = "selectalgo">
-              <option value = "random" onChange = {(event) => this.setRandomizedType(event.target.value)}> Random </option>
-              <option value = "randomcircle" disabled = {true}> Random Circle </option>
+            <select className = "selectalgo" onChange = {(event) => this.setRandomizedType(event.target.value)}>
+              <option value = "random"> Random </option>
+              <option value = "randomcircle"> Random Circle </option>
               <option value = "randomsymmetry" disabled = {true}> Random Symmetry </option>
             </select>
             <button className = "helpbresized" onClick = {() => this.setHelp("randomType")}>?</button>
@@ -308,8 +308,9 @@ class NetworkVisualizer extends React.Component{
 
 export default NetworkVisualizer;
 
-function createRandomNetwork(maxWidth, maxHeight, numV, numE, conn){
+function createRandomNetwork(maxWidth, maxHeight, numV, numE, conn, randomType){
   let connected = conn === undefined? "False": conn;
+  let seed = randomType === undefined? "random": randomType;
   const maxDegree = numV-1;
   let maxEdges = Math.floor((maxDegree*numV)/2)
   const maxEdgesValue = maxEdges;
@@ -318,8 +319,15 @@ function createRandomNetwork(maxWidth, maxHeight, numV, numE, conn){
   let vertices = [];
   let available_vertices = [];
   let degree_array = [];
+  const center = [maxWidth/2, maxHeight/2];
+  const radius = (maxHeight/2)*0.90;
+
   for(let i = 0; i < numV; i ++){
-    vertices.push(createRandomPos(maxWidth, maxHeight));
+    var point = [0,0]
+    if(seed === "random") point = createRandomPos(maxWidth, maxHeight);
+    if(seed === "randomcircle") point = createRandomPosCircle(center, radius);
+    console.log(point);
+    vertices.push(point);
     available_vertices.push(i);
     degree_array.push(0);
   }
@@ -392,6 +400,11 @@ function createRandomNetwork(maxWidth, maxHeight, numV, numE, conn){
 
 function createRandomPos(maxWidth, maxHeight){
   return [Math.random()*(maxWidth+1-3), Math.random()*(maxHeight+1-3)];
+}
+
+function createRandomPosCircle(center,radius){
+  const randomAngle = Math.random()*(2*Math.PI);
+  return [center[0] + radius*Math.cos(randomAngle), center[1]+radius*Math.sin(randomAngle)];
 }
 
 function connectRandomVertices(vertices){
