@@ -79,6 +79,7 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
       fvt.push(distance([0,0], f));
     }
     const iteration_animation = [];
+    var maxF = 0;
     for(let i = 0; i < new_vertices.length; i++){
       let new_x = new_vertices[i][0] + delta*force_list[i][0];
       let new_y = new_vertices[i][1] + delta*force_list[i][1];
@@ -86,7 +87,7 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
       let x0 = old_vertices[0];
       let y0 = old_vertices[1];
       while(new_x < 0 || new_y < 0 || new_x > W || new_y > L){
-        console.log(new_x,new_y);
+        // console.log(new_x,new_y);
         const x1 = new_x;
         const y1 = new_y;
         if(new_x < 0){
@@ -106,6 +107,10 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
           new_y = L - (y1-L);
         }
       }
+      //Update max forces for convergence bound
+      const curF = distance([new_x,new_y], [x0,y0]);
+      if(i === 1) maxF = curF;
+      else maxF = maxF > curF? maxF: curF;
 
       new_vertices[i][0] = new_x//(new_x > graph_distancex-3)? (graph_distancex-3): ((new_x-3) < 0)? 0: (new_x-3); // should be two dimensional
       new_vertices[i][1] = new_y//(new_y > graph_distancey-3)? (graph_distancey-3): ((new_y -3)< 0)? 0: (new_y-3);
@@ -113,6 +118,7 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
       const max_dist = distance(force_list[i], [0,0]);
 
     }
+    if(maxF < epsilon) break;
     animations.push(iteration_animation);
     // if(Math.max(...fvt) < epsilon){
     //   break;
