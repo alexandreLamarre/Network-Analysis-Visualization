@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/Network-Algorithm-Visualization/static/css/main.704a8765.chunk.css",
-    "main.js": "/Network-Algorithm-Visualization/static/js/main.f062a6a6.chunk.js",
-    "main.js.map": "/Network-Algorithm-Visualization/static/js/main.f062a6a6.chunk.js.map",
-    "runtime-main.js": "/Network-Algorithm-Visualization/static/js/runtime-main.5c293f6a.js",
-    "runtime-main.js.map": "/Network-Algorithm-Visualization/static/js/runtime-main.5c293f6a.js.map",
-    "static/js/2.194e4459.chunk.js": "/Network-Algorithm-Visualization/static/js/2.194e4459.chunk.js",
-    "static/js/2.194e4459.chunk.js.map": "/Network-Algorithm-Visualization/static/js/2.194e4459.chunk.js.map",
+    "main.js": "/Network-Algorithm-Visualization/static/js/main.2639ef83.chunk.js",
+    "main.js.map": "/Network-Algorithm-Visualization/static/js/main.2639ef83.chunk.js.map",
+    "runtime-main.js": "/Network-Algorithm-Visualization/static/js/runtime-main.3222e249.js",
+    "runtime-main.js.map": "/Network-Algorithm-Visualization/static/js/runtime-main.3222e249.js.map",
+    "static/js/2.95e5216d.chunk.js": "/Network-Algorithm-Visualization/static/js/2.95e5216d.chunk.js",
+    "static/js/2.95e5216d.chunk.js.map": "/Network-Algorithm-Visualization/static/js/2.95e5216d.chunk.js.map",
     "index.html": "/Network-Algorithm-Visualization/index.html",
-    "precache-manifest.defa7051a5895bfc7898c40aa9c1f35d.js": "/Network-Algorithm-Visualization/precache-manifest.defa7051a5895bfc7898c40aa9c1f35d.js",
+    "precache-manifest.32cf62d43275b29033d6c79b27c87b7d.js": "/Network-Algorithm-Visualization/precache-manifest.32cf62d43275b29033d6c79b27c87b7d.js",
     "service-worker.js": "/Network-Algorithm-Visualization/service-worker.js",
     "static/css/main.704a8765.chunk.css.map": "/Network-Algorithm-Visualization/static/css/main.704a8765.chunk.css.map",
-    "static/js/2.194e4459.chunk.js.LICENSE.txt": "/Network-Algorithm-Visualization/static/js/2.194e4459.chunk.js.LICENSE.txt"
+    "static/js/2.95e5216d.chunk.js.LICENSE.txt": "/Network-Algorithm-Visualization/static/js/2.95e5216d.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.5c293f6a.js",
-    "static/js/2.194e4459.chunk.js",
+    "static/js/runtime-main.3222e249.js",
+    "static/js/2.95e5216d.chunk.js",
     "static/css/main.704a8765.chunk.css",
-    "static/js/main.f062a6a6.chunk.js"
+    "static/js/main.2639ef83.chunk.js"
   ]
 }
