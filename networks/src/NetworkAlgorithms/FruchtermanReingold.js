@@ -136,6 +136,62 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
           new_y = yi;
         }
       }
+      else if(collision ===2){
+        const m = (new_y - y0)/(new_x - x0);
+        if(new_x < 0){
+          const xi = 0;
+          const yi = m*(-x0)+y0;
+          const forceNorm = distance([new_x,new_y], [xi,yi]);
+          if(new_y-x0 < 0){
+            new_y = new_y-forceNorm> 0? new_y-forceNorm: 0;
+            new_x = 0;
+          }
+          else{
+            new_y = new_y+forceNorm < L? new_y+forceNorm: L;
+            new_x = 0;
+          }
+        }
+        else if(new_y<0){
+          const xi = (1/m)*y0+x0;
+          const yi = 0;
+          const forceNorm = distance([new_x,new_y], [xi,yi]);
+          if(new_x -x0 < 0){
+            new_x = new_x - forceNorm> 0? new_x - forceNorm: 0;
+            new_y = 0;
+          }
+          else{
+            new_x = new_x + forceNorm < W? new_x+forceNorm: 0;
+            new_y = 0;
+          }
+        }
+        else if(new_x > W){
+          const xi = W;
+          const yi = m*(W-x0) + y0;
+          const forceNorm = distance([new_x,new_y], [xi,yi]);
+          if(new_y-y0 <0){
+            new_y = new_y-forceNorm > 0? new_y-forceNorm:0;
+            new_x = W;
+          }
+          else{
+            new_y = new_y+forceNorm < L? new_y+forceNorm: L;
+            new_x = W;
+          }
+        }
+        else if(new_y > L){
+          const xi = (1/m)*(L-y0)+x0;
+          const yi = L;
+          const forceNorm = distance([new_x,new_y], [xi,yi]);
+          if(new_x -x0 < 0){
+            new_x = new_x - forceNorm > 0? new_x - forceNorm: 0;
+            new_y = L;
+          }
+          else{
+            new_x = new_x + forceNorm < W? new_x + forceNorm: W;
+            new_y = L;
+          }
+        }
+        console.log(new_x, new_y);
+      }
 
       new_vertices[i][0] = new_x;
       new_vertices[i][1] = new_y;
@@ -163,7 +219,11 @@ function fattract(z){
 
 function distance(x,y){
   // console.log(x,y);
-  return  Math.sqrt(Math.pow((x[0] - y[0]), 2) + Math.pow((x[1] - y[1]), 2));
+  var distX = Math.pow((x[0] - y[0]), 2);
+  var distY = Math.pow((x[1] - y[1]), 2);
+  if(distX + distY === 0) distX = 0.00000000000000000001
+
+  return  Math.sqrt((distX + distY));
 }
 /**
 * UnitVector from X to Y
