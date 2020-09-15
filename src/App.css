@@ -1,0 +1,16 @@
+.App{
+  height: 100%;
+  width: 100%;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.AppElements{
+  width: 97%;
+}
+
+.title{
+  font-size: 32px;
+  color: #000000;
+}
