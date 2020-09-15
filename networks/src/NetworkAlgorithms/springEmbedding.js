@@ -133,19 +133,16 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
 }
 
 function frepulse(x,y){
-  const dist = distance(y,x);
-  if(dist === 0){
-     console.log("error");
-     console.log(x);
-     console.log(y);
-   }
+  var dist = distance(y,x);
+  if(dist === 0) dist = 0.00000000000000000001;
   const unitV = unitVector(x,y);
   return [(CREP*unitV[0])/Math.sqrt(dist) , (CREP*unitV[1])/Math.sqrt(dist)];
 
 }
 
 function fattract(x,y, distanceType){
-  const dist = distanceType === 1? distance(x,y): 1;
+  var dist = distanceType === 1? distance(x,y): 1;
+  if(dist === 0) dist = 0.00000000000000000001;
   const unitV = unitVector(x,y);
 
   return [CSPRING* Math.log(dist/(lx)) * unitV[0],
