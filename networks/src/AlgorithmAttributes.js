@@ -178,6 +178,7 @@ class AlgorithmAttributes extends React.Component{
     }
     if(this.state.layout === "fruchtermanReingold"){
       return <div className = "Attributes">
+                <HelpWindow ref = {this.help}></HelpWindow>
                 <div className = "sliders">
                   <input className = "slider"
                   type = "range"
@@ -190,7 +191,7 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {this.state.running}>
                   </input>
                   <label> Initial Temperature Scaling: {this.state.cTemp}</label>
-                  <button className = "helpb"> ?</button>
+                  <button className = "helpb" onClick = {() => this.setHelp("cTemp")}> ?</button>
                 </div>
                 <div className = "sliders">
                   <input className = "slider"
@@ -204,7 +205,7 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {this.state.running}>
                   </input>
                   <label> Temperature Cooling: {this.state.tempHeuristic}</label>
-                  <button className = "helpb"> ?</button>
+                  <button className = "helpb" onClick = {() => this.setHelp("tempHeuristic")}> ?</button>
                 </div>
                 <div className = "sliders">
                   <input className = "slider"
@@ -218,7 +219,7 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {this.state.running}>
                   </input>
                   <label> Elastic Collision: {this.state.collision === 1? "On": "Off"}</label>
-                  <button className = "helpb"> ?</button>
+                  <button className = "helpb" onClick = {() => this.setHelp("collision")}> ?</button>
                 </div>
 
              </div>

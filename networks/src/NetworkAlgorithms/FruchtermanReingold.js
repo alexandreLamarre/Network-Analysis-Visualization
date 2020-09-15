@@ -5,7 +5,7 @@ var K = 0.01; //OPTIMAL DISTANCE
 var tol = 0.01; //TOLERANCE
 var ITERATIONS = 300;
 
-export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distancey, iterations, coolingtype, tempScale){
+export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distancey, iterations, coolingtype, tempScale, collisionType){
   const W = graph_distancex -6;
   const L = graph_distancey -6;
   const kIter = iterations === undefined ? 300: iterations;
@@ -13,6 +13,7 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
   const tempHeuristic = coolingtype === undefined? "Linear": coolingtype;
   C = 0.00000001;
   K = C* Math.sqrt((W)*(L)/(vertices.length));
+  const collision = collisionType;
   // tol = tolerance === undefined? 0.01: tolerance;
   console.log("K", K);
 
@@ -85,25 +86,54 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
       const old_vertices = new_vertices[i].slice();
       const x0 = old_vertices[0];
       const y0 = old_vertices[1];
-      while(new_x < 0 || new_y < 0 || new_x > W || new_y > L){
-        console.log(new_x,new_y);
-        const x1 = new_x;
-        const y1 = new_y;
+      if(collision === 1){
+        while(new_x < 0 || new_y < 0 || new_x > W || new_y > L){
+          console.log(new_x,new_y);
+          const x1 = new_x;
+          const y1 = new_y;
+          if(new_x < 0){
+            new_x = -(x1);
+            new_y = (y1)
+          }
+          else if(new_y < 0){
+            new_x = (x1);
+            new_y = -(y1);
+          }
+          else if(new_x > W){
+            new_x = W -(x1-W);
+            new_y = (y1);
+          }
+          else if(new_y > L){
+            new_x = (x1);
+            new_y = L - (y1-L);
+          }
+        }
+      }
+      else if(collision === 0){
+        const m = (new_y - y0)/(new_x - x0);
         if(new_x < 0){
-          new_x = -(x1);
-          new_y = (y1)
+          const xi = 0;
+          const yi = m*(-x0)+y0;
+          new_x = xi;
+          new_y = yi;
         }
-        else if(new_y < 0){
-          new_x = (x1);
-          new_y = -(y1);
+        if(new_y < 0){
+          const xi = (1/m)*y0+x0;
+          const yi = 0;
+          new_x = xi;
+          new_y = yi;
         }
-        else if(new_x > W){
-          new_x = W -(x1-W);
-          new_y = (y1);
+        if(new_x > W){
+          const xi = W;
+          const yi = m*(W-x0) + y0;
+          new_x = xi;
+          new_y = yi;
         }
-        else if(new_y > L){
-          new_x = (x1);
-          new_y = L - (y1-L);
+        if(new_y > L){
+          const xi = (1/m)*(L-y0)+x0;
+          const yi = L;
+          new_x = xi;
+          new_y = yi;
         }
       }
 

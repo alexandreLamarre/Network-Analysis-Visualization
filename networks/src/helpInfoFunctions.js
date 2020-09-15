@@ -15,6 +15,9 @@ export default function getHelpInfo(attribute){
   if(attribute === "delta") [title,details, info] = getHelpDelta()
   if(attribute === "forceArea") [title, details, info] = getHelpForceArea()
   if(attribute === "distanceType") [title,details, info] = getHelpDistanceType()
+  if(attribute === "cTemp") [title, details, info] = getHelpCtemp()
+  if(attribute === "tempHeuristic") [title, details, info] = getHelpTempHeuristic()
+  if(attribute === "collision") [title, details, info] = getHelpCollision()
 
   return [title, info, details, open];
 }
@@ -64,15 +67,15 @@ function getHelpRandomType(){
 
 function getHelpSpring(){
   const t = "Basic Spring Embedding Algorithm";
-  const i = "Based on Peter Eades 1984 paper: 'A graph drawing heuristic' <br/> Models the vertices as steel rings and edges as springs connecting the edges. Transforms the network layout problem into a dynamical system. " ;
-  const d = " "
+  const i = "Models a network as a dynamical system where vertices are treated as rings and edges are treated as springs between vertices. Forces of attraction act between vertices connected by edges, and forces of repulsion act between vertices that are not directly connected." ;
+  const d = "The goal of this algorithm is to provide an aesthetic network layout. Strengths: Preserves initial and inherent network symmetry. Limitations: Algorithm is affected heavily by the initial network layout and the overall dynamical sysyem is chaotic. Additionaly, the layout produced is not guaranteed to be space filling. Runtime complexity: O(|V|^2), where |V| is the number of vertices. Space complexity: O(|V| + |E|)"
   return [t,d, i];
 }
 
 function getHelpFruchtermanReingold(){
   const t = "Fruchterman Reingold Algorithm";
-  const i = "Based on Fruchterman-Reingold 1991 paper. Models vertices-edges as a spring system, conceptually considers vertices as atomic nuclei.";
-  const d = ""
+  const i = "Models a netowrk as a dynamical system where vertices are concpetually treated as atomic nuclei and edges are treated as springs between vertices. Forces of attraction act between vertices connected by edges and forces of repulsion act between all vertices.";
+  const d = "The goal of this algorithm is to provide an aesthetic network layout. Strengths: preserves inherent network symmetry, space-filling, temperature heuristic helps find more optimal layouts. Limitations: Algorithm is heavily affected by the initial network layout, it produces suboptimal layouts for bounded frames without pre-processing, and the overall dynamical system modelled is chaotic.  Runtime complexity O(|V^2|), where |V| is the number of vertices. Space complexity: O(|V|+|E|)"
   return [t, d,i];
 }
 
@@ -97,7 +100,7 @@ function getHelpEpsilon(){
 function getHelpDelta(){
   const t = "Rate of Convergence";
   const i = "Scales the rate at which both forces exert themselves. Controls how quickly the algorithm should approach an 'optimal' layout.";
-  const d = ""
+  const d = "None"
   return [t, d,i];
 }
 function getHelpForceArea(){
@@ -110,5 +113,23 @@ function getHelpDistanceType(){
   const t = "Distance Type";
   const i = "Choose how to evaluate the distance between two vertices in the force of attraction. 'Continuous' distance evaluates the distance between vertices as their distance in the frame, while 'Graph-theoretic' distance evaluates the distance between vertices as the longest path between two vertices.";
   const d = "Graph-theoretic distance is a constant force of attraction between vertices. It has been shown that considering the graph theoretic distance of only adjacent vertices (the ones directly connected by an edge) is roughly equivalent to considering the graph-theoretic distance of every vertex pair. This algorthm implementation only considers adjacent vertices for performance optimization."
+  return [t, d,i];
+}
+function getHelpCtemp(){
+  const t = "Temperature Scaling";
+  const i = "In the Fruchterman-Reingold Algorithm, temperature scales the forces in the dynamical system. A higher temperature forces the particles (vertices) to move quickly and a lower temperature slows down the movement of the particles(vertices)";
+  const d = "None"
+  return [t, d,i];
+}
+function getHelpTempHeuristic(){
+  const t = "Temperature Heuristic";
+  const i = "Temperature heuristic controls the type of temperature cooling the system undergoes.";
+  const d = "A logarithm temperature cooling heuristic cools the temperature with the following function: f(temp) = 0.90*temp. A linear temperature cooling heuristic cools the temperature with the following function f(temp) = temp - (initial_temperature)/100"
+  return [t, d,i];
+}
+function getHelpCollision(){
+  const t = "Collision Type";
+  const i = "Collision Type affects how particles handle border collisions";
+  const d = "Inelastic means the particles movement and acceleration will be stopped upon collision with the border. Elastic collision means the particle will bounce back from the boundary, preserving the angle of collision."
   return [t, d,i];
 }
