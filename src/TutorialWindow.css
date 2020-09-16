@@ -1,0 +1,36 @@
+.Modal{
+
+}
+
+.Overlay{
+  position: fixed;
+    top: 10%;
+    left: 10%;
+    right: 10%;
+    bottom: 10%;
+}
+
+.closeb{
+  position: absolute;
+  top: 0%;
+  right: 0%;
+  background-color: #DC143C;
+  border: black 2px solid;
+  padding: 10px 24px;
+}
+
+.closeb:hover{
+  background-color: green;
+}
+
+.nextb{
+  position:absolute;
+  bottom: 10%;
+  right: 40%;
+}
+
+.previousb{
+  position: absolute;
+  bottom: 10%;
+  left: 40%;
+}

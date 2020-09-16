@@ -1,6 +1,7 @@
 import React from "react";
 import HelpWindow from "./HelpWindow";
 import AlgorithmAttributes from "./AlgorithmAttributes";
+import TutorialWindow from "./TutorialWindow";
 import {springEmbedding} from "./NetworkAlgorithms/springEmbedding";
 import {fruchtermanReingold} from "./NetworkAlgorithms/FruchtermanReingold";
 import getHelpInfo from "./helpInfoFunctions";
@@ -37,6 +38,7 @@ class NetworkVisualizer extends React.Component{
 
     this.help = React.createRef();
     this.attribute = React.createRef();
+    this.tutorial = React.createRef();
   }
 
   componentDidMount(){
@@ -53,8 +55,12 @@ class NetworkVisualizer extends React.Component{
     this.canvas.current.height = this.state.height;
     const ctx = this.canvas.current.getContext("2d");
     for(let i =0; i < this.state.vertices.length; i++){
+      ctx.beginPath();
       ctx.fillStyle= "#FF0000"
-      ctx.fillRect(this.state.vertices[i][0], this.state.vertices[i][1], 6, 6);
+      // ctx.fillRect(this.state.vertices[i][0], this.state.vertices[i][1], 6, 6);
+      ctx.arc(this.state.vertices[i][0], this.state.vertices[i][1], 3, 0, Math.PI*2)
+      ctx.fill();
+      ctx.closePath();
     }
 
     for(let j = 0; j < this.state.edges.length; j++){
@@ -62,8 +68,8 @@ class NetworkVisualizer extends React.Component{
       ctx.globalAlpha = 0.2;
       const index1 = this.state.edges[j][0];
       const index2 = this.state.edges[j][1];
-      ctx.moveTo(this.state.vertices[index1][0]+3,this.state.vertices[index1][1]+3 );
-      ctx.lineTo(this.state.vertices[index2][0]+3,this.state.vertices[index2][1]+3 );
+      ctx.moveTo(this.state.vertices[index1][0],this.state.vertices[index1][1]);
+      ctx.lineTo(this.state.vertices[index2][0],this.state.vertices[index2][1]);
       // ctx.moveTo(this.state.vertices[j][0][0]+3, this.state.edges[j][0][1]+3);
       // ctx.lineTo(this.state.edges[j][1][0]+3, this.state.edges[j][1][1]+3);
       ctx.stroke();
@@ -115,6 +121,7 @@ class NetworkVisualizer extends React.Component{
     }
     this.setState({maxtimeouts: x});
   }
+
 
   setVertices(v){
     const that = this;
@@ -192,6 +199,7 @@ class NetworkVisualizer extends React.Component{
   render(){
 
     return <div className = "network">
+            <TutorialWindow ref = {this.tutorial}></TutorialWindow>
             <canvas
             className = "networkCanvas" ref = {this.canvas}>
             </canvas>
@@ -222,7 +230,7 @@ class NetworkVisualizer extends React.Component{
             <HelpWindow ref = {this.help}></HelpWindow>
 
 
-            <p className = "sliderHeader" style = {{color: "black"}}> <b>General Network Attributes</b></p>
+            <p className = "sliderHeader" style = {{color: "black"}}> <b>General Network Settings</b></p>
             <div className = "sliders">
               <input
               type = "range"
@@ -291,7 +299,7 @@ class NetworkVisualizer extends React.Component{
 
 
 
-            <p className = "sliderHeader" style = {{color: "black"}}> <b>Algorithm Specific Network Attributes</b></p>
+            <p className = "sliderHeader" style = {{color: "black"}}> <b>Algorithm Specific Network Settings</b></p>
             <AlgorithmAttributes ref = {this.attribute}></AlgorithmAttributes>
 
 
