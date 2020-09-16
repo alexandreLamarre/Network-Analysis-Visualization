@@ -44,9 +44,9 @@ class TutorialWindow extends React.Component{
     if(v === 4) this.setState({title: "Tutorial: Why are Network Layouts so important?"});
     if(v === 5) this.setState({title : "Tutorial: Nodes and Edges"});
     if(v === 6) this.setState({title: "Tutorial: How to select an Algorithm"});
-    if(v === 7) this.setState({title: "Tutorial: How to select a random Network Generation type"});
+    if(v === 7) this.setState({title: "Tutorial: Random Network Generation type"});
     if(v === 8) this.setState({title: "Tutorial: How to select a Layout Type"});
-    if(v === 9) this.setState({title: "Tutorial: How to get more information on Algorithm settings"});
+    if(v === 9) this.setState({title: "Tutorial: Algorithm and Network settings"});
   }
 
   setInfo(v){
