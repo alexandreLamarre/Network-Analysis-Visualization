@@ -34,6 +34,8 @@ class NetworkVisualizer extends React.Component{
       algoType: "spring",
       randomType: "random",
       layoutType: 0,
+      degree_array: [],
+      actualMaxDegree: 0,
     };
 
     this.help = React.createRef();
@@ -46,8 +48,15 @@ class NetworkVisualizer extends React.Component{
     const h = window.innerHeight * 0.55;
     this.attribute.current.setState({parentHelp:this.help});
 
-    const [vertices, edges, maxedges] = createRandomNetwork(w, h, this.state.numV, this.state.numE);
-    this.setState({width: w, height: h, vertices: vertices, edges: edges, maxEdges: maxedges});
+    const [vertices, edges, degreeArray, maxD] = createRandomNetwork(w, h, this.state.numV, this.state.numE);
+    this.setState(
+      {width: w,
+      height: h,
+      vertices: vertices,
+      edges: edges,
+      degree_array: degreeArray,
+      actualMaxDegree: maxD}
+    );
   }
 
   componentDidUpdate(){
@@ -56,22 +65,29 @@ class NetworkVisualizer extends React.Component{
     const ctx = this.canvas.current.getContext("2d");
     for(let i =0; i < this.state.vertices.length; i++){
       ctx.beginPath();
-      ctx.fillStyle= "#FF0000"
+      const value = 255 - 310/(1+this.state.degree_array[i]);
+      const value2 = 175 + 150/(1+this.state.degree_array[i]);
+      const c = "rgb(100," + value.toString() +"," + value2.toString()+")";
+      ctx.fillStyle= c;
       // ctx.fillRect(this.state.vertices[i][0], this.state.vertices[i][1], 6, 6);
-      ctx.arc(this.state.vertices[i][0], this.state.vertices[i][1], 3, 0, Math.PI*2)
+      ctx.arc(this.state.vertices[i][0], this.state.vertices[i][1], 1+this.state.degree_array[i], 0, Math.PI*2)
       ctx.fill();
       ctx.closePath();
     }
 
     for(let j = 0; j < this.state.edges.length; j++){
       ctx.beginPath();
-      ctx.globalAlpha = 0.2;
       const index1 = this.state.edges[j][0];
       const index2 = this.state.edges[j][1];
       ctx.moveTo(this.state.vertices[index1][0],this.state.vertices[index1][1]);
       ctx.lineTo(this.state.vertices[index2][0],this.state.vertices[index2][1]);
+      ctx.globalAlpha = 0.1;
       // ctx.moveTo(this.state.vertices[j][0][0]+3, this.state.edges[j][0][1]+3);
       // ctx.lineTo(this.state.edges[j][1][0]+3, this.state.edges[j][1][1]+3);
+      // const value = 255 - 310/(1+(this.state.degree_array[index1]+this.state.degree_array[index2])/2);
+      // const value2 = 175 + 150/(1+(this.state.degree_array[index1]+this.state.degree_array[index2])/2);
+      // const c = "rgb(100," + value.toString() +"," + value2.toString()+")";
+      // ctx.strokeStyle= c;
       ctx.stroke();
       ctx.closePath();
     }
@@ -192,9 +208,14 @@ class NetworkVisualizer extends React.Component{
   }
 
   resetNetwork(){
-    const [vertices, edges, maxedges] = createRandomNetwork(this.state.width, this.state.height, this.state.numV, this.state.numE, this.state.connected, this.state.randomType);
+    const [vertices, edges, degreeArray, maxD] = createRandomNetwork(this.state.width, this.state.height, this.state.numV, this.state.numE, this.state.connected, this.state.randomType);
 
-    this.setState({vertices: vertices, edges: edges, sorted:false, maxEdges:maxedges})
+    this.setState(
+      {vertices: vertices,
+       edges: edges,
+       degree_array: degreeArray,
+       actualMaxDegree: maxD}
+    );
   }
   render(){
 
@@ -368,11 +389,6 @@ function createRandomNetwork(maxWidth, maxHeight, numV, numE, conn, randomType){
       visited_num ++;
     }
   }
-  // for(let i = 0; i < vertices.length; i++){
-  //   already_connected.set(i.toString() + i.toString(), true);
-  // }
-
-  // var available_index = vertices.length // starts out as vertex.length;
   while(remainingEdges > 0 && maxEdges > 0 && available_vertices.length > 1){
     const [random1, random2] = connectRandomVertices(available_vertices.slice());
     if(random1 === random2) console.log("unexpected");
@@ -393,9 +409,8 @@ function createRandomNetwork(maxWidth, maxHeight, numV, numE, conn, randomType){
       maxEdges --;
       }
     }
-  // console.log("degree_array", degree_array);
-  // console.log("edges", edges);
-  return [vertices,edges,Math.min(maxEdgesValue, MAX_EDGES)];
+  const actualMaxDegree = Math.max(...degree_array)
+  return [vertices,edges,degree_array, actualMaxDegree];
 }
 
 function createRandomPos(maxWidth, maxHeight){
