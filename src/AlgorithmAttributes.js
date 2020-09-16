@@ -199,19 +199,6 @@ class AlgorithmAttributes extends React.Component{
                   <label> Temperature Cooling: {this.state.tempHeuristic}</label>
                   <button className = "helpb" onClick = {() => this.setHelp("tempHeuristic")}> ?</button>
                 </div>
-                <div className = "sliders">
-                  <input className = "slider"
-                  type = "range"
-                  min = "0"
-                  max = "2"
-                  value = {this.state.collision}
-                  step = "1"
-                  onChange = {(event) => this.setCollision(event.target.value)}
-                  disabled = {this.state.running}>
-                  </input>
-                  <label> Collision: {this.state.collision ===2? "Orthogonal":this.state.collision === 1? "Elastic": "Inelastic"}</label>
-                  <button className = "helpb" onClick = {() => this.setHelp("collision")}> ?</button>
-                </div>
 
              </div>
     }
