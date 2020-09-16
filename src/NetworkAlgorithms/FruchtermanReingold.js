@@ -12,7 +12,7 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
   K = C* Math.sqrt((W)*(L)/(vertices.length));
   const collision = collisionType;
   // tol = tolerance === undefined? 0.01: tolerance;
-  console.log("K", K);
+  // console.log("K", K);
 
   //make copies of input
   let new_vertices = [];
@@ -35,6 +35,14 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
   let t = 1;
   let animations = [];
   let temperature = (1/10)*W * tempScale;
+  let temperature_list = [];
+  let previousAngle = [];
+  let scaling_factor = [];
+  if(coolingtype === "Directional"){
+    for(let i = 0; i < vertices.length; i ++){
+      temperature_list.push(temperature);
+    }
+  }
   const initial_temperature = temperature;
 
   while(t<kIter){
@@ -62,152 +70,70 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
       force_list[e[0]][1] += ((unitvector[1])*fattract(delta));
       force_list[e[1]][0] += ((unitvector[0])*fattract(delta));
       force_list[e[1]][1] += ((unitvector[1])*fattract(delta));
-      // if(t===1) console.log("forcelist",force_list[e[0]]);
-      // if(t===1) console.log("forcelist",force_list[e[1]])
     }
-    // console.log(force_list);
     //update positions
     const iter_animations = [];
+    var minX = Infinity;
+    var minY = Infinity;
+    var maxX = 0;
+    var maxY = 0;
     for(let i = 0; i < new_vertices.length; i++){
-      // console.log(force_list[i]);
       const unitvector = unitVector(force_list[i], [0,0])
       const xi = unitvector[0];
       const yi = unitvector[1];
-      // if(t===1)console.log("unitvector:", unitvector);
-      // if(t===1)console.log(new_vertices[i][0] + unitvector[0]);
-      // if(t===1)console.log(new_vertices[i][1] + unitvector[1]);
-      let new_x = new_vertices[i][0] +xi*Math.min(temperature, Math.abs(force_list[i][0]))//*Math.min(force_list[i][0], temperature));
-      let new_y =  new_vertices[i][1] + yi*Math.min(temperature, Math.abs(force_list[i][1])) //*Math.min(force_list[i][1], temperature));
-      // new_x = Math.min(W/2, Math.max(-W/2,new_x));
-      // new_y = Math.min(L/2, Math.max(-L/2, new_y));
       const old_vertices = new_vertices[i].slice();
-      const x0 = old_vertices[0];
-      const y0 = old_vertices[1];
-      if(collision === 1){
-        while(new_x < 0 || new_y < 0 || new_x > W || new_y > L){
-          console.log(new_x,new_y);
-          const x1 = new_x;
-          const y1 = new_y;
-          if(new_x < 0){
-            new_x = -(x1);
-            new_y = (y1)
-          }
-          else if(new_y < 0){
-            new_x = (x1);
-            new_y = -(y1);
-          }
-          else if(new_x > W){
-            new_x = W -(x1-W);
-            new_y = (y1);
-          }
-          else if(new_y > L){
-            new_x = (x1);
-            new_y = L - (y1-L);
-          }
-        }
-      }
-      else if(collision === 0){
-        const m = (new_y - y0)/(new_x - x0);
-        if(new_x < 0){
-          const xi = 0;
-          const yi = m*(-x0)+y0;
-          new_x = xi;
-          new_y = yi;
-        }
-        if(new_y < 0){
-          const xi = (1/m)*y0+x0;
-          const yi = 0;
-          new_x = xi;
-          new_y = yi;
-        }
-        if(new_x > W){
-          const xi = W;
-          const yi = m*(W-x0) + y0;
-          new_x = xi;
-          new_y = yi;
-        }
-        if(new_y > L){
-          const xi = (1/m)*(L-y0)+x0;
-          const yi = L;
-          new_x = xi;
-          new_y = yi;
-        }
-      }
-      else if(collision ===2){
-        const m = (new_y - y0)/(new_x - x0);
-        if(new_x < 0){
-          const xi = 0;
-          const yi = m*(-x0)+y0;
-          const forceNorm = distance([new_x,new_y], [xi,yi]);
-          if(new_y-x0 < 0){
-            new_y = new_y-forceNorm> 0? new_y-forceNorm: 0;
-            new_x = 0;
-          }
-          else{
-            new_y = new_y+forceNorm < L? new_y+forceNorm: L;
-            new_x = 0;
-          }
-        }
-        else if(new_y<0){
-          const xi = (1/m)*y0+x0;
-          const yi = 0;
-          const forceNorm = distance([new_x,new_y], [xi,yi]);
-          if(new_x -x0 < 0){
-            new_x = new_x - forceNorm> 0? new_x - forceNorm: 0;
-            new_y = 0;
-          }
-          else{
-            new_x = new_x + forceNorm < W? new_x+forceNorm: 0;
-            new_y = 0;
-          }
-        }
-        else if(new_x > W){
-          const xi = W;
-          const yi = m*(W-x0) + y0;
-          const forceNorm = distance([new_x,new_y], [xi,yi]);
-          if(new_y-y0 <0){
-            new_y = new_y-forceNorm > 0? new_y-forceNorm:0;
-            new_x = W;
-          }
-          else{
-            new_y = new_y+forceNorm < L? new_y+forceNorm: L;
-            new_x = W;
-          }
-        }
-        else if(new_y > L){
-          const xi = (1/m)*(L-y0)+x0;
-          const yi = L;
-          const forceNorm = distance([new_x,new_y], [xi,yi]);
-          if(new_x -x0 < 0){
-            new_x = new_x - forceNorm > 0? new_x - forceNorm: 0;
-            new_y = L;
-          }
-          else{
-            new_x = new_x + forceNorm < W? new_x + forceNorm: W;
-            new_y = L;
-          }
-        }
-        console.log(new_x, new_y);
-      }
+
+      let new_x = new_vertices[i][0] +xi*Math.min(temperature, Math.abs(force_list[i][0]))
+      let new_y =  new_vertices[i][1] + yi*Math.min(temperature, Math.abs(force_list[i][1]))
+
+
 
       new_vertices[i][0] = new_x;
       new_vertices[i][1] = new_y;
+
+      minX =  minX = Math.min(minX, new_vertices[i][0])
+      minY = Math.min(minY, new_vertices[i][1]);
+      maxX = new_vertices[i][0] > maxX? new_vertices[i][0]:maxX;
+      maxY = new_vertices[i][1] > maxY? new_vertices[i][1]:maxY;
+
       iter_animations.push(new_vertices[i].slice())
     }
-
+    //update scaling factors, animations and particle temperature
+    scaling_factor.push([minX, minY, W/(Math.abs(minX)+maxX), L/(Math.abs(minY)+maxY)])
     animations.push(iter_animations);
-
-    temperature = cool(temperature, tempHeuristic, initial_temperature);
-    console.log(temperature);
+    if(tempHeuristic !== "Directional")temperature = cool(temperature, tempHeuristic, initial_temperature);
+    // if(tempHeuristic === "Directional"){
+    //   temperature_list[i] = cool(temperature_list[i], )
+    // }
     t+= 1;
   }
+  const iter_animations = [];
 
-
+  for(let i = 0; i < animations.length; i++){
+    for(let j = 0; j < animations[i].length; j ++){
+      animations[i][j][0] = (animations[i][j][0] + Math.abs(scaling_factor[i][0]))*scaling_factor[i][2];
+      animations[i][j][1] = (animations[i][j][1] + Math.abs(scaling_factor[i][1]))*scaling_factor[i][3];
+    }
+  }
+  var minX = Infinity;
+  var minY = Infinity;
+  var maxX = 0;
+  var maxY = 0;
+  for(let i = 0; i < vertices.length; i ++){
+    minX = Math.min(new_vertices[i][0], minX);
+    minY = Math.min(new_vertices[i][1], minY);
+    maxX = Math.max(new_vertices[i][0], maxX);
+    maxY = Math.max(new_vertices[i][1], maxY);
+  }
+  for(let i = 0; i <vertices.length; i ++){
+    new_vertices[i][0] = (new_vertices[i][0] + Math.abs(minX)) * (W/(maxX+Math.abs(minX)));
+    new_vertices[i][1] = (new_vertices[i][1] + Math.abs(minY)) * (L/(maxY + Math.abs(minY)));
+  }
   return [new_vertices, animations];
 }
 
 function frepulse(z){
-  return (Math.pow(K,2))/z
+  return -(Math.pow(K,2))/z
 }
 
 function fattract(z){
@@ -243,4 +169,9 @@ function cool(t, tempHeuristic, initial_temperature){
     return t
   }
   return t
+}
+
+function findAngle(x,y){
+  const angle = Math.atan((y[1] - x[1])/(y[0] - x[0]));
+  return angle === undefined? 0: angle
 }
