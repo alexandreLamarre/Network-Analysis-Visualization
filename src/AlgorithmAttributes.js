@@ -11,7 +11,7 @@ class AlgorithmAttributes extends React.Component{
       layout : "spring",
       parentHelp: null,
       delta: 0.1, //spring
-      eps : 0.1, //spring
+      eps : 0.5, //spring
       crep: 1, //spring
       cspring: 2, //spring
       C: 2, // spring
@@ -198,6 +198,17 @@ class AlgorithmAttributes extends React.Component{
                   </input>
                   <label> Temperature Cooling: {this.state.tempHeuristic}</label>
                   <button className = "helpb" onClick = {() => this.setHelp("tempHeuristic")}> ?</button>
+                  <input className = "slider"
+                  type = "range"
+                  min = "0.001"
+                  max = "1"
+                  value = {this.state.eps}
+                  step = "0.001"
+                  onChange = {(event)=> this.setEpsilon(event.target.value)}
+                  disabled = {this.state.running}>
+                  </input>
+                  <label> Convergence Bound : {this.state.eps}</label>
+                  <button className = "helpb" onClick = {() => this.setHelp("eps")}> ?</button>
                 </div>
 
              </div>

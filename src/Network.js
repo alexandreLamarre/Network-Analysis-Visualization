@@ -108,7 +108,7 @@ class NetworkVisualizer extends React.Component{
   }
 
   generateReingold(){
-    const values = fruchtermanReingold(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations, this.attribute.current.state.tempHeuristic, this.attribute.current.state.cTemp, this.attribute.current.state.collision);
+    const values = fruchtermanReingold(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations, this.attribute.current.state.tempHeuristic, this.attribute.current.state.cTemp, this.attribute.current.state.eps);
     const new_vertices = values[0];
     const animations = values[1];
     // console.log(animations);

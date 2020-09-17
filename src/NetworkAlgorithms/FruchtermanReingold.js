@@ -2,7 +2,7 @@ var C= 1;
 var K = 0.01; //OPTIMAL DISTANCE
 var ITERATIONS = 300;
 
-export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distancey, iterations, coolingtype, tempScale, collisionType){
+export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distancey, iterations, coolingtype, tempScale, eps){
   const W = graph_distancex -6;
   const L = graph_distancey -6;
   const kIter = iterations === undefined ? 300: iterations;
@@ -10,7 +10,7 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
   const tempHeuristic = coolingtype === undefined? "Linear": coolingtype;
   C = 0.00000001;
   K = C* Math.sqrt((W)*(L)/(vertices.length));
-  const collision = collisionType;
+  const epsilon = eps;
   // tol = tolerance === undefined? 0.01: tolerance;
   // console.log("K", K);
 
@@ -77,6 +77,8 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
     var minY = Infinity;
     var maxX = 0;
     var maxY = 0;
+    var maxForce = 0;
+
     for(let i = 0; i < new_vertices.length; i++){
       const unitvector = unitVector(force_list[i], [0,0])
       const xi = unitvector[0];
@@ -86,6 +88,12 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
       let new_x = new_vertices[i][0] +xi*Math.min(temperature, Math.abs(force_list[i][0]))
       let new_y =  new_vertices[i][1] + yi*Math.min(temperature, Math.abs(force_list[i][1]))
 
+      if(i == 1){
+        maxForce = distance([new_x,new_y], old_vertices);
+      }
+      else{
+        maxForce = distance([new_x,new_y], old_vertices) > maxForce? distance([new_x,new_y], old_vertices): maxForce;
+      }
 
 
       new_vertices[i][0] = new_x;
@@ -106,6 +114,7 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
     //   temperature_list[i] = cool(temperature_list[i], )
     // }
     t+= 1;
+    if(maxForce < epsilon) break;
   }
   const iter_animations = [];
 
