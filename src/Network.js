@@ -6,6 +6,7 @@ import {springEmbedding} from "./NetworkAlgorithms/springEmbedding";
 import {fruchtermanReingold} from "./NetworkAlgorithms/FruchtermanReingold";
 import {kamadaKawai} from "./NetworkAlgorithms/kamadaKawai";
 import {forceAtlas2} from "./NetworkAlgorithms/forceAtlas2";
+import {forceAtlasLinLog} from "./NetworkAlgorithms/forceAtlasLinLog";
 import getHelpInfo from "./helpInfoFunctions";
 
 import "./Network.css";
@@ -123,7 +124,18 @@ class NetworkVisualizer extends React.Component{
   }
 
   generateForceAtlas2(){
-    const values = forceAtlas2(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations);
+    const values = forceAtlas2(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations, this.state.degree_array);
+    const new_vertices = values[0];
+    const animations = values[1];
+    console.log(new_vertices);
+    console.log(animations);
+
+    this.animateNetwork(animations, new_vertices);
+  }
+
+  generateForceAtlasLinLog(){
+    const values = forceAtlasLinLog(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations, this.state.degree_array)
+    console.log(values);
   }
 
   runAlgorithm(){
@@ -131,6 +143,7 @@ class NetworkVisualizer extends React.Component{
     if(this.state.algoType === "fruchtermanReingold") this.generateReingold();
     if(this.state.algoType === "kamadaKawai") this.generateKamadaKawai();
     if(this.state.algoType === "forceAtlas2") this.generateForceAtlas2();
+    if(this.state.algoType === "forceAtlasLinLog") this.generateForceAtlasLinLog();
   }
 
   animateNetwork(animations, final_vertices){
@@ -239,10 +252,15 @@ class NetworkVisualizer extends React.Component{
             <div className = "selectalgorow">
 
             <select className = "selectalgo" onChange = {(event) => this.setAlgoType(event.target.value)}>
+              <optgroup label = "Force Directed Algorithms">
               <option value = "spring"> Basic Spring Embedding </option>
               <option value = "fruchtermanReingold"> Fruchterman-Reingold </option>
               <option value = "kamadaKawai"> Kamada-Kawai </option>
               <option value = "forceAtlas2"> Force Atlas 2</option>
+              <option value = "forceAtlasLinLog"> Force Atlas 2 (LinLog) </option>
+              </optgroup>
+              <optgroup label = "Spectral Layout Algorithms">
+              </optgroup>
             </select>
             <button className = "helpbresized" onClick = {() => this.setHelp("algoType")}> ? </button>
             <button className = "b" onClick = {() => this.runAlgorithm()} disabled = {this.state.running}> Run Algorithm </button>
