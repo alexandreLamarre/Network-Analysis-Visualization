@@ -24,13 +24,19 @@
 }
 
 .nextb{
-  position:absolute;
-  bottom: 10%;
-  right: 40%;
+  position: absolute;
+  right:40%;
+  margin-bottom: 5%;
 }
 
 .previousb{
-  position: absolute;
-  bottom: 10%;
+  position:absolute;
   left: 40%;
+  margin-bottom: 5%;
+}
+
+.tutorialimage{
+  height:170px;
+  width:auto;
+  border: black 1px solid;
 }
