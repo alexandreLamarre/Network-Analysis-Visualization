@@ -170,7 +170,7 @@ class AlgorithmAttributes extends React.Component{
                 </div>
               </div>
     }
-    if(this.state.layout === "fruchtermanReingold"){
+    else if(this.state.layout === "fruchtermanReingold"){
       return <div className = "Attributes">
                 <HelpWindow ref = {this.help}></HelpWindow>
                 <div className = "sliders">
@@ -212,6 +212,9 @@ class AlgorithmAttributes extends React.Component{
                 </div>
 
              </div>
+    }
+    else{
+      return null;
     }
   }
 }
