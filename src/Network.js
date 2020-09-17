@@ -4,6 +4,7 @@ import AlgorithmAttributes from "./AlgorithmAttributes";
 import TutorialWindow from "./TutorialWindow";
 import {springEmbedding} from "./NetworkAlgorithms/springEmbedding";
 import {fruchtermanReingold} from "./NetworkAlgorithms/FruchtermanReingold";
+import {kamadaKawai} from "./NetworkAlgorithms/kamadaKawai";
 import getHelpInfo from "./helpInfoFunctions";
 
 import "./Network.css";
@@ -116,9 +117,14 @@ class NetworkVisualizer extends React.Component{
     this.animateNetwork(animations, new_vertices);
   }
 
+  generateKamadaKawai(){
+    const values = kamadaKawai(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations);
+  }
+
   runAlgorithm(){
     if(this.state.algoType === "spring") this.generateForceDirectedLayout();
     if(this.state.algoType === "fruchtermanReingold") this.generateReingold();
+    if(this.state.algoType === "kamadaKawai") this.generateKamadaKawai();
   }
 
   animateNetwork(animations, final_vertices){
@@ -228,7 +234,8 @@ class NetworkVisualizer extends React.Component{
 
             <select className = "selectalgo" onChange = {(event) => this.setAlgoType(event.target.value)}>
               <option value = "spring"> Basic Spring Embedding </option>
-              <option value = "fruchtermanReingold"> FruchtermanReingold </option>
+              <option value = "fruchtermanReingold"> Fruchterman-Reingold </option>
+              <option value = "kamadaKawai"> Kamada-Kawai </option>
             </select>
             <button className = "helpbresized" onClick = {() => this.setHelp("algoType")}> ? </button>
             <button className = "b" onClick = {() => this.runAlgorithm()} disabled = {this.state.running}> Run Algorithm </button>
