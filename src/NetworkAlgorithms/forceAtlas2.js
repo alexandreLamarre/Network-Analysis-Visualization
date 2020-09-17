@@ -2,17 +2,20 @@ var ka = 1;
 var kr = 1;
 var kg = 800;
 var ks = 0.1;
-var tau = 1;
+var tau = 0.1;
 var ksmax = 10;
 //============================ REMEMBER TO ADD NO OVERLAP SETTING ==========================
-export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, iterations, degreeArray, cspring,crep){
+export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, iterations, degreeArray,crep, gravity, gravityType, gravityStrength, speedTolerance, speedCap, overlappingNodes ){
 
   // Algorithm constants
   const kIter = iterations === undefined? 100: iterations;
   const W = graph_distancex -6;
   const L = graph_distancey -6;
-  ka = cspring === undefined? 1: cspring; //constant scaling force of attraction
-  kr = 1; //constant scaling force of repulsion
+  kr = crep === undefined? 1: crep; //constant scaling force of repulsion
+  console.log(kr);
+
+
+  console.log(gravity, gravityType, gravityStrength, speedTolerance, speedCap, overlappingNodes)
   //copying input
   let new_vertices = [];
   for(let i= 0; i < vertices.length; i++){
@@ -106,7 +109,7 @@ export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, it
       // if(t === 1) console.log("swgG",swgG)
     }
     sG = tau*(traG/swgG);
-    console.log("sG",sG);
+    // console.log("sG",sG);
 
     var sN = 0;
     for(let i = 0; i < new_vertices.length; i++){

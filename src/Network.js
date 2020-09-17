@@ -124,7 +124,7 @@ class NetworkVisualizer extends React.Component{
   }
 
   generateForceAtlas2(){
-    const values = forceAtlas2(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations, this.state.degree_array);
+    const values = forceAtlas2(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations, this.state.degree_array,  this.attribute.current.state.kr, this.attribute.current.state.gravity, this.attribute.current.state.gravityType, this.attribute.current.state.kg, this.attribute.current.state.tau, this.attribute.current.state.ksmax, this.attribute.current.state.overlappingNodes);
     const new_vertices = values[0];
     const animations = values[1];
     console.log(new_vertices);
@@ -135,7 +135,10 @@ class NetworkVisualizer extends React.Component{
 
   generateForceAtlasLinLog(){
     const values = forceAtlasLinLog(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations, this.state.degree_array)
-    console.log(values);
+    const new_vertices = values[0];
+    const animations = values[1];
+
+    this.animateNetwork(animations, new_vertices);
   }
 
   runAlgorithm(){
@@ -255,7 +258,7 @@ class NetworkVisualizer extends React.Component{
               <optgroup label = "Force Directed Algorithms">
               <option value = "spring"> Basic Spring Embedding </option>
               <option value = "fruchtermanReingold"> Fruchterman-Reingold </option>
-              <option value = "kamadaKawai"> Kamada-Kawai </option>
+              <option value = "kamadaKawai" disabled = {true}> Kamada-Kawai </option>
               <option value = "forceAtlas2"> Force Atlas 2</option>
               <option value = "forceAtlasLinLog"> Force Atlas 2 (LinLog) </option>
               </optgroup>
@@ -269,6 +272,7 @@ class NetworkVisualizer extends React.Component{
               <option value = "random"> Random </option>
               <option value = "randomcircle"> Random Circle </option>
               <option value = "randomsymmetry" disabled = {true}> Random Symmetry </option>
+              <option value = "randomclustering" disabled = {true}> Random Clustering </option>
             </select>
             <button className = "helpbresized" onClick = {() => this.setHelp("randomType")}>?</button>
             <button className = "b" disabled = {this.state.running} onClick = {() => this.resetNetwork()}> Reset Network</button>
