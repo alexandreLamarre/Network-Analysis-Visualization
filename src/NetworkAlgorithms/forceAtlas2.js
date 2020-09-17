@@ -12,7 +12,7 @@ export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, it
   const W = graph_distancex -6;
   const L = graph_distancey -6;
   ka = cspring === undefined? 1: cspring; //constant scaling force of attraction
-  kr = Math.pow(W+L,2); //constant scaling force of repulsion
+  kr = 1; //constant scaling force of repulsion
   //copying input
   let new_vertices = [];
   for(let i= 0; i < vertices.length; i++){
@@ -78,7 +78,7 @@ export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, it
     //calculate forces of gravity
     // for(let i = 0; i < new_vertices.length; i ++){
     //   const unitvector = unitVector(vertices[i], [W/2,L/2]);
-    //   const gravity_force = fgravityStrong(new_vertices[i], degreeArray[i], [W/2,L/2]);
+    //   const gravity_force = fgravity(new_vertices[i], degreeArray[i], [W/2,L/2]);
     //   force_list[i][0] += unitvector[0]*gravity_force;
     //   force_list[i][1] += unitvector[1]*gravity_force;
     // }
@@ -210,8 +210,4 @@ function unitVector(x,y){
   var dist = distance(x,y);
   if(dist === 0) dist = 0.00000000000000000001;
   return [new_x/dist, new_y/dist];
-}
-
-function cool(t){
-  return 0.99*t
 }
