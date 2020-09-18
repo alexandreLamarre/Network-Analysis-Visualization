@@ -134,7 +134,7 @@ class NetworkVisualizer extends React.Component{
   }
 
   generateForceAtlasLinLog(){
-    const values = forceAtlasLinLog(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations, this.state.degree_array)
+    const values = forceAtlasLinLog(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations, this.state.degree_array, this.attribute.current.state.kr, this.attribute.current.state.gravity, this.attribute.current.state.gravityType, this.attribute.current.state.kg, this.attribute.current.state.tau, this.attribute.current.state.ksmax, this.attribute.current.state.overlappingNodes)
     const new_vertices = values[0];
     const animations = values[1];
 
