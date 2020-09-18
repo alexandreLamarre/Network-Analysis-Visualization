@@ -52,7 +52,7 @@ export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, it
     //calculate repulsive forces
     for(let i = 0; i < new_vertices.length; i ++){
       let f = [0,0];
-      if(t === 1)console.log("vertex", i)
+      // if(t === 1)console.log("vertex", i)
       for(let j = 0; j < new_vertices.length; j ++){
         if(i!== j){
           var unitvector = unitVector(new_vertices[j].slice(), new_vertices[i].slice());
@@ -65,8 +65,8 @@ export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, it
         }
       }
       if(degreeArray[i] === 0 && t===1) {
-        console.log("postion",new_vertices[i])
-        console.log("current repulsive force", f)
+        // console.log("postion",new_vertices[i])
+        // console.log("current repulsive force", f)
       }
       // if(t === 1) console.log(f);
       // f[1] = -f[1]

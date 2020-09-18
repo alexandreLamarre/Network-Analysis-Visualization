@@ -1,18 +1,24 @@
 var ka = 1;
 var kr = 1;
-var kg = 800;
+var kg = 10;
 var ks = 0.1;
-var tau = 1;
+var tau = 0.1;
 var ksmax = 10;
 //============================ REMEMBER TO ADD NO OVERLAP SETTING ==========================
-export function forceAtlasLinLog(vertices,edges, graph_distancex, graph_distancey, iterations, degreeArray, cspring,crep){
+export function forceAtlasLinLog(vertices,edges, graph_distancex, graph_distancey, iterations, degreeArray,crep, gravity, gravityType, gravityStrength, speedTolerance, speedCap, overlappingNodes ){
 
   // Algorithm constants
   const kIter = iterations === undefined? 100: iterations;
   const W = graph_distancex -6;
   const L = graph_distancey -6;
-  ka = cspring === undefined? 1: cspring; //constant scaling force of attraction
-  kr = 0.5; //constant scaling force of repulsion
+  kr = crep === undefined? 1: crep; //constant scaling force of repulsion
+  kg = gravityStrength === undefined? 100: 10*gravityStrength;
+  tau = speedTolerance === undefined? 0.1: speedTolerance;
+  ksmax = speedCap === undefined? 10: speedCap;
+  console.log(kr);
+
+
+  console.log(gravity, gravityType, gravityStrength, speedTolerance, speedCap, overlappingNodes)
   //copying input
   let new_vertices = [];
   for(let i= 0; i < vertices.length; i++){
@@ -46,17 +52,25 @@ export function forceAtlasLinLog(vertices,edges, graph_distancex, graph_distance
     //calculate repulsive forces
     for(let i = 0; i < new_vertices.length; i ++){
       let f = [0,0];
+      // if(t === 1)console.log("vertex", i)
       for(let j = 0; j < new_vertices.length; j ++){
         if(i!== j){
-          var unitvector = unitVector(new_vertices[i], new_vertices[j]);
-          const repulse_force = frepulse(new_vertices[i], new_vertices[j], degreeArray[i], degreeArray[j]);
+          var unitvector = unitVector(new_vertices[j].slice(), new_vertices[i].slice());
+          const repulse_force = frepulse(new_vertices[i].slice(), new_vertices[j].slice(), degreeArray[i], degreeArray[j]);
           // if(i === 0 && t == 2) console.log(unitvector);
           // if(i === 0 && t == 2) console.log(repulse_force);
           f[0] += (unitvector[0])*repulse_force;
           f[1] += (unitvector[1])*repulse_force;
+          // if(t === 1) console.log(repulse_force);
         }
       }
+      if(degreeArray[i] === 0 && t===1) {
+        // console.log("postion",new_vertices[i])
+        // console.log("current repulsive force", f)
+      }
       // if(t === 1) console.log(f);
+      // f[1] = -f[1]
+      f[0] = -f[0]
       force_list.push(f);
     }
 
@@ -75,13 +89,17 @@ export function forceAtlasLinLog(vertices,edges, graph_distancex, graph_distance
     }
 
 
-    //calculate forces of gravity
-    // for(let i = 0; i < new_vertices.length; i ++){
-    //   const unitvector = unitVector(vertices[i], [W/2,L/2]);
-    //   const gravity_force = fgravity(new_vertices[i], degreeArray[i], [W/2,L/2]);
-    //   force_list[i][0] += unitvector[0]*gravity_force;
-    //   force_list[i][1] += unitvector[1]*gravity_force;
-    // }
+    // calculate forces of gravity
+    if(gravity === true){
+      const center = (t === 1)? [W/2, L/2]: [(W/2) * 1/(scaling_factor[t-2][2]), (L/2) * 1/(scaling_factor[t-2][3])]
+      for(let i = 0; i < new_vertices.length; i ++){
+        const unitvector = unitVector(center,vertices[i]);
+        const gravity_force = gravityType === "Normal"?fgravity(new_vertices[i], degreeArray[i]): fgravityStrong(new_vertices[i], degreeArray[i], center);
+        // if(t === 1) console.log(gravity_force);
+        force_list[i][0] += unitvector[0]*gravity_force;
+        force_list[i][1] += unitvector[1]*gravity_force;
+      }
+    }
 
     //update positions
     const iter_animations = [];
@@ -106,7 +124,7 @@ export function forceAtlasLinLog(vertices,edges, graph_distancex, graph_distance
       // if(t === 1) console.log("swgG",swgG)
     }
     sG = tau*(traG/swgG);
-    console.log("sG",sG);
+    // console.log("sG",sG);
 
     var sN = 0;
     for(let i = 0; i < new_vertices.length; i++){
@@ -135,7 +153,7 @@ export function forceAtlasLinLog(vertices,edges, graph_distancex, graph_distance
       //add animations
       iter_animations.push(new_vertices[i].slice());
     }
-    scaling_factor.push([minX, minY, W/(Math.abs(minX)+maxX), L/(Math.abs(minY)+maxY)]);
+    scaling_factor.push([Math.min(minX,0), Math.min(minY,0), Math.min(W/(Math.abs(minX)+maxX),1), Math.min(L/(Math.abs(minY)+maxY),1)]);
     animations.push(iter_animations);
     t+=1;
   }
