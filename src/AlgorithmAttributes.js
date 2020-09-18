@@ -259,7 +259,7 @@ class AlgorithmAttributes extends React.Component{
                 <div className = "sliders">
                   <input className = "slider"
                   type = "range"
-                  min = "0.1"
+                  min = "-1"
                   max = "3"
                   step = "0.1"
                   value = {this.state.kr}
@@ -301,7 +301,7 @@ class AlgorithmAttributes extends React.Component{
                   min = "0"
                   max = "20"
                   step = "0.1"
-                  value = {this.state.gravityType}
+                  value = {this.state.kg}
                   onChange = {(event) => this.setGravityStrength(event.target.value)}
                   disabled = {this.state.running || !(this.state.gravity)}>
                   </input>

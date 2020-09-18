@@ -127,8 +127,8 @@ class NetworkVisualizer extends React.Component{
     const values = forceAtlas2(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations, this.state.degree_array,  this.attribute.current.state.kr, this.attribute.current.state.gravity, this.attribute.current.state.gravityType, this.attribute.current.state.kg, this.attribute.current.state.tau, this.attribute.current.state.ksmax, this.attribute.current.state.overlappingNodes);
     const new_vertices = values[0];
     const animations = values[1];
-    console.log(new_vertices);
-    console.log(animations);
+    // console.log(new_vertices);
+    // console.log(animations);
 
     this.animateNetwork(animations, new_vertices);
   }
