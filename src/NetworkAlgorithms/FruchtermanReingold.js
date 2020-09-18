@@ -107,7 +107,7 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
       iter_animations.push(new_vertices[i].slice())
     }
     //update scaling factors, animations and particle temperature
-    scaling_factor.push([minX, minY, W/(Math.abs(minX)+maxX), L/(Math.abs(minY)+maxY)])
+    scaling_factor.push([Math.min(minX,0), Math.min(minY,0), Math.min(W/(Math.abs(minX)+maxX),1), Math.min(L/(Math.abs(minY)+maxY),1)])
     animations.push(iter_animations);
     if(tempHeuristic !== "Directional")temperature = cool(temperature, tempHeuristic, initial_temperature);
     // if(tempHeuristic === "Directional"){
