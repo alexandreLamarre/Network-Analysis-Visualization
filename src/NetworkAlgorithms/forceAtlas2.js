@@ -52,10 +52,11 @@ export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, it
     //calculate repulsive forces
     for(let i = 0; i < new_vertices.length; i ++){
       let f = [0,0];
+      if(t === 1)console.log("vertex", i)
       for(let j = 0; j < new_vertices.length; j ++){
         if(i!== j){
-          var unitvector = unitVector(new_vertices[i], new_vertices[j]);
-          const repulse_force = frepulse(new_vertices[i], new_vertices[j], degreeArray[i], degreeArray[j]);
+          var unitvector = unitVector(new_vertices[j].slice(), new_vertices[i].slice());
+          const repulse_force = frepulse(new_vertices[i].slice(), new_vertices[j].slice(), degreeArray[i], degreeArray[j]);
           // if(i === 0 && t == 2) console.log(unitvector);
           // if(i === 0 && t == 2) console.log(repulse_force);
           f[0] += (unitvector[0])*repulse_force;
@@ -63,7 +64,13 @@ export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, it
           // if(t === 1) console.log(repulse_force);
         }
       }
+      if(degreeArray[i] === 0 && t===1) {
+        console.log("postion",new_vertices[i])
+        console.log("current repulsive force", f)
+      }
       // if(t === 1) console.log(f);
+      // f[1] = -f[1]
+      f[0] = -f[0]
       force_list.push(f);
     }
 
@@ -82,7 +89,7 @@ export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, it
     }
 
 
-    //calculate forces of gravity
+    // calculate forces of gravity
     if(gravity === true){
       const center = (t === 1)? [W/2, L/2]: [(W/2) * 1/(scaling_factor[t-2][2]), (L/2) * 1/(scaling_factor[t-2][3])]
       for(let i = 0; i < new_vertices.length; i ++){

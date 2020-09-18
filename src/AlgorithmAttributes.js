@@ -259,8 +259,8 @@ class AlgorithmAttributes extends React.Component{
                 <div className = "sliders">
                   <input className = "slider"
                   type = "range"
-                  min = "-1"
-                  max = "3"
+                  min = "0.1"
+                  max = "10"
                   step = "0.1"
                   value = {this.state.kr}
                   onChange = {(event) => this.setKr(event.target.value)}
