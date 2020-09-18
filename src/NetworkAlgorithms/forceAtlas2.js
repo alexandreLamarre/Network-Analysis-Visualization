@@ -1,6 +1,6 @@
 var ka = 1;
 var kr = 1;
-var kg = 800;
+var kg = 10;
 var ks = 0.1;
 var tau = 0.1;
 var ksmax = 10;
@@ -12,6 +12,9 @@ export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, it
   const W = graph_distancex -6;
   const L = graph_distancey -6;
   kr = crep === undefined? 1: crep; //constant scaling force of repulsion
+  kg = gravityStrength === undefined? 100: 10*gravityStrength;
+  tau = speedTolerance === undefined? 0.1: speedTolerance;
+  ksmax = speedCap === undefined? 10: speedCap;
   console.log(kr);
 
 
@@ -57,6 +60,7 @@ export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, it
           // if(i === 0 && t == 2) console.log(repulse_force);
           f[0] += (unitvector[0])*repulse_force;
           f[1] += (unitvector[1])*repulse_force;
+          // if(t === 1) console.log(repulse_force);
         }
       }
       // if(t === 1) console.log(f);
@@ -79,12 +83,16 @@ export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, it
 
 
     //calculate forces of gravity
-    // for(let i = 0; i < new_vertices.length; i ++){
-    //   const unitvector = unitVector(vertices[i], [W/2,L/2]);
-    //   const gravity_force = fgravity(new_vertices[i], degreeArray[i], [W/2,L/2]);
-    //   force_list[i][0] += unitvector[0]*gravity_force;
-    //   force_list[i][1] += unitvector[1]*gravity_force;
-    // }
+    if(gravity === true){
+      const center = (t === 1)? [W/2, L/2]: [(W/2) * 1/(scaling_factor[t-2][2]), (L/2) * 1/(scaling_factor[t-2][3])]
+      for(let i = 0; i < new_vertices.length; i ++){
+        const unitvector = unitVector(center,vertices[i]);
+        const gravity_force = gravityType === "Normal"?fgravity(new_vertices[i], degreeArray[i]): fgravityStrong(new_vertices[i], degreeArray[i], center);
+        // if(t === 1) console.log(gravity_force);
+        force_list[i][0] += unitvector[0]*gravity_force;
+        force_list[i][1] += unitvector[1]*gravity_force;
+      }
+    }
 
     //update positions
     const iter_animations = [];
@@ -138,7 +146,7 @@ export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, it
       //add animations
       iter_animations.push(new_vertices[i].slice());
     }
-    scaling_factor.push([minX, minY, W/(Math.abs(minX)+maxX), L/(Math.abs(minY)+maxY)]);
+    scaling_factor.push([Math.min(minX,0), Math.min(minY,0), Math.min(W/(Math.abs(minX)+maxX),1), Math.min(L/(Math.abs(minY)+maxY),1)]);
     animations.push(iter_animations);
     t+=1;
   }
