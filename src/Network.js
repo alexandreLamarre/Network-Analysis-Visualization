@@ -259,8 +259,8 @@ class NetworkVisualizer extends React.Component{
               <option value = "spring"> Basic Spring Embedding </option>
               <option value = "fruchtermanReingold"> Fruchterman-Reingold </option>
               <option value = "kamadaKawai" disabled = {true}> Kamada-Kawai </option>
-              <option value = "forceAtlas2"> Force Atlas 2</option>
-              <option value = "forceAtlasLinLog"> Force Atlas 2 (LinLog) </option>
+              <option value = "forceAtlas2"> Force Atlas 2 (unfinished preview)</option>
+              <option value = "forceAtlasLinLog"> Force Atlas 2 (LinLog) (unfinished preview) </option>
               </optgroup>
               <optgroup label = "Spectral Layout Algorithms">
               </optgroup>

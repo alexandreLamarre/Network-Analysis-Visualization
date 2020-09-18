@@ -342,7 +342,7 @@ class AlgorithmAttributes extends React.Component{
                   step = "1"
                   value = {this.state.overlappingNodes === true? "0":"1"}
                   onChange = {(event) => this.setOverlappingNodes(event.target.value)}
-                  disabled = {this.state.running}>
+                  disabled = {true}>
                   </input>
                   <label> Overlap Nodes: {this.state.overlappingNodes === true? "On": "Off"}</label>
                   <button className = "helpb"> ?</button>
