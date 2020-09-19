@@ -33,10 +33,11 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
       }
     }
   }
-  // console.log("new_edges",new_edges);
+
 
   let t = 1;
   let animations = [];
+  let scaling_factor = [];
 
   while(t<K){
     let force_list = [];
@@ -44,102 +45,112 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
     for(let i =0; i < new_vertices.length; i++){
       let f = [0,0]; // should be two dimensional
       let vert_connected = []; //represents vertices we should not repulse later
+      // CALCULATE ATTRACTION FORCES
       for(let j = 0; j < new_edges.length; j++){
-        //vertices should attract
         if(i === new_edges[j][0] && i !== new_edges[j][1]){
           const calcs = fattract(new_vertices[new_edges[j][0]], new_vertices[new_edges[j][1]], distType);
-          // console.log(calcs);
-          f[0] += calcs[0]; // should be two dimensional
+          f[0] += calcs[0];
           f[1] += calcs[1];
           vert_connected.push(new_edges[j][1]);
         }
-        //vertices should attract
         if(i === new_edges[j][1] && i !== new_edges[j][0]){
           const calcs = fattract(new_vertices[new_edges[j][0]], new_vertices[new_edges[j][1]], distType)
-          f[0] += calcs[0]; // should be two dimensional
+          f[0] += calcs[0];
           f[1] += calcs[1];
           vert_connected.push(new_edges[j][0]);
         }
       }
+      //CALCULATE REPULSIVE FORCES
       for(let j =0; j < new_vertices.length; j++){
         if(i === j ) continue;
         let connected = false;
         for(let k = 0; k < vert_connected.length; k++){
           if(j === vert_connected[k]) connected = true;
         }
-        // vertices should repluse one another
         if(!connected){
           const calcs = frepulse(new_vertices[i], new_vertices[j]);
-          f[0] += calcs[0];// should be two dimensional
+          f[0] += calcs[0];
           f[1] += calcs[1];
         }
       }
       force_list.push(f)
       fvt.push(distance([0,0], f));
     }
+
+
+    //UPDATE POSITIONS
     const iteration_animation = [];
     var maxF = 0;
+    var minX = Infinity;
+    var minY = Infinity;
+    var maxX = 0;
+    var maxY = 0;
+
     for(let i = 0; i < new_vertices.length; i++){
       let new_x = new_vertices[i][0] + delta*force_list[i][0];
       let new_y = new_vertices[i][1] + delta*force_list[i][1];
       const old_vertices = new_vertices[i].slice();
-      let x0 = old_vertices[0];
-      let y0 = old_vertices[1];
-      while(new_x < 0 || new_y < 0 || new_x > W || new_y > L){
-        // console.log(new_x,new_y);
-        const x1 = new_x;
-        const y1 = new_y;
-        if(new_x < 0){
-          new_x = -(x1);
-          new_y = (y1)
-        }
-        else if(new_y < 0){
-          new_x = (x1);
-          new_y = -(y1);
-        }
-        else if(new_x > W){
-          new_x = W -(x1-W);
-          new_y = (y1);
-        }
-        else if(new_y > L){
-          new_x = (x1);
-          new_y = L - (y1-L);
-        }
-      }
+      new_vertices[i][0] = new_x
+      new_vertices[i][1] = new_y
+
       //Update max forces for convergence bound
-      const curF = distance([new_x,new_y], [x0,y0]);
+      const curF = distance([new_x,new_y], old_vertices);
       if(i === 1) maxF = curF;
       else maxF = maxF > curF? maxF: curF;
 
-      new_vertices[i][0] = new_x//(new_x > graph_distancex-3)? (graph_distancex-3): ((new_x-3) < 0)? 0: (new_x-3); // should be two dimensional
-      new_vertices[i][1] = new_y//(new_y > graph_distancey-3)? (graph_distancey-3): ((new_y -3)< 0)? 0: (new_y-3);
+      //update scaling_factor
+      minX =  minX = Math.min(minX, new_vertices[i][0])
+      minY = Math.min(minY, new_vertices[i][1]);
+      maxX = new_vertices[i][0] > maxX? new_vertices[i][0]:maxX;
+      maxY = new_vertices[i][1] > maxY? new_vertices[i][1]:maxY;
+      //update animations
       iteration_animation.push(new_vertices[i].slice());
-
     }
+    scaling_factor.push([Math.min(minX,0), Math.min(minY,0), Math.min(W/(Math.abs(minX)+Math.max(maxX,W)),1), Math.min(L/(Math.abs(minY)+Math.max(maxY,L)),1)])
+
+
     if(maxF < epsilon) break;
     animations.push(iteration_animation);
-    // if(Math.max(...fvt) < epsilon){
-    //   break;
-    // }
     t += 1
   }
-  // animations.push(new_vertices.slice());
-  const iteration_animation = [];
-  for(let i = 0; i < new_vertices.length; i ++){
-    if(new_vertices[i][0] < 0) new_vertices[i][0] = 0;
-    if(new_vertices[i][1] < 0)new_vertices[i][1] = 0;
-    if(new_vertices[i][0] > graph_distancex -6) new_vertices[i][0] = graph_distancex-6;
-    if(new_vertices[i][1] > graph_distancey - 6) new_vertices[i][1] = graph_distancey-6;
-    iteration_animation.push(new_vertices[i].slice())
+
+  //scale animations properly without affecting computations
+  for(let i = 0; i < animations.length; i++){
+    for(let j = 0; j < animations[i].length; j ++){
+      animations[i][j][0] = (animations[i][j][0] + Math.abs(scaling_factor[i][0]))*scaling_factor[i][2];
+      animations[i][j][1] = (animations[i][j][1] + Math.abs(scaling_factor[i][1]))*scaling_factor[i][3];
+    }
   }
-  animations.push(iteration_animation);
+
+  var minX = Infinity;
+  var minY = Infinity;
+  var maxX = 0;
+  var maxY = 0;
+  for(let i = 0; i < vertices.length; i ++){
+    minX = Math.min(new_vertices[i][0], minX);
+    minY = Math.min(new_vertices[i][1], minY);
+    maxX = new_vertices[i][0] > maxX? new_vertices[i][0]:maxX;
+    maxY = new_vertices[i][1] > maxY? new_vertices[i][1]:maxY;
+  }
+  minX = Math.min(minX, 0);
+  minY = Math.min(minY, 0);
+  for(let i = 0; i <vertices.length; i ++){
+    new_vertices[i][0] = (new_vertices[i][0] + Math.abs(minX)) * Math.min(1,(W/(Math.max(maxX,W)+Math.abs(minX))));
+    new_vertices[i][1] = (new_vertices[i][1] + Math.abs(minY)) * Math.min(1,(L/(Math.max(maxY,L) + Math.abs(minY))));
+  }
+
+
   return [new_vertices, animations];
 }
+
+
+
+
 
 function frepulse(x,y){
   var dist = distance(y,x);
   if(dist === 0) dist = 0.00000000000000000001;
-  const unitV = unitVector(x,y);
+  const unitV = unitVector(y,x);
   return [(CREP*unitV[0])/Math.sqrt(dist) , (CREP*unitV[1])/Math.sqrt(dist)];
 
 }
