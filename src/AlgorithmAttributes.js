@@ -446,7 +446,9 @@ class AlgorithmAttributes extends React.Component{
              </div>
     }
     else{
-      return null;
+      return <div>
+        <HelpWindow ref ={this.help}></HelpWindow>
+      </div>;
     }
   }
 }

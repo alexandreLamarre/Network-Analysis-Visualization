@@ -7,6 +7,9 @@ import {fruchtermanReingold} from "./NetworkAlgorithms/FruchtermanReingold";
 import {kamadaKawai} from "./NetworkAlgorithms/kamadaKawai";
 import {forceAtlas2} from "./NetworkAlgorithms/forceAtlas2";
 import {forceAtlasLinLog} from "./NetworkAlgorithms/forceAtlasLinLog";
+import {hall} from "./NetworkAlgorithms/Hall";
+import {radialFlowDirected} from "./NetworkAlgorithms/radialFlowDirected";
+import {spectralDrawing} from "./NetworkAlgorithms/spectralDrawing"
 import getHelpInfo from "./helpInfoFunctions";
 
 import "./Network.css";
@@ -141,12 +144,27 @@ class NetworkVisualizer extends React.Component{
     this.animateNetwork(animations, new_vertices);
   }
 
+  generateHall(){
+
+  }
+
+  generateSpectralDrawing(){
+
+  }
+
+  generateRadialFlowDirected(){
+
+  }
+
   runAlgorithm(){
     if(this.state.algoType === "spring") this.generateForceDirectedLayout();
     if(this.state.algoType === "fruchtermanReingold") this.generateReingold();
     if(this.state.algoType === "kamadaKawai") this.generateKamadaKawai();
     if(this.state.algoType === "forceAtlas2") this.generateForceAtlas2();
     if(this.state.algoType === "forceAtlasLinLog") this.generateForceAtlasLinLog();
+    if(this.state.algoType === "hall") this.generateHall();
+    if(this.state.algoType === "spectralDrawing") this.generateSpectralDrawing();
+    if(this.state.algoType === "radialFlowDirected") this.generateRadialFlowDirected();
   }
 
   animateNetwork(animations, final_vertices){
@@ -263,6 +281,11 @@ class NetworkVisualizer extends React.Component{
               <option value = "forceAtlasLinLog"> Force Atlas 2 (LinLog) (unfinished preview) </option>
               </optgroup>
               <optgroup label = "Spectral Layout Algorithms">
+              <option value = "hall"> Hall's algorithm </option>
+              <option value = "spectralDrawing"> Generalized Eigenvector Spectral Drawing (Koren)</option>
+              </optgroup>
+              <optgroup label = "Custom Algorithms">
+                <option value = "radialFlowDirected">  Radial Flow Directed </option>
               </optgroup>
             </select>
             <button className = "helpbresized" onClick = {() => this.setHelp("algoType")}> ? </button>
