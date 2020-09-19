@@ -8,7 +8,7 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
   const kIter = iterations === undefined ? 300: iterations;
   ITERATIONS = kIter;
   const tempHeuristic = coolingtype === undefined? "Linear": coolingtype;
-  C = 0.00000001;
+  C = 1;
   K = C* Math.sqrt((W)*(L)/(vertices.length));
   const epsilon = eps;
   // tol = tolerance === undefined? 0.01: tolerance;
@@ -66,8 +66,8 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
       if(e[0] === e[1]) console.log("well fuck");
       const delta = distance(new_vertices[e[0]], new_vertices[e[1]]);
       const unitvector = unitVector(new_vertices[e[0]], new_vertices[e[1]]);
-      force_list[e[0]][0] += ((unitvector[0])*fattract(delta));
-      force_list[e[0]][1] += ((unitvector[1])*fattract(delta));
+      force_list[e[0]][0] += (-(unitvector[0])*fattract(delta));
+      force_list[e[0]][1] += (-(unitvector[1])*fattract(delta));
       force_list[e[1]][0] += ((unitvector[0])*fattract(delta));
       force_list[e[1]][1] += ((unitvector[1])*fattract(delta));
     }
@@ -107,7 +107,7 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
       iter_animations.push(new_vertices[i].slice())
     }
     //update scaling factors, animations and particle temperature
-    scaling_factor.push([Math.min(minX,0), Math.min(minY,0), Math.min(W/(Math.abs(minX)+Math.max(maxX,W)),1), Math.min(L/(Math.abs(minY)+Math.max(maxY,L)),1)])
+    scaling_factor.push([Math.min(minX,0), Math.min(minY,0), W/(Math.abs(minX)+Math.max(maxX,W)), L/(Math.abs(minY)+Math.max(maxY,L))])
     animations.push(iter_animations);
     if(tempHeuristic !== "Directional")temperature = cool(temperature, tempHeuristic, initial_temperature);
     // if(tempHeuristic === "Directional"){
