@@ -54,7 +54,7 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
           vert_connected.push(new_edges[j][1]);
         }
         if(i === new_edges[j][1] && i !== new_edges[j][0]){
-          const calcs = fattract(new_vertices[new_edges[j][0]], new_vertices[new_edges[j][1]], distType)
+          const calcs = fattract(new_vertices[new_edges[j][1]], new_vertices[new_edges[j][0]], distType)
           f[0] += calcs[0];
           f[1] += calcs[1];
           vert_connected.push(new_edges[j][0]);

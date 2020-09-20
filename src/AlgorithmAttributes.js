@@ -23,7 +23,7 @@ class AlgorithmAttributes extends React.Component{
       cPercentage: "0", // spring
       collision: 2, //fruchterman
       distanceType: 1, // spring
-      kr: 1, // forceAtlas2
+      kr: 10, // forceAtlas2
       gravity: false, //forceAtlas2
       gravityType : "Normal",//forceAtlas2
       kg: 10, //forceAtlas2
@@ -356,7 +356,7 @@ class AlgorithmAttributes extends React.Component{
                   <input className = "slider"
                   type = "range"
                   min = "0.1"
-                  max = "10"
+                  max = "100"
                   step = "0.1"
                   value = {this.state.kr}
                   onChange = {(event) => this.setKr(event.target.value)}

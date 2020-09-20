@@ -69,8 +69,6 @@ export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, it
         // console.log("current repulsive force", f)
       }
       // if(t === 1) console.log(f);
-      // f[1] = -f[1]
-      f[0] = -f[0]
       force_list.push(f);
     }
 
@@ -84,13 +82,14 @@ export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, it
       // if(t === 2) console.log(attractive_force);
       force_list[e[0]][0] += ((unitvector[0])*attractive_force);
       force_list[e[0]][1] += ((unitvector[1])*attractive_force);
-      force_list[e[1]][0] += ((unitvector[0])*attractive_force);
-      force_list[e[1]][1] += ((unitvector[1])*attractive_force);
+      force_list[e[1]][0] += (-(unitvector[0])*attractive_force);
+      force_list[e[1]][1] += (-(unitvector[1])*attractive_force);
     }
 
 
     // calculate forces of gravity
     if(gravity === true){
+      console.log(gravity);
       const center = (t === 1)? [W/2, L/2]: [(W/2) * 1/(scaling_factor[t-2][2]), (L/2) * 1/(scaling_factor[t-2][3])]
       for(let i = 0; i < new_vertices.length; i ++){
         const unitvector = unitVector(center,vertices[i]);
@@ -136,8 +135,8 @@ export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, it
       const swgN = distance([force_list[i][0] - previous_forces[i][0], force_list[i][1] - previous_forces[i][1]], [0,0])
       sN = Math.min((ks*sG)/(1+sG*Math.sqrt(swgN)),ksmax/distance(force_list[i], [0,0]));
       // console.log("sN", sN);
-      let new_x = new_vertices[i][0] + xi*sN*force_list[i][0]
-      let new_y = new_vertices[i][1] + yi*sN*force_list[i][1]
+      let new_x = new_vertices[i][0] + sN*force_list[i][0]
+      let new_y = new_vertices[i][1] + sN*force_list[i][1]
       new_vertices[i][0] = new_x;
       new_vertices[i][1] = new_y;
 
@@ -212,7 +211,7 @@ function fgravity(x, degreeX){
 function fgravityStrong(x,degreeX, center){
   var dist_center = distance(x,center);
   if(dist_center === 0) dist_center = 0.00000000000000000001
-  return kg*(degreeX+1)
+  return kg*(degreeX+1)*dist_center;
 }
 
 function distance(x,y){

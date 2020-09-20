@@ -69,8 +69,6 @@ export function forceAtlasLinLog(vertices,edges, graph_distancex, graph_distance
         // console.log("current repulsive force", f)
       }
       // if(t === 1) console.log(f);
-      // f[1] = -f[1]
-      f[0] = -f[0]
       force_list.push(f);
     }
 
@@ -84,8 +82,8 @@ export function forceAtlasLinLog(vertices,edges, graph_distancex, graph_distance
       // if(t === 2) console.log(attractive_force);
       force_list[e[0]][0] += ((unitvector[0])*attractive_force);
       force_list[e[0]][1] += ((unitvector[1])*attractive_force);
-      force_list[e[1]][0] += ((unitvector[0])*attractive_force);
-      force_list[e[1]][1] += ((unitvector[1])*attractive_force);
+      force_list[e[1]][0] += (-(unitvector[0])*attractive_force);
+      force_list[e[1]][1] += (-(unitvector[1])*attractive_force);
     }
 
 
@@ -136,8 +134,8 @@ export function forceAtlasLinLog(vertices,edges, graph_distancex, graph_distance
       const swgN = distance([force_list[i][0] - previous_forces[i][0], force_list[i][1] - previous_forces[i][1]], [0,0])
       sN = Math.min((ks*sG)/(1+sG*Math.sqrt(swgN)),ksmax/distance(force_list[i], [0,0]));
       // console.log("sN", sN);
-      let new_x = new_vertices[i][0] + xi*sN*force_list[i][0]
-      let new_y = new_vertices[i][1] + yi*sN*force_list[i][1]
+      let new_x = new_vertices[i][0] + sN*force_list[i][0]
+      let new_y = new_vertices[i][1] + sN*force_list[i][1]
       new_vertices[i][0] = new_x;
       new_vertices[i][1] = new_y;
 

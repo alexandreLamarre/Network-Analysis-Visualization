@@ -76,7 +76,7 @@ class NetworkVisualizer extends React.Component{
       const c = "rgb(100," + value.toString() +"," + value2.toString()+")";
       ctx.fillStyle= c;
       // ctx.fillRect(this.state.vertices[i][0], this.state.vertices[i][1], 6, 6);
-      ctx.arc(this.state.vertices[i][0], this.state.vertices[i][1], 1+this.state.degree_array[i], 0, Math.PI*2)
+      ctx.arc(this.state.vertices[i][0], this.state.vertices[i][1], 3, 0, Math.PI*2)
       ctx.fill();
       ctx.closePath();
     }
@@ -281,11 +281,11 @@ class NetworkVisualizer extends React.Component{
               <option value = "forceAtlasLinLog"> Force Atlas 2 (LinLog) (unfinished preview) </option>
               </optgroup>
               <optgroup label = "Spectral Layout Algorithms">
-              <option value = "hall"> Hall's algorithm </option>
-              <option value = "spectralDrawing"> Generalized Eigenvector Spectral Drawing (Koren)</option>
+              <option value = "hall" disabled = {true}> Hall's algorithm </option>
+              <option value = "spectralDrawing" disabled = {true}> Generalized Eigenvector Spectral Drawing (Koren)</option>
               </optgroup>
               <optgroup label = "Custom Algorithms">
-                <option value = "radialFlowDirected">  Radial Flow Directed </option>
+                <option value = "radialFlowDirected" disabled = {true}>  Radial Flow Directed </option>
               </optgroup>
             </select>
             <button className = "helpbresized" onClick = {() => this.setHelp("algoType")}> ? </button>
