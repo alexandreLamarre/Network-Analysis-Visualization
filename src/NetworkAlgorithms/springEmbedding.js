@@ -106,7 +106,7 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
       //update animations
       iteration_animation.push(new_vertices[i].slice());
     }
-    scaling_factor.push([Math.min(minX,0), Math.min(minY,0), Math.min(W/(Math.abs(minX)+Math.max(maxX,W)),1), Math.min(L/(Math.abs(minY)+Math.max(maxY,L)),1)])
+    scaling_factor.push([-minX, -minY, W/((-minX)+maxX), L/((-minY)+maxY)])
 
 
     if(maxF < epsilon) break;
@@ -117,8 +117,8 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
   //scale animations properly without affecting computations
   for(let i = 0; i < animations.length; i++){
     for(let j = 0; j < animations[i].length; j ++){
-      animations[i][j][0] = (animations[i][j][0] + Math.abs(scaling_factor[i][0]))*scaling_factor[i][2];
-      animations[i][j][1] = (animations[i][j][1] + Math.abs(scaling_factor[i][1]))*scaling_factor[i][3];
+      animations[i][j][0] = (animations[i][j][0] + scaling_factor[i][0])*scaling_factor[i][2];
+      animations[i][j][1] = (animations[i][j][1] + scaling_factor[i][1])*scaling_factor[i][3];
     }
   }
 

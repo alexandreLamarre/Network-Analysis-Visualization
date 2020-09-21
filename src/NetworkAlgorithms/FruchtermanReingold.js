@@ -107,7 +107,7 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
       iter_animations.push(new_vertices[i].slice())
     }
     //update scaling factors, animations and particle temperature
-    scaling_factor.push([Math.min(minX,0), Math.min(minY,0), W/(Math.abs(minX)+Math.max(maxX,W)), L/(Math.abs(minY)+Math.max(maxY,L))])
+    scaling_factor.push([-minX,-minY, W/(-minX+maxX), L/(-minY+maxY)]);
     animations.push(iter_animations);
     if(tempHeuristic !== "Directional")temperature = cool(temperature, tempHeuristic, initial_temperature);
     // if(tempHeuristic === "Directional"){
@@ -120,8 +120,8 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
 
   for(let i = 0; i < animations.length; i++){
     for(let j = 0; j < animations[i].length; j ++){
-      animations[i][j][0] = (animations[i][j][0] + Math.abs(scaling_factor[i][0]))*scaling_factor[i][2];
-      animations[i][j][1] = (animations[i][j][1] + Math.abs(scaling_factor[i][1]))*scaling_factor[i][3];
+      animations[i][j][0] = (animations[i][j][0] + scaling_factor[i][0])*scaling_factor[i][2];
+      animations[i][j][1] = (animations[i][j][1] + scaling_factor[i][1])*scaling_factor[i][3];
     }
   }
   var minX = Infinity;
@@ -134,13 +134,11 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
     maxX = new_vertices[i][0] > maxX? new_vertices[i][0]:maxX;
     maxY = new_vertices[i][1] > maxY? new_vertices[i][1]:maxY;
   }
-  minX = Math.min(minX, 0);
-  minY = Math.min(minY, 0);
   // maxX = Math.max(W, maxX);
   // maxY = Math.max(L, maxY);
   for(let i = 0; i <vertices.length; i ++){
-    new_vertices[i][0] = (new_vertices[i][0] + Math.abs(minX)) * Math.min(1,(W/(Math.max(maxX,W)+Math.abs(minX))));
-    new_vertices[i][1] = (new_vertices[i][1] + Math.abs(minY)) * Math.min(1,(L/(Math.max(maxY,L) + Math.abs(minY))));
+    new_vertices[i][0] = (new_vertices[i][0] + (-minX)) * W/(-minX+maxX);
+    new_vertices[i][1] = (new_vertices[i][1] + (-minY)) * L/(-minY+maxY);
   }
   console.log(new_vertices);
   return [new_vertices, animations];

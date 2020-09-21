@@ -152,7 +152,7 @@ export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, it
       //add animations
       iter_animations.push(new_vertices[i].slice());
     }
-    scaling_factor.push([Math.min(minX,0), Math.min(minY,0), Math.min(W/(Math.abs(minX)+maxX),1), Math.min(L/(Math.abs(minY)+maxY),1)]);
+    scaling_factor.push([-minX,-minY, W/(-minX+maxX), L/(-minY+maxY)]);
     animations.push(iter_animations);
     t+=1;
   }
@@ -160,8 +160,8 @@ export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, it
   //Scale all the animations within the frame
   for(let i = 0; i < animations.length; i++){
     for(let j = 0; j < animations[i].length; j ++){
-      animations[i][j][0] = (animations[i][j][0] + Math.abs(scaling_factor[i][0]))*scaling_factor[i][2];
-      animations[i][j][1] = (animations[i][j][1] + Math.abs(scaling_factor[i][1]))*scaling_factor[i][3];
+      animations[i][j][0] = (animations[i][j][0] + scaling_factor[i][0])*scaling_factor[i][2];
+      animations[i][j][1] = (animations[i][j][1] + scaling_factor[i][1])*scaling_factor[i][3];
     }
   }
   var minX = Infinity;
@@ -175,8 +175,8 @@ export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, it
     maxY = Math.max(new_vertices[i][1], maxY);
   }
   for(let i = 0; i <vertices.length; i ++){
-    new_vertices[i][0] = (new_vertices[i][0] + Math.abs(minX)) * (W/(maxX+Math.abs(minX)));
-    new_vertices[i][1] = (new_vertices[i][1] + Math.abs(minY)) * (L/(maxY + Math.abs(minY)));
+    new_vertices[i][0] = (new_vertices[i][0] + (-minX)) * (W/(maxX+(-minX)));
+    new_vertices[i][1] = (new_vertices[i][1] + (-minY)) * (L/(maxY + (-minY)));
   }
 
   return [new_vertices, animations];
