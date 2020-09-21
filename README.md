@@ -1,4 +1,24 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Network Algorithm Visualization
+
+The goal of the Network Algorithm Visualization, or NAV for short, is to be able to visualize important network layout algorithms with little to no 
+knowledge about the inner workings of a network. Indeed, it should be used as an educational tool to help familiarize yourself with networks
+and representation of data by networks. The app should also highlight the usefuleness and power of the heuristics used to create these amazing network 
+layouts.
+
+## Table of contents:
+
+- [References](#References)
+
+
+### References 
+The following references are ordered by date:
+- Hall, Kenneth M. "An r-dimensional quadratic placement algorithm." Management science 17.3 (1970): 219-229.
+- Eades, Peter. "A heuristic for graph drawing." Congressus numerantium 42 (1984): 149-160.
+- Kamada, Tomihisa, and Satoru Kawai. "An algorithm for drawing general undirected graphs." Information processing letters 31.1 (1989): 7-15.
+- Fruchterman, Thomas MJ, and Edward M. Reingold. "Graph drawing by force‐directed placement." Software: Practice and experience 21.11 (1991): 1129-1164.
+- Koren, Yehuda. "Drawing graphs by eigenvectors: theory and practice." Computers & Mathematics with Applications 49.11-12 (2005): 1867-1888.
+
+<!--This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
@@ -66,3 +86,5 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `yarn build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+-->
