@@ -34,10 +34,6 @@ class AlgorithmAttributes extends React.Component{
     this.help = React.createRef()
   }
 
-  componentDidMount(){
-    this.setState({maxX:window.innerWidth});
-    this.setState({maxY: window.innerHeight});
-  }
   setLayout(v){
     this.setState({layout: v});
   }
@@ -127,9 +123,9 @@ class AlgorithmAttributes extends React.Component{
     this.help.current.setOpen(open);
   }
   render(){
-    if(this.state.layout === "spring"){
       return <div className = "Attributes">
       <HelpWindow ref = {this.help}></HelpWindow>
+      <p> Spring Embedding</p>
       <div className = "sliders">
                 <input className = "slider"
                 type = "range"
@@ -141,7 +137,6 @@ class AlgorithmAttributes extends React.Component{
                 disabled = {this.state.running}>
                 </input>
                 <label> Force of Attraction: {this.state.cspring}</label>
-                <button className = "helpb" onClick = {() => this.setHelp("cspring")}> ?</button>
                 </div>
                 <div className = "sliders">
                 <input className = "slider"
@@ -154,7 +149,6 @@ class AlgorithmAttributes extends React.Component{
                 disabled = {this.state.running}>
                 </input>
                 <label> Force of Repulsion : {this.state.crep}</label>
-                <button className = "helpb" onClick = {() => this.setHelp("crep")}> ?</button>
               </div>
                 <div className = "sliders">
                 <input className = "slider"
@@ -167,7 +161,6 @@ class AlgorithmAttributes extends React.Component{
                 disabled = {this.state.running}>
                 </input>
                 <label> Convergence Bound : {this.state.eps}</label>
-                <button className = "helpb" onClick = {() => this.setHelp("eps")}> ?</button>
                 </div>
                 <div className = "sliders">
                 <input className = "slider"
@@ -180,7 +173,6 @@ class AlgorithmAttributes extends React.Component{
                 disabled = {this.state.running}>
                 </input>
                 <label> Rate of Convergence: {this.state.delta}</label>
-                <button className = "helpb" onClick = {() => this.setHelp("delta")}> ?</button>
                 </div>
                 <div className = "sliders">
                 <input className = "slider"
@@ -193,7 +185,6 @@ class AlgorithmAttributes extends React.Component{
                 disabled = {this.state.running}>
                 </input>
                 <label> Force to Area scaling: {this.state.cPercentage}%</label>
-                <button className = "helpb" onClick = {() => this.setHelp("forceArea")}> ?</button>
                 </div>
                 <div className = "sliders">
                 <input className = "slider"
@@ -206,12 +197,10 @@ class AlgorithmAttributes extends React.Component{
                 disabled = {this.state.running}>
                 </input>
                 <label> Distance: {this.state.distanceType === 1? "Continuous": "Graph Theoretic"}</label>
-                <button className = "helpb" onClick = {() => this.setHelp("distanceType")}> ?</button>
                 </div>
-              </div>
-    }
-    else if(this.state.layout === "fruchtermanReingold"){
-      return <div className = "Attributes">
+
+              <p>Fruchterman-Reingold</p>
+              <div className = "Attributes">
                 <HelpWindow ref = {this.help}></HelpWindow>
                 <div className = "sliders">
                   <input className = "slider"
@@ -224,7 +213,6 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {this.state.running}>
                   </input>
                   <label> Initial Temperature Scaling: {this.state.cTemp}</label>
-                  <button className = "helpb" onClick = {() => this.setHelp("cTemp")}> ?</button>
                 </div>
                 <div className = "sliders">
                   <input className = "slider"
@@ -237,7 +225,6 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {this.state.running}>
                   </input>
                   <label> Temperature Cooling: {this.state.tempHeuristic}</label>
-                  <button className = "helpb" onClick = {() => this.setHelp("tempHeuristic")}> ?</button>
                   <input className = "slider"
                   type = "range"
                   min = "0.001"
@@ -248,13 +235,11 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {this.state.running}>
                   </input>
                   <label> Convergence Bound : {this.state.eps}</label>
-                  <button className = "helpb" onClick = {() => this.setHelp("eps")}> ?</button>
                 </div>
+              </div>
 
-             </div>
-    }
-    else if(this.state.layout === "forceAtlas2"){
-      return <div className = "Attributes">
+            <p> ForceAtlas2 </p>
+            <div className = "Attributes">
                 <HelpWindow ref = {this.help}></HelpWindow>
                 <div className = "sliders">
                   <input className = "slider"
@@ -267,7 +252,6 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {this.state.running}>
                   </input>
                   <label> Force of Repulsion: {this.state.kr}</label>
-                  <button className = "helpb"> ?</button>
                 </div>
                 <div className = "sliders">
                   <input className = "slider"
@@ -280,7 +264,6 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {this.state.running}>
                   </input>
                   <label> Gravity: {this.state.gravity === true? "On": "Off"}</label>
-                  <button className = "helpb"> ?</button>
                 </div>
                 <div className = "sliders">
                   <input className = "slider"
@@ -293,7 +276,6 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {this.state.running || !(this.state.gravity)}>
                   </input>
                   <label> Gravity Type: {this.state.gravityType}</label>
-                  <button className = "helpb"> ?</button>
                 </div>
                 <div className = "sliders">
                   <input className = "slider"
@@ -306,7 +288,6 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {this.state.running || !(this.state.gravity)}>
                   </input>
                   <label> Gravity Strength: {this.state.kg}</label>
-                  <button className = "helpb"> ?</button>
                 </div>
                 <div className = "sliders">
                   <input className = "slider"
@@ -319,7 +300,6 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {this.state.running}>
                   </input>
                   <label> Tolerance(speed): {this.state.tau}</label>
-                  <button className = "helpb"> ?</button>
                 </div>
                 <div className = "sliders">
                   <input className = "slider"
@@ -332,7 +312,6 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {this.state.running}>
                   </input>
                   <label> Temperature Cap: {this.state.ksmax}</label>
-                  <button className = "helpb"> ?</button>
                 </div>
                 <div className = "sliders">
                   <input className = "slider"
@@ -345,12 +324,10 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {true}>
                   </input>
                   <label> Overlap Nodes: {this.state.overlappingNodes === true? "On": "Off"}</label>
-                  <button className = "helpb"> ?</button>
                 </div>
              </div>
-    }
-    else if(this.state.layout === "forceAtlasLinLog"){
-      return <div className = "Attributes">
+            <p>ForceAtlasLinLog</p>
+            <div className = "Attributes">
                 <HelpWindow ref = {this.help}></HelpWindow>
                 <div className = "sliders">
                   <input className = "slider"
@@ -363,7 +340,6 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {this.state.running}>
                   </input>
                   <label> Force of Repulsion: {this.state.kr}</label>
-                  <button className = "helpb"> ?</button>
                 </div>
                 <div className = "sliders">
                   <input className = "slider"
@@ -376,7 +352,6 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {this.state.running}>
                   </input>
                   <label> Gravity: {this.state.gravity === true? "On": "Off"}</label>
-                  <button className = "helpb"> ?</button>
                 </div>
                 <div className = "sliders">
                   <input className = "slider"
@@ -389,7 +364,6 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {this.state.running || !(this.state.gravity)}>
                   </input>
                   <label> Gravity Type: {this.state.gravityType}</label>
-                  <button className = "helpb"> ?</button>
                 </div>
                 <div className = "sliders">
                   <input className = "slider"
@@ -402,7 +376,6 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {this.state.running || !(this.state.gravity)}>
                   </input>
                   <label> Gravity Strength: {this.state.kg}</label>
-                  <button className = "helpb"> ?</button>
                 </div>
                 <div className = "sliders">
                   <input className = "slider"
@@ -415,7 +388,6 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {this.state.running}>
                   </input>
                   <label> Tolerance(speed): {this.state.tau}</label>
-                  <button className = "helpb"> ?</button>
                 </div>
                 <div className = "sliders">
                   <input className = "slider"
@@ -428,7 +400,6 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {this.state.running}>
                   </input>
                   <label> Temperature Cap: {this.state.ksmax}</label>
-                  <button className = "helpb"> ?</button>
                 </div>
                 <div className = "sliders">
                   <input className = "slider"
@@ -441,15 +412,9 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {true}>
                   </input>
                   <label> Overlap Nodes: {this.state.overlappingNodes === true? "On": "Off"}</label>
-                  <button className = "helpb"> ?</button>
                 </div>
              </div>
-    }
-    else{
-      return <div>
-        <HelpWindow ref ={this.help}></HelpWindow>
-      </div>;
-    }
+            </div>
   }
 }
 

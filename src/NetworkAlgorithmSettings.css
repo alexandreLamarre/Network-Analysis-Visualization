@@ -1,0 +1,15 @@
+.algorithmsettings{
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: #d3d3d3;
+  margin-bottom: 5%;
+  height:80%;
+  overflow: scroll;
+}
+
+.algorithmsettingsoverlay{
+  position:fixed;
+  top: 10%;
+  bottom:10%;
+  left:10%;
+}

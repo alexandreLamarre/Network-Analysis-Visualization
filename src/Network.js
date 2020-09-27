@@ -37,14 +37,12 @@ class NetworkVisualizer extends React.Component{
     };
     this.app = this.props.app;
     this.help = React.createRef();
-    this.attribute = React.createRef();
     this.tutorial = React.createRef();
   }
 
   componentDidMount(){
     const w = window.innerHeight * 0.55;
     const h = window.innerHeight * 0.55;
-    this.attribute.current.setState({parentHelp:this.help});
 
     const [vertices, edges] = createRandomNetwork(w, h, this.app.state.numV, this.app.state.numE);
     this.setState(
@@ -91,14 +89,14 @@ class NetworkVisualizer extends React.Component{
   }
 
   generateForceDirectedLayout(){
-    const values = springEmbedding(this.state.vertices, this.state.edges,this.state.width, this.state.height, this.state.iterations, this.attribute.current.state.eps, this.attribute.current.state.delta, this.attribute.current.state.cspring, this.attribute.current.state.crep, this.attribute.current.state.cPercentage, this.attribute.current.state.distanceType);
+    const values = springEmbedding(this.state.vertices, this.state.edges,this.state.width, this.state.height, this.state.iterations);
     const new_vertices = values[0];
     const animations = values[1];
     this.animateNetwork(animations, new_vertices);
   }
 
   generateReingold(){
-    const values = fruchtermanReingold(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations, this.attribute.current.state.tempHeuristic, this.attribute.current.state.cTemp, this.attribute.current.state.eps);
+    const values = fruchtermanReingold(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations);
     const new_vertices = values[0];
     const animations = values[1];
     // console.log(animations);
@@ -111,7 +109,7 @@ class NetworkVisualizer extends React.Component{
   }
 
   generateForceAtlas2(){
-    const values = forceAtlas2(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations, this.state.degree_array,  this.attribute.current.state.kr, this.attribute.current.state.gravity, this.attribute.current.state.gravityType, this.attribute.current.state.kg, this.attribute.current.state.tau, this.attribute.current.state.ksmax, this.attribute.current.state.overlappingNodes);
+    const values = forceAtlas2(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations, this.state.degree_array);
     const new_vertices = values[0];
     const animations = values[1];
     // console.log(new_vertices);
@@ -121,7 +119,7 @@ class NetworkVisualizer extends React.Component{
   }
 
   generateForceAtlasLinLog(){
-    const values = forceAtlasLinLog(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations, this.state.degree_array, this.attribute.current.state.kr, this.attribute.current.state.gravity, this.attribute.current.state.gravityType, this.attribute.current.state.kg, this.attribute.current.state.tau, this.attribute.current.state.ksmax, this.attribute.current.state.overlappingNodes)
+    const values = forceAtlasLinLog(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations, this.state.degree_array)
     const new_vertices = values[0];
     const animations = values[1];
 
@@ -174,7 +172,7 @@ class NetworkVisualizer extends React.Component{
   }
 
   setAlgoType(v){
-    this.attribute.current.setLayout(v)
+    // this.attribute.current.setLayout(v)
     this.setState({algoType: v});
   }
   setRandomizedType(v){
@@ -186,7 +184,7 @@ class NetworkVisualizer extends React.Component{
     if(v === "algoType"){
       value = this.state.algoType;
     }
-    this.attribute.current.help.current.setOpen(false)
+    // this.attribute.current.help.current.setOpen(false)
     const [title, info, details, open] = getHelpInfo(value);
     this.help.current.setTitle(title);
     this.help.current.setInfo(info);
@@ -212,7 +210,7 @@ class NetworkVisualizer extends React.Component{
       this.canvas.current.width = w;
       const that = this;
       waitSetLayout(that, w, h);
-      this.attribute.current.setState({delta: 0.2})
+      // this.attribute.current.setState({delta: 0.2})
     }
   }
 
@@ -272,10 +270,6 @@ class NetworkVisualizer extends React.Component{
             </div>
             <HelpWindow ref = {this.help}></HelpWindow>
 
-
-
-            <p className = "sliderHeader" style = {{color: "black"}}> <b>Algorithm Specific Network Settings</b></p>
-            <AlgorithmAttributes ref = {this.attribute}></AlgorithmAttributes>
 
 
            </div>

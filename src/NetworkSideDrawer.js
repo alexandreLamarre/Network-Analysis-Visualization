@@ -2,6 +2,7 @@ import React from "react";
 import Modal from "react-modal";
 import TutorialWindow from "./TutorialWindow";
 import GeneralNetworkSettings from "./GeneralNetworkSettings";
+import NetworkAlgorithmSettings from "./NetworkAlgorithmSettings";
 
 import "./NetworkSideDrawer.css";
 
@@ -24,6 +25,7 @@ class NetworkSideDrawer extends React.Component{
     }
     this.tutorial = React.createRef();
     this.generalsettings = React.createRef();
+    this.algorithmsettings = React.createRef();
     this.app = this.props.app;
 
   }
@@ -47,13 +49,14 @@ class NetworkSideDrawer extends React.Component{
             >
               <TutorialWindow ref = {this.tutorial} open = {false}/>
               <GeneralNetworkSettings ref = {this.generalsettings} app = {this.app}/>
+              <NetworkAlgorithmSettings ref = {this.algorithmsettings}/>
               <div className = "settings">
                 <br></br>
                 <button onClick = {() => this.tutorial.current.setOpen(true)}> Tutorial </button>
                 <br></br>
                 <button onClick = {() => this.generalsettings.current.setOpen(true)}> General Settings </button>
                 <br></br>
-                <button> Algorithm Settings </button>
+                <button onClick = {() => this.algorithmsettings.current.setOpen(true)}> Algorithm Settings </button>
                 <br></br>
                 <button> Upload Your Data</button>
                 <br></br>
