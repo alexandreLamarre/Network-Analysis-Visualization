@@ -42,8 +42,8 @@ class GeneralNetworkSettings extends React.Component{
     this.setState({open:v});
   }
 
-  setAnimationSpeed(v){
-    const value = parseInt(v);
+  setAnimationSpeed(ms){
+    const value = Math.abs(150-parseInt(ms));
     this.app.setState({animationSpeed: value});
   }
 

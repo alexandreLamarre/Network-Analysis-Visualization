@@ -153,7 +153,7 @@ class NetworkVisualizer extends React.Component{
 
   animateNetwork(animations, final_vertices){
     let x = 0;
-    this.setState({running:true});
+    this.app.setState({running:true});
     for(let k = 0; k < animations.length; k++){
 
       x = setTimeout(() => {
@@ -164,7 +164,8 @@ class NetworkVisualizer extends React.Component{
         this.setState({vertices: vertices});
         // console.log("animating")
         if(k === animations.length-1){
-          this.setState({running:false, sorted:true, vertices:final_vertices});
+          this.setState({sorted:true, vertices:final_vertices});
+          this.app.setState({running:false});
           // console.log(final_vertices);
         }
       }, k * this.app.state.animationSpeed)
@@ -172,32 +173,6 @@ class NetworkVisualizer extends React.Component{
     this.setState({maxtimeouts: x});
   }
 
-
-  setVertices(v){
-    const that = this;
-    waitSetVertices(that,v);
-  }
-
-  setEdges(e){
-    const that = this;
-    waitSetEdges(that,e);
-  }
-
-
-  setAnimationSpeed(ms){
-    const value = Math.abs(150-ms);
-    this.setState({animationSpeed: value});
-  }
-
-  setConnected(v){
-    const value = parseInt(v);
-    const that = this;
-    waitSetConnected(that, value);
-  }
-  setDisconnectedSubgraphs(v){
-    const value = parseInt(v);
-    this.setState({disconnected: value})
-  }
   setAlgoType(v){
     this.attribute.current.setLayout(v)
     this.setState({algoType: v});
@@ -309,23 +284,6 @@ class NetworkVisualizer extends React.Component{
 
 export default NetworkVisualizer;
 
-
-
-async function waitSetConnected(that,value){
-  if(value === 0) await that.setState({connected:"False"});
-  if(value === 1) await that.setState({connected:"True"});
-  that.resetNetwork();
-}
-
-async function waitSetVertices(that, v){
-  await that.setState({numV: v});
-  that.resetNetwork();
-}
-
-async function waitSetEdges(that,e){
-  await that.setState({numE: e});
-  that.resetNetwork();
-}
 
 async function waitSetLayout(that,w,h){
   await that.setState({height: h,width: w});
