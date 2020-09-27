@@ -9,6 +9,7 @@ class NetworkNavBar extends React.Component{
   constructor(props){
     super(props);
     this.settings = React.createRef();
+    this.app = this.props.app;
   }
 
   openSettings(){
@@ -19,11 +20,11 @@ class NetworkNavBar extends React.Component{
 
   render(){
     return <div className = "gonavbar">
-              <NetworkSideDrawer ref = {this.settings}></NetworkSideDrawer>
+              <NetworkSideDrawer ref = {this.settings} app = {this.app}></NetworkSideDrawer>
               <header className = "toolbar">
                 <nav className ="toolbar__navigation">
                 <div><DrawerToggleButton openSettings = {() => this.openSettings()}></DrawerToggleButton></div>
-                  <div className = "toolbar__logo"><a href = "/"> Network Algorithm Visualizer </a></div>
+                  <div className = "toolbar__logo"><a > Network Algorithm Visualizer </a></div>
                 </nav>
               </header>
             </div>

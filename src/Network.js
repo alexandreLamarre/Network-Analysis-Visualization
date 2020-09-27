@@ -27,21 +27,15 @@ class NetworkVisualizer extends React.Component{
       height: 0,
       vertices: [],
       edges: [],
-      numE: 300,
-      numV: 120,
-      animationSpeed: 50,
-      running: false,
       sorted: false,
       iterations: 100,
       maxtimeouts: 0,
-      connected : "False",
       maxDegree: Infinity,
-      disconnected: 1,
       algoType: "spring",
       randomType: "random",
       layoutType: 0,
     };
-
+    this.app = this.props.app;
     this.help = React.createRef();
     this.attribute = React.createRef();
     this.tutorial = React.createRef();
@@ -52,13 +46,14 @@ class NetworkVisualizer extends React.Component{
     const h = window.innerHeight * 0.55;
     this.attribute.current.setState({parentHelp:this.help});
 
-    const [vertices, edges] = createRandomNetwork(w, h, this.state.numV, this.state.numE);
+    const [vertices, edges] = createRandomNetwork(w, h, this.app.state.numV, this.app.state.numE);
     this.setState(
       {width: w,
       height: h,
       vertices: vertices,
       edges: edges,}
     );
+    this.app.setState({numV: vertices.length, numE: edges.length});
   }
 
   componentDidUpdate(){
@@ -172,7 +167,7 @@ class NetworkVisualizer extends React.Component{
           this.setState({running:false, sorted:true, vertices:final_vertices});
           // console.log(final_vertices);
         }
-      }, k * this.state.animationSpeed)
+      }, k * this.app.state.animationSpeed)
     }
     this.setState({maxtimeouts: x});
   }
@@ -247,13 +242,15 @@ class NetworkVisualizer extends React.Component{
   }
 
   resetNetwork(){
-    const [vertices, edges] = createRandomNetwork(this.state.width, this.state.height, this.state.numV, this.state.numE, this.state.connected, this.state.randomType);
+    const [vertices, edges] = createRandomNetwork(this.state.width, this.state.height, this.app.state.numV, this.app.state.numE, this.app.state.connected, this.state.randomType);
 
     this.setState(
       {vertices: vertices,
        edges: edges,
       }
     );
+
+    this.app.setState({numV: vertices.length, numE: edges.length});
   }
   render(){
 
@@ -280,7 +277,7 @@ class NetworkVisualizer extends React.Component{
               </optgroup>
             </select>
             <button className = "helpbresized" onClick = {() => this.setHelp("algoType")}> ? </button>
-            <button className = "b" onClick = {() => this.runAlgorithm()} disabled = {this.state.running}> Run Algorithm </button>
+            <button className = "b" onClick = {() => this.runAlgorithm()} disabled = {this.app.state.running}> Run Algorithm </button>
 
             <select className = "selectalgo" onChange = {(event) => this.setRandomizedType(event.target.value)}>
               <option value = "random"> Random </option>
@@ -289,9 +286,9 @@ class NetworkVisualizer extends React.Component{
               <option value = "randomclustering" disabled = {true}> Random Clustering </option>
             </select>
             <button className = "helpbresized" onClick = {() => this.setHelp("randomType")}>?</button>
-            <button className = "b" disabled = {this.state.running} onClick = {() => this.resetNetwork()}> Reset Network</button>
+            <button className = "b" disabled = {this.app.state.running} onClick = {() => this.resetNetwork()}> Reset Network</button>
 
-            <select className = "selectalgo" onChange = {(event) => this.setLayoutType(event.target.value)} disabled = {this.state.running}>
+            <select className = "selectalgo" onChange = {(event) => this.setLayoutType(event.target.value)} disabled = {this.app.state.running}>
               <option value = "0"> Square </option>
               <option value = "1"> Stretch to Fit </option>
             </select>
@@ -299,74 +296,6 @@ class NetworkVisualizer extends React.Component{
 
             </div>
             <HelpWindow ref = {this.help}></HelpWindow>
-
-
-            <p className = "sliderHeader" style = {{color: "black"}}> <b>General Network Settings</b></p>
-            <div className = "sliders">
-              <input
-              type = "range"
-              min = "0"
-              max = "130"
-              value = {Math.abs(150-this.state.animationSpeed)}
-              className = "slider"
-              onChange = {(event)=> this.setAnimationSpeed(event.target.value)}
-              disabled = {this.state.running}>
-              </input>
-              <label> AnimationSpeed : {this.state.animationSpeed}ms</label>
-              <button className = "helpb" onClick = {() => this.setHelp("animation")}> ?</button>
-              <input
-              type = "range"
-              min = "4"
-              max = "200"
-              value = {this.state.vertices.length}
-              step = "1"
-              className = "slider"
-              name = "weight"
-              disabled = {this.state.running}
-              onChange = {(event) => this.setVertices(event.target.value)}>
-              </input>
-              <label> Vertices: {this.state.vertices.length}</label>
-              <button className = "helpb" onClick = {() => this.setHelp("vertices")}> ?</button>
-              <input
-              type = "range"
-              min =  {this.state.connected === "True"? this.state.vertices.length-1: Math.min(20, this.state.vertices.length-1)}
-              max = {Math.min(Math.floor((this.state.vertices.length*this.state.vertices.length - this.state.vertices.length)/2), MAX_EDGES)}
-              value = {this.state.edges.length}
-              step = "1"
-              className = "slider"
-              name = "weight"
-              disabled = {this.state.running}
-              onChange = {(event) => this.setEdges(event.target.value)}>
-              </input>
-              <label> Edges: {this.state.edges.length}</label>
-              <button className = "helpb" onClick = {() => this.setHelp("edges")}> ?</button>
-              <input
-              type = "range"
-              min = "0"
-              max = "1"
-              value = {this.state.connected === "True"? "1":"0"}
-              step = "1"
-              className = "slider"
-              onChange = {(event) => this.setConnected(event.target.value)}
-              disabled = {this.state.running}>
-              </input>
-              <label> Force Connectedness: {this.state.connected} </label>
-              <button className = "helpb" onClick = {() => this.setHelp("connectedness")}> ?</button>
-              <input
-              type = "range"
-              min = "1"
-              max = "3"
-              step = "1"
-              value = {this.state.disconnected}
-              className = "slider"
-              onChange = {(event) => this.setDisconnectedSubgraphs(event.target.value)}
-              disabled = {true}>
-              </input>
-              <label>
-              Disconnected Subgraphs: {this.state.disconnected}
-              </label>
-              <button className = "helpb" onClick = {() => this.setHelp("disconnected")}> ?</button>
-            </div>
 
 
 

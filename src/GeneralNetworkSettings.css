@@ -1,0 +1,18 @@
+.generalsettings{
+  position:absolute;
+  bottom:0;
+  left:0;
+  right: 0;
+  top: 60%;
+  outline:none;
+  background-color: #606060;
+  border: 1px solid white;
+}
+
+.generalsettingsoverlay{
+  position:fixed;
+  top:2rem;
+  left:0;
+  right:0;
+  bottom:0;
+}

@@ -1,6 +1,7 @@
 import React from "react";
 import Modal from "react-modal";
 import TutorialWindow from "./TutorialWindow";
+import GeneralNetworkSettings from "./GeneralNetworkSettings";
 
 import "./NetworkSideDrawer.css";
 
@@ -22,6 +23,8 @@ class NetworkSideDrawer extends React.Component{
       open:false,
     }
     this.tutorial = React.createRef();
+    this.generalsettings = React.createRef();
+    this.app = this.props.app;
 
   }
 
@@ -43,11 +46,12 @@ class NetworkSideDrawer extends React.Component{
             overlayClassName = "sidedraweroverlay"
             >
               <TutorialWindow ref = {this.tutorial} open = {false}/>
+              <GeneralNetworkSettings ref = {this.generalsettings} app = {this.app}/>
               <div className = "settings">
                 <br></br>
                 <button onClick = {() => this.tutorial.current.setOpen(true)}> Tutorial </button>
                 <br></br>
-                <button> General Settings </button>
+                <button onClick = {() => this.generalsettings.current.setOpen(true)}> General Settings </button>
                 <br></br>
                 <button> Algorithm Settings </button>
                 <br></br>
