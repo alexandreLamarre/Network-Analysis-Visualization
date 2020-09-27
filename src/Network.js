@@ -89,14 +89,16 @@ class NetworkVisualizer extends React.Component{
   }
 
   generateForceDirectedLayout(){
-    const values = springEmbedding(this.state.vertices, this.state.edges,this.state.width, this.state.height, this.state.iterations, 0.1,0.1, 2.0, 1.0, 1 );
+    const values = springEmbedding(this.state.vertices, this.state.edges,
+                    this.state.width, this.state.height, this.state.iterations, 0.1,0.1, 2.0, 1.0, 1 );
     const new_vertices = values[0];
     const animations = values[1];
     this.animateNetwork(animations, new_vertices);
   }
 
   generateReingold(){
-    const values = fruchtermanReingold(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations);
+    const values = fruchtermanReingold(this.state.vertices, this.state.edges,
+            this.state.width,this.state.height, this.state.iterations, "Logarithmic", 1, 0.1);
     const new_vertices = values[0];
     const animations = values[1];
     // console.log(animations);
@@ -236,7 +238,7 @@ class NetworkVisualizer extends React.Component{
               <select className = "selectalgo" onChange = {(event) => this.setAlgoType(event.target.value)}>
                 <optgroup label = "Force Directed Algorithms">
                 <option value = "spring"> Basic Spring Embedding </option>
-                <option value = "fruchtermanReingold" disabled = {true}> Fruchterman-Reingold </option>
+                <option value = "fruchtermanReingold"> Fruchterman-Reingold </option>
                 <option value = "kamadaKawai" disabled = {true}> Kamada-Kawai </option>
                 <option value = "forceAtlas2" disabled = {true}> Force Atlas 2 (unfinished preview)</option>
                 <option value = "forceAtlasLinLog" disabled = {true}> Force Atlas 2 (LinLog) (unfinished preview) </option>
