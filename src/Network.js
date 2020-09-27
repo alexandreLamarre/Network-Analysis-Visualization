@@ -1,7 +1,6 @@
 import React from "react";
 import HelpWindow from "./HelpWindow";
 import AlgorithmAttributes from "./AlgorithmAttributes";
-import TutorialWindow from "./TutorialWindow";
 import createRandomNetwork from "./networkgeneration/createRandomNetwork";
 import {springEmbedding} from "./NetworkAlgorithms/springEmbedding";
 import {fruchtermanReingold} from "./NetworkAlgorithms/FruchtermanReingold";
@@ -259,7 +258,6 @@ class NetworkVisualizer extends React.Component{
   render(){
 
     return <div className = "network">
-            <TutorialWindow ref = {this.tutorial}></TutorialWindow>
             <canvas
             className = "networkCanvas" ref = {this.canvas}>
             </canvas>

@@ -33,7 +33,7 @@ class TutorialWindow extends React.Component{
       Indeed, networks provide an intuitive and efficient way to model large\
       amounts of related data. <br/><br/> We can represent data by Nodes: <br/> <br/> And \
       relationships between data as Edges: <br/>",
-      open: true,
+      open: this.props.open,
       pageNumber: 1,
       maxPageNumber: 9,
     }
