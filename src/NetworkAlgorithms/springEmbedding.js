@@ -18,7 +18,8 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
   const delta = constant === undefined? 1.5: constant;
   CREP = cspring === undefined? 20: cspring;
   CSPRING = crep === undefined? 20: crep;
-  const distType = distanceType;
+  const distType = distanceType === undefined? 1:0;
+
 
   let t = 1;
   let animations = [];
@@ -27,7 +28,7 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
   while(t<K){
     let force_list = [];
     for(let i =0; i < vertices.length; i++){
-      let f = new Force(0,0); // should be two dimensional
+      let f = new Force(0,0);
       let vert_connected = []; //represents vertices we should not repulse later
       // CALCULATE ATTRACTION FORCES
       for(let j = 0; j < edges.length; j++){
@@ -91,7 +92,6 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
       animations[i][j][1] = (animations[i][j][1] + scaling_factor[i][1])*scaling_factor[i][3];
     }
   }
-  console.log(animations);
 
   var minX = Infinity;
   var minY = Infinity;
@@ -117,15 +117,13 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
 
 function frepulse(v1,v2){
   var dist = distance(v2,v1);
-  if(dist === 0) dist = 0.00000000000000000001;
   const unitV = unitVector(v2,v1);
   return [(CREP*unitV[0])/Math.sqrt(dist) , (CREP*unitV[1])/Math.sqrt(dist)];
 
 }
 
 function fattract(v1,v2, distanceType){
-  var dist = distanceType === 1? distance(v1,v2): 1;
-  if(dist === 0) dist = 0.00000000000000000001;
+  var dist = distance(v1,v2);
   const unitV = unitVector(v1,v2);
 
   return [CSPRING* Math.log(dist/(lx)) * unitV[0],
@@ -133,7 +131,8 @@ function fattract(v1,v2, distanceType){
 }
 
 function distance(v1,v2){
-  return  Math.sqrt(Math.pow((v1.x - v2.x), 2) + Math.pow((v1.y - v2.y), 2));
+  const dist = Math.sqrt(Math.pow((v1.x - v2.x), 2) + Math.pow((v1.y - v2.y), 2))
+  return dist === 0? 0.00000000000000000001: dist;
 }
 
 /**

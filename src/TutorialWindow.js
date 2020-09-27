@@ -77,6 +77,7 @@ class TutorialWindow extends React.Component{
     if(this.state.pageNumber == 1){
       return <div className = "tutorialwindow">
         <Modal isOpen = {this.state.open} onRequestClose = {() => this.setOpen(false)}
+        className = "Modal"
         overlayClassName = "Overlay" shouldCloseOnOverlayClick = {true}>
           <button className = "closeb" onClick = {() => this.setOpen(false)}> X </button>
           <h2> {this.state.title} ({this.state.pageNumber}/{this.state.maxPageNumber})</h2>
@@ -100,7 +101,7 @@ class TutorialWindow extends React.Component{
       if(this.state.pageNumber == 2){
         return <div className = "tutorialwindow">
           <Modal isOpen = {this.state.open} onRequestClose = {() => this.setOpen(false)}
-          overlayClassName = "Overlay" shouldCloseOnOverlayClick = {true}>
+          overlayClassName = "Overlay" className = "Modal" shouldCloseOnOverlayClick = {true}>
             <button className = "closeb" onClick = {() => this.setOpen(false)}> X </button>
             <h2> {this.state.title} ({this.state.pageNumber}/{this.state.maxPageNumber})</h2>
             <p id = "TutorialInfo">Structures and properties of Networks can tell us almost
@@ -124,7 +125,7 @@ class TutorialWindow extends React.Component{
         if(this.state.pageNumber == 3){
           return <div className = "tutorialwindow">
             <Modal isOpen = {this.state.open} onRequestClose = {() => this.setOpen(false)}
-            overlayClassName = "Overlay" shouldCloseOnOverlayClick = {true}>
+            overlayClassName = "Overlay" shouldCloseOnOverlayClick = {true} className = "Modal">
               <button className = "closeb" onClick = {() => this.setOpen(false)}> X </button>
               <h2> {this.state.title} ({this.state.pageNumber}/{this.state.maxPageNumber})</h2>
               <p id = "TutorialInfo">There are a lot of different types of networks algorithms, all of
@@ -147,7 +148,7 @@ class TutorialWindow extends React.Component{
         }
           if(this.state.pageNumber == 4){
             return <div className = "tutorialwindow">
-              <Modal isOpen = {this.state.open} onRequestClose = {() => this.setOpen(false)}
+              <Modal isOpen = {this.state.open} onRequestClose = {() => this.setOpen(false)} className = "Modal"
               overlayClassName = "Overlay" shouldCloseOnOverlayClick = {true}>
                 <button className = "closeb" onClick = {() => this.setOpen(false)}> X </button>
                 <h2> {this.state.title} ({this.state.pageNumber}/{this.state.maxPageNumber})</h2>
@@ -174,7 +175,7 @@ class TutorialWindow extends React.Component{
           }
             if(this.state.pageNumber == 5){
               return <div className = "tutorialwindow">
-                <Modal isOpen = {this.state.open} onRequestClose = {() => this.setOpen(false)}
+                <Modal isOpen = {this.state.open} onRequestClose = {() => this.setOpen(false)} className = "Modal"
                 overlayClassName = "Overlay" shouldCloseOnOverlayClick = {true}>
                   <button className = "closeb" onClick = {() => this.setOpen(false)}> X </button>
                   <h2> {this.state.title} ({this.state.pageNumber}/{this.state.maxPageNumber})</h2>
@@ -195,7 +196,7 @@ class TutorialWindow extends React.Component{
             }
               if(this.state.pageNumber == 6){
                 return <div className = "tutorialwindow">
-                  <Modal isOpen = {this.state.open} onRequestClose = {() => this.setOpen(false)}
+                  <Modal isOpen = {this.state.open} onRequestClose = {() => this.setOpen(false)} className = "Modal"
                   overlayClassName = "Overlay" shouldCloseOnOverlayClick = {true}>
                     <button className = "closeb" onClick = {() => this.setOpen(false)}> X </button>
                     <h2> {this.state.title} ({this.state.pageNumber}/{this.state.maxPageNumber})</h2>
@@ -215,7 +216,7 @@ class TutorialWindow extends React.Component{
               }
                 if(this.state.pageNumber == 7){
                   return <div className = "tutorialwindow">
-                    <Modal isOpen = {this.state.open} onRequestClose = {() => this.setOpen(false)}
+                    <Modal isOpen = {this.state.open} onRequestClose = {() => this.setOpen(false)} className = "Modal"
                     overlayClassName = "Overlay" shouldCloseOnOverlayClick = {true}>
                       <button className = "closeb" onClick = {() => this.setOpen(false)}> X </button>
                       <h2> {this.state.title} ({this.state.pageNumber}/{this.state.maxPageNumber})</h2>
@@ -235,7 +236,7 @@ class TutorialWindow extends React.Component{
                 }
                   if(this.state.pageNumber == 8){
                     return <div className = "tutorialwindow">
-                      <Modal isOpen = {this.state.open} onRequestClose = {() => this.setOpen(false)}
+                      <Modal isOpen = {this.state.open} onRequestClose = {() => this.setOpen(false)} className = "Modal"
                       overlayClassName = "Overlay" shouldCloseOnOverlayClick = {true}>
                         <button className = "closeb" onClick = {() => this.setOpen(false)}> X </button>
                         <h2> {this.state.title} ({this.state.pageNumber}/{this.state.maxPageNumber})</h2>
@@ -255,7 +256,7 @@ class TutorialWindow extends React.Component{
                   }
                     if(this.state.pageNumber == 9){
                       return <div className = "tutorialwindow">
-                        <Modal isOpen = {this.state.open} onRequestClose = {() => this.setOpen(false)}
+                        <Modal isOpen = {this.state.open} onRequestClose = {() => this.setOpen(false)} className = "Modal"
                         overlayClassName = "Overlay" shouldCloseOnOverlayClick = {true}>
                           <button className = "closeb" onClick = {() => this.setOpen(false)}> X </button>
                           <h2> {this.state.title} ({this.state.pageNumber}/{this.state.maxPageNumber})</h2>

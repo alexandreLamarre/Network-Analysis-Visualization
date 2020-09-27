@@ -31,69 +31,90 @@ class AlgorithmAttributes extends React.Component{
       ksmax: 10, //forceAtlas2
       overlappingNodes: true, //forceAtlas2
     }
-    this.help = React.createRef()
+    this.help = React.createRef();
+    this.settings = this.props.settings;
   }
 
-  setLayout(v){
-    this.setState({layout: v});
-  }
+
   setCREP(v){
-    this.setState({crep:v});
+    const value = parseFloat(v);
+    this.setState({crep:value});
+    waitSetSettings(this.settings, this)
   }
 
   setCSPRING(v){
-    this.setState({cspring:v});
+    const value = parseFloat(v);
+    this.setState({cspring:value});
+    waitSetSettings(this.settings, this)
   }
 
   setDelta(v){
-    this.setState({delta:v});
+    const value = parseFloat(v);
+    this.setState({delta:value});
+    waitSetSettings(this.settings, this)
   }
 
   setEpsilon(v){
-    this.setState({eps:v});
+    const value = parseFloat(v);
+    this.setState({eps:value});
+    waitSetSettings(this.settings, this)
   }
 
   setC(v){
-    const value = parseInt(v)
+    const value = parseFloat(v)
     this.setState({cPercentage: value});
+    waitSetSettings(this.settings, this)
   }
 
   setCTEMP(v){
-    this.setState({cTemp:v});
+    const value = parseFloat(v);
+    this.setState({cTemp:value});
+    waitSetSettings(this.settings, this)
   }
 
   setKr(v){
-    this.setState({kr: v})
+    const value = parseFloat(v);
+    this.setState({kr: value})
+    waitSetSettings(this.settings, this)
   }
 
   setGravity(v){
     const value = parseInt(v);
     if(value === 0) this.setState({gravity:false});
     if(value === 1) this.setState({gravity: true});
+    waitSetSettings(this.settings, this)
   }
 
   setGravityType(v){
     const value = parseInt(v);
     if(value === 0) this.setState({gravityType: "Normal"});
     if(value === 1) this.setState({gravityType: "Strong"});
+    waitSetSettings(this.settings, this)
   }
 
   setGravityStrength(v){
-    this.setState({kg: v});
+    const value = parseFloat(v);
+    this.setState({kg: value});
+    waitSetSettings(this.settings, this)
   }
 
   setTau(v){
-    this.setState({tau:v});
+    const value = parseFloat(v);
+    this.setState({tau:value});
+    waitSetSettings(this.settings, this)
   }
 
   setKsmax(v){
-    this.setState({ksmax:v})
+    const value = parseFloat(v);
+    this.setState({ksmax:value})
+    waitSetSettings(this.settings, this)
   }
 
   setOverlappingNodes(v){
     const value = parseInt(v);
     if(value === 0) this.setState({overlappingNodes:true});
     if(value === 1) this.setState({overlappingNodes: false})
+    waitSetSettings(this.settings, this)
   }
   setTempHeuristic(v){
     const value = parseInt(v);
@@ -101,17 +122,20 @@ class AlgorithmAttributes extends React.Component{
     if(value===1) this.setState({tempHeuristic: "Logarithmic"});
     if(value===2) this.setState({tempHeuristic: "Linear"});
     if(value===3) this.setState({tempHeuristic: "Directional"});
-    if(value===4) this.setState({tempHeuristic: "None"})
+    if(value===4) this.setState({tempHeuristic: "None"});
+    waitSetSettings(this.settings, this);
   }
 
   setCollision(v){
     const value = parseInt(v);
     this.setState({collision: value});
+    waitSetSettings(this.settings, this)
   }
 
   setDistanceType(v){
     const value = parseInt(v);
     this.setState({distanceType : value});
+    waitSetSettings(this.settings, this)
   }
 
   setHelp(v){
@@ -419,3 +443,22 @@ class AlgorithmAttributes extends React.Component{
 }
 
 export default AlgorithmAttributes;
+
+
+async function waitSetSettings(settings, that){
+  await settings.setState({
+    spring: {ka: that.state.cspring, kr: that.state.crep, eps: that.state.eps,
+            delta: that.state.delta, areascaling: that.state.cPercentage,
+            distanceType: that.state.distanceType},
+    fruchterman: {cTemp: that.state.cTemp,
+            tempHeuristic: that.state.tempHeuristic, eps: that.state.epsilon},
+    forceatlas2: {fr: that.state.kr, gravity: that.state.gravity,
+                  gravityType: that.state.gravityType, kg: that.state.kg,
+                  tau: that.state.tau, ksmax: that.state.mskax,
+                  overlappingNodes: that.state.overlappingNodes},
+    forceatlaslinlog: {fr: that.state.kr, gravity: that.state.gravity,
+                  gravityType: that.state.gravityType, kg: that.state.kg,
+                  tau: that.state.tau, ksmax: that.state.mskax,
+                  overlappingNodes: that.state.overlappingNodes}
+  });
+}

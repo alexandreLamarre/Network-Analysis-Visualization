@@ -1,5 +1,6 @@
 .Modal{
-  position: absolute;
+  position: fixed;
+  background-color: #FFFFFF;
   left:10%;
   right: 10%;
   top: 10%;

@@ -11,8 +11,8 @@ class NetworkAlgorithmSettings extends React.Component{
       open: false,
       spring: {},
       fruchterman: {},
-      forceAtlas2: {},
-      forceAtlasLinLog: {},
+      forceatlas2: {},
+      forceatlaslinlog: {},
     }
     this.attributes = React.createRef();
   }
@@ -21,6 +21,7 @@ class NetworkAlgorithmSettings extends React.Component{
     this.setState({open:v});
   }
 
+
   render(){
     return <div>
               <Modal
@@ -28,7 +29,7 @@ class NetworkAlgorithmSettings extends React.Component{
               onRequestClose = {() => this.setOpen(false)}
               className = "algorithmsettings"
               overlayClassName = "algorithmsettingsoverlay">
-                <AlgorithmAttributes ref= {this.attributes}/>
+                <AlgorithmAttributes settings = {this} ref= {this.attributes}/>
               </Modal>
            </div>
   }

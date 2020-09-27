@@ -14,8 +14,10 @@ class App extends React.Component{
       connected: false,
       maxE: 600,
       minE: 20,
+      settings: {},
     }
     this.network = React.createRef();
+    this.navbar = React.createRef();
   }
 
 
@@ -23,7 +25,7 @@ class App extends React.Component{
     return (
       <div className="App">
         <div className = "AppElements">
-          <NetworkNavBar app = {this}/>
+          <NetworkNavBar ref = {this.navbar} app = {this}/>
           <NetworkVisualizer ref = {this.network} app = {this}/>
         </div>
       </div>

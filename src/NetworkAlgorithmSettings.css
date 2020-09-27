@@ -1,4 +1,8 @@
 .algorithmsettings{
+  position: absolute;
+  top:10%;
+  left:10%;
+  right:10%;
   padding-left: 20px;
   padding-right: 20px;
   background-color: #d3d3d3;
@@ -9,7 +13,8 @@
 
 .algorithmsettingsoverlay{
   position:fixed;
-  top: 10%;
-  bottom:10%;
-  left:10%;
+  top:2rem;
+  left:0;
+  right:0;
+  bottom:0;
 }
