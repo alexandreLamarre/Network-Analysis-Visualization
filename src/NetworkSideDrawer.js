@@ -55,6 +55,8 @@ class NetworkSideDrawer extends React.Component{
                 <br></br>
                 <a href = "https://github.com/alexandreLamarre/Network-Algorithm-Visualization" target= "_blank" > Documentation & Code </a>
                 <br></br>
+                <button> More Information </button>
+                <br></br>
               </div>
             </Modal>
           </div>
