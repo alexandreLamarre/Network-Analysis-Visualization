@@ -1,26 +1,25 @@
 import Vertex from "../datatypes/Vertex";
 import Edge from "../datatypes/Edge";
 
-export default function createRandomNetwork(maxWidth, maxHeight, numV, numE, conn, randomType){
-  let connected = conn === undefined? "False": conn;
-  let seed = randomType === undefined? "random": randomType;
+export function createRandomNetwork3D(maxWidth, maxHeight, maxDepth, numV, numE, conn, randomType){
+  let connected = "False";
+  let seed = "random";
   const maxDegree = numV-1;
   let maxEdges = Math.floor((maxDegree*numV)/2)
   const maxEdgesValue = maxEdges;
   let vertices = [];
   let available_vertices = [];
-  let degree_array = [];
   const center = [maxWidth/2, maxHeight/2];
   const radius = (maxHeight/2)*0.90;
 
   //create random points on canvas
   for(let i = 0; i < numV; i ++){
     var point = [0,0]
-    if(seed === "random") point = createRandomPos(maxWidth, maxHeight);
-    if(seed === "randomcircle") point = createRandomPosCircle(center, radius);
-    vertices.push( new Vertex(point[0], point[1]));
+    if(seed === "random") point = createRandomPos(maxWidth, maxHeight, maxDepth);
+    const v = new Vertex(point[0], point[1], point[2]);
+    v.color = ("#111111")
+    vertices.push(v);
     available_vertices.push(i);
-    degree_array.push(0);
   }
 
   let already_connected = new Map();
@@ -42,7 +41,9 @@ export default function createRandomNetwork(maxWidth, maxHeight, numV, numE, con
       var vIndex2 = pickRandomVertex(unvisited)
       var v2 = unvisited[vIndex2];
       visited.push(v2); //add to visited
-      edges.push( new Edge(v1,v2));
+      const e = new Edge(v1,v2);
+      e.setColor("#d3d3d3");
+      edges.push(e);
       vertices[v1].increment_degree();
       vertices[v2].increment_degree();
       remainingEdges --;
@@ -68,7 +69,9 @@ export default function createRandomNetwork(maxWidth, maxHeight, numV, numE, con
     const indexTo = random1+1000*random2; // as long as numV < 1000 this works
     const indexFrom = random2+1000*random1;
     if(already_connected.get(indexTo) === undefined ){
-      edges.push(new Edge(random1, random2));
+      const e = new Edge(random1, random2);
+      e.setColor("#d3d3d3");
+      edges.push(e);
       vertices[random1].increment_degree();
       vertices[random2].increment_degree();
       if(vertices[random1].degree > maxDegree) available_vertices.splice(random1, 1);
@@ -79,17 +82,11 @@ export default function createRandomNetwork(maxWidth, maxHeight, numV, numE, con
       maxEdges --;
       }
     }
-  const actualMaxDegree = Math.max(...degree_array)
   return [vertices,edges];
 }
 
-function createRandomPos(maxWidth, maxHeight){
-  return [Math.random()*(maxWidth+1-3), Math.random()*(maxHeight+1-3)];
-}
-
-function createRandomPosCircle(center,radius){
-  const randomAngle = Math.random()*(2*Math.PI);
-  return [center[0] + radius*Math.cos(randomAngle), center[1]+radius*Math.sin(randomAngle)];
+function createRandomPos(maxWidth, maxHeight, maxDepth){
+  return [Math.random()*(maxWidth+1-5) -maxWidth/2, Math.random()*(maxHeight+1-5)-maxHeight/2, Math.random()*(maxDepth+1-5)-maxDepth/2];
 }
 
 function connectRandomVertices(vertices){
