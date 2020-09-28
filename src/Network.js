@@ -9,7 +9,8 @@ import {forceAtlas2} from "./NetworkAlgorithms/forceAtlas2";
 import {forceAtlasLinLog} from "./NetworkAlgorithms/forceAtlasLinLog";
 import {hall} from "./NetworkAlgorithms/Hall";
 import {radialFlowDirected} from "./NetworkAlgorithms/radialFlowDirected";
-import {spectralDrawing} from "./NetworkAlgorithms/spectralDrawing"
+import {spectralDrawing} from "./NetworkAlgorithms/spectralDrawing";
+import {kruskal} from "./MSTAlgorithms/kruskal";
 import getHelpInfo from "./helpInfoFunctions";
 
 import "./Network.css";
@@ -74,7 +75,7 @@ class NetworkVisualizer extends React.Component{
       const index2 = this.state.edges[j].end;
       ctx.moveTo(this.state.vertices[index1].x,this.state.vertices[index1].y);
       ctx.lineTo(this.state.vertices[index2].x,this.state.vertices[index2].y);
-      ctx.globalAlpha = 0.1;
+      ctx.globalAlpha = this.state.edges[j].alpha;
       ctx.strokeStyle = this.state.edges[j].color;
       ctx.stroke();
       ctx.closePath();
@@ -140,6 +141,12 @@ class NetworkVisualizer extends React.Component{
 
   }
 
+  generateKruskal(){
+    const [animations, new_edges] = kruskal(this.state.vertices, this.state.edges);
+    const that = this;
+    waitSetEdges(that, new_edges, animations);
+  }
+
   runAlgorithm(){
     if(this.state.algoType === "spring") this.generateForceDirectedLayout();
     if(this.state.algoType === "fruchtermanReingold") this.generateReingold();
@@ -149,6 +156,36 @@ class NetworkVisualizer extends React.Component{
     if(this.state.algoType === "hall") this.generateHall();
     if(this.state.algoType === "spectralDrawing") this.generateSpectralDrawing();
     if(this.state.algoType === "radialFlowDirected") this.generateRadialFlowDirected();
+    if(this.state.algoType === "kruskal") this.generateKruskal();
+  }
+
+  animateColoring(animations){
+    let x = 0;
+    this.app.setState({running:true});
+
+    for(let k =0; k < animations.length; k++){
+      x = setTimeout(() => {
+        const vertices = this.state.vertices;
+        const edges= this.state.edges;
+
+        if(animations[k].vIndex !== undefined){
+          vertices[animations[k].vIndex].color = animations[k].color;
+          vertices[animations[k].vIndex].size = animations[k].size;
+        }
+        if(animations[k].eIndex !== undefined){
+          edges[animations[k].eIndex].setColor(animations[k].color);
+          edges[animations[k].eIndex].setAlpha(animations[k].alpha)
+        }
+
+        this.setState({vertices: vertices, edges:edges});
+        // console.log("animating")
+        if(k === animations.length-1){
+          this.app.setState({running:false});
+          // console.log(final_vertices);
+        }
+      }, k * this.app.state.animationSpeed)
+    }
+    this.setState({maxtimeouts: x});
   }
 
   animateNetwork(animations, final_vertices){
@@ -218,7 +255,6 @@ class NetworkVisualizer extends React.Component{
 
   resetNetwork(){
     const [vertices, edges] = createRandomNetwork(this.state.width, this.state.height, this.app.state.numV, this.app.state.numE, this.app.state.connected, this.state.randomType);
-    console.log(vertices);
     this.setState(
       {vertices: vertices,
        edges: edges,
@@ -249,6 +285,10 @@ class NetworkVisualizer extends React.Component{
                 </optgroup>
                 <optgroup label = "Custom Algorithms">
                   <option value = "radialFlowDirected" disabled = {true}>  Radial Flow Directed </option>
+                </optgroup>
+                <optgroup label = "Minimum Spanning Trees">
+                  <option value ="kruskal"> Kruskral's Algorithm</option>
+                  <option disabled = {true}> Prim's Algorithm </option>
                 </optgroup>
               </select>
 
@@ -288,4 +328,9 @@ export default NetworkVisualizer;
 async function waitSetLayout(that,w,h){
   await that.setState({height: h,width: w});
   that.resetNetwork();
+}
+
+async function waitSetEdges(that, sorted_edges,animations){
+  await that.setState({edges: sorted_edges});
+  that.animateColoring(animations)
 }
