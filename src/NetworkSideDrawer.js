@@ -22,6 +22,7 @@ class NetworkSideDrawer extends React.Component{
     super(props)
     this.state = {
       open:false,
+      dimension: 2,
     }
     this.tutorial = React.createRef();
     this.generalsettings = React.createRef();
@@ -36,6 +37,17 @@ class NetworkSideDrawer extends React.Component{
 
   componentDidUpdate(){
     Modal.setAppElement(document.getElementById('BC'));
+  }
+
+  switchDimension(){
+    if(this.state.dimension == 2) {
+      this.setState({dimension: 3});
+      this.app.setState({dimension: 3});
+    }
+    if(this.state.dimension == 3) {
+      this.setState({dimension: 2});
+      this.app.setState({dimension: 2});
+    }
   }
 
   render(){
@@ -53,6 +65,8 @@ class NetworkSideDrawer extends React.Component{
               <div className = "settings">
                 <br></br>
                 <button onClick = {() => this.tutorial.current.setOpen(true)}> Tutorial </button>
+                <br></br>
+                <button onClick= {() => this.switchDimension()}> {this.state.dimension === 2? 3:2}D Networks </button>
                 <br></br>
                 <button onClick = {() => this.generalsettings.current.setOpen(true)}> General Settings </button>
                 <br></br>
