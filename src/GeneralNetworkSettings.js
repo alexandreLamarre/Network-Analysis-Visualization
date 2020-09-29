@@ -13,17 +13,20 @@ async function waitSetConnected(that,value){
 
 async function waitSetVertices(that, v){
   await that.setState({numV: v});
-  that.network.current.resetNetwork();
+  if(that.state.dimension === 2) that.network.current.resetNetwork();
+  if(that.state.dimension === 3) that.network3d.current.resetNetwork();
 }
 
 async function waitSetEdges(that,e){
   await that.setState({numE: e});
-  that.network.current.resetNetwork();
+  if(that.state.dimension === 2) that.network.current.resetNetwork();
+  if(that.state.dimension === 3) that.network3d.current.resetNetwork();
 }
 
 async function waitSetLayout(that,w,h){
   await that.setState({height: h,width: w});
-  that.network.current.resetNetwork();
+  if(that.state.dimension === 2) that.network.current.resetNetwork();
+  if(that.state.dimension === 3) that.network3d.current.resetNetwork();
 }
 
 

@@ -23,6 +23,7 @@ class NetworkVisualizer3D extends React.Component{
       algoType: "spring",
       randomType: "random",
       iterations: 100,
+      maxtimeouts: 0,
     }
     this.app = this.props.app;
     this.canvas = React.createRef();
@@ -39,14 +40,12 @@ class NetworkVisualizer3D extends React.Component{
     renderer.setSize(w, h);
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(75, w/h, 0.1, 1000);
-    var controls = new OrbitControls(camera, this.canvas.current);
-    var pointLight = new THREE.PointLight( 0xffffff , 0.75);
+    var pointLight = new THREE.PointLight( 0xffffff , 1);
     pointLight.position.set(1,1,2);
     camera.add(pointLight)
     camera.position.z = 1.7*d;
     camera.position.x = w/2;
     camera.position.y = h/2;
-    console.log(controls);
     scene.add(camera);
     renderer.render(scene, camera);
 
@@ -71,7 +70,7 @@ class NetworkVisualizer3D extends React.Component{
     //displaying intial edges
     for(let j = 0; j < edges.length; j++){
         var material = new THREE.LineBasicMaterial({color : 0x00000});
-        material.opacity = 0.3;
+        material.opacity = 0.1;
         var points = [];
         const e = edges[j];
         const v = vertices;
@@ -103,6 +102,14 @@ class NetworkVisualizer3D extends React.Component{
     });
   }
 
+  componentWillUnmount(){
+      var id = this.state.maxtimeouts;
+      while(id){
+        clearInterval(id);
+        id --;
+      }
+  }
+
   componentDidUpdate(){
     for(let i = 0; i< this.state.vertices.length; i++){
       const v = this.state.vertices[i];
@@ -132,17 +139,108 @@ class NetworkVisualizer3D extends React.Component{
       this.state.width, this.state.height, this.state.iterations, "Logarithmic", 1, 0.1)
     const final_vertices = values[0];
     const animations = values[1];
+    this.animateNetwork(animations, final_vertices);
 
   }
 
-  animateNetwork(){
-    
+  animateNetwork(animations, final_vertices){
+    let x = 0;
+    this.app.setState({running: true});
+    for(let k = 0; k < animations.length; k++){
+      x = setTimeout(() => {
+        const vertices = this.state.vertices;
+        for(let i = 0; i < vertices.length; i++){
+          vertices[i].setVector(animations[k][i]);
+        }
+        this.setState({vertices: vertices});
+        if(k === animations.length -1){
+          this.setState({vertices: final_vertices});
+          this.app.setState({running: false});
+        }
+      }, k*this.app.state.animationSpeed)
+    }
+    this.setState({maxtimeouts: x})
+  }
+
+  resetNetwork(){
+    var renderer = new THREE.WebGLRenderer({canvas: this.canvas.current, alpha:true});
+    renderer.setSize(this.state.width, this.state.height);
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(75, this.state.width/this.state.height, 0.1, 1000);
+    var pointLight = new THREE.PointLight( 0xffffff , 1);
+    pointLight.position.set(1,1,2);
+    camera.add(pointLight)
+    camera.position.z = 1.7*this.state.depth;
+    camera.position.x = this.state.width/2;
+    camera.position.y = this.state.height/2;
+    scene.add(camera);
+    renderer.render(scene, camera);
+
+    const [vertices,edges] = createRandomNetwork3D(this.state.width,this.state.height,this.state.depth, this.app.state.numV, this.app.state.numE);
+    const spheres = [];
+    //displaying initial_vertices
+    for(let i = 0; i< vertices.length; i++){
+      const color = vertices[i].color;
+
+      //make a sphere
+      var geometry = new THREE.SphereGeometry(10,8,8);
+      var material = new THREE.MeshLambertMaterial({color: 0x00ffff});
+      var sphere = new THREE.Mesh(geometry, material);
+      const v = vertices[i]
+      sphere.position.set(v.x, v.y, v.z);
+      spheres.push(sphere);
+      scene.add(sphere);
+    }
+
+    const lines = [];
+    //displaying intial edges
+    for(let j = 0; j < edges.length; j++){
+        var material = new THREE.LineBasicMaterial({color : 0x00000});
+        material.opacity = 0.1;
+        var points = [];
+        const e = edges[j];
+        const v = vertices;
+        points.push(spheres[e.start].position);
+        points.push(spheres[e.end].position);
+        var geometry = new THREE.BufferGeometry().setFromPoints(points);
+
+
+        var line = new THREE.Line(geometry, material);
+        scene.add(line);
+        lines.push(line);
+    }
+    renderer.render(scene,camera);
+
+    this.setState({
+      vertices: vertices,
+      edges: edges,
+      scene: scene,
+      camera: camera,
+      renderer: renderer,
+      spheres: spheres,
+      lines: lines,
+    })
+
+    this.app.setState({numV: vertices.length, numE: edges.length});
   }
 
   render(){
     return <div>
               <canvas className = "canvas3d" ref = {this.canvas}></canvas>
-              <button onClick = {() => this.runAlgorithm()}> Run Algorithm</button>
+              <div className = "selectContainer">
+                <div className = "selectalgorow">
+                <button className = "b"
+                disabled = {this.app.state.running === true }
+                onClick = {() => this.runAlgorithm()}> Run Algorithm
+                </button>
+                </div>
+                <div className = "selectalgorow">
+                <button className = "b"
+                disabled = {this.app.state.running === true }
+                onClick = {() => this.resetNetwork()}> Reset Network
+                </button>
+                </div>
+              </div>
           </div>
   }
 

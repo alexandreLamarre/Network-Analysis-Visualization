@@ -6,5 +6,25 @@
   margin-left: auto;
   margin-right: auto;
   display:block;
-  border: #FFFFFF 2px solid;
+  border: #000000 2px solid;
+}
+
+.b{
+ margin-top: 1px;
+ padding: 15px 32px;
+ font-family:'Roboto',sans-serif;
+ font-weight:300;
+ font-size: 20px;
+ color:white;
+ transition: all 0.2s;
+ background-color: #e7e7e7;
+}
+
+.b:hover {
+  background-color: green;
+  color:white;
+}
+
+.b:disabled{
+  background-color: lightgrey;
 }
