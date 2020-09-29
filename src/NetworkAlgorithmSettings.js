@@ -14,6 +14,7 @@ class NetworkAlgorithmSettings extends React.Component{
       forceatlas2: {},
       forceatlaslinlog: {},
     }
+    this.app = this.props.app;
     this.attributes = React.createRef();
   }
 
@@ -29,7 +30,7 @@ class NetworkAlgorithmSettings extends React.Component{
               onRequestClose = {() => this.setOpen(false)}
               className = "algorithmsettings"
               overlayClassName = "algorithmsettingsoverlay">
-                <AlgorithmAttributes settings = {this} ref= {this.attributes}/>
+                <AlgorithmAttributes settings = {this} ref= {this.attributes} app = {this.app}/>
               </Modal>
            </div>
   }

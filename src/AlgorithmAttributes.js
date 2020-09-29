@@ -10,19 +10,19 @@ class AlgorithmAttributes extends React.Component{
     this.state = {
       layout : "spring",
       parentHelp: null,
-      delta: 0.1, //spring
-      eps : 0.5, //spring
-      crep: 1, //spring
-      cspring: 2, //spring
+      delta: this.props.app.state.settings.spring.delta, //spring
+      eps : this.props.app.state.settings.spring.eps, //spring
+      crep: this.props.app.state.settings.spring.kr, //spring
+      cspring: this.props.app.state.settings.spring.ka, //spring
       C: 2, // spring
       maxX: 0,
       maxY: 0,
-      cTemp: 1, //fruchtermanReingold
-      tempHeuristic: "Logarithmic", //fruchtermanReingold
+      cTemp: 1,//this.props.app.settings.fruchterman.cTemp, //fruchtermanReingold
+      tempHeuristic: "Logarithmic",//this.props.app.settings.fruchterman.tempHeuristic, //fruchtermanReingold
       tempHeuristicValue: 1,
-      cPercentage: "0", // spring
+      cPercentage: this.props.app.state.settings.spring.areascaling, // spring
       collision: 2, //fruchterman
-      distanceType: 1, // spring
+      distanceType: this.props.app.state.settings.spring.distanceType, // spring
       kr: 10, // forceAtlas2
       gravity: false, //forceAtlas2
       gravityType : "Normal",//forceAtlas2
@@ -34,120 +34,73 @@ class AlgorithmAttributes extends React.Component{
       filter: "",
     }
     this.help = React.createRef();
-    this.settings = this.props.settings;
+    this.app= this.props.app;
   }
 
 
   setCREP(v){
-    const value = parseFloat(v);
-    this.setState({crep:value});
-    waitSetSettings(this.settings, this)
+    waitsetCREP(v, this);
   }
 
   setCSPRING(v){
-    const value = parseFloat(v);
-    this.setState({cspring:value});
-    waitSetSettings(this.settings, this)
+    waitsetCSPRING(v, this);
   }
 
   setDelta(v){
-    const value = parseFloat(v);
-    this.setState({delta:value});
-    waitSetSettings(this.settings, this)
+    waitsetDelta(v, this);
   }
 
   setEpsilon(v){
-    const value = parseFloat(v);
-    this.setState({eps:value});
-    waitSetSettings(this.settings, this)
+    waitsetEpsilon(v, this);
   }
 
   setC(v){
-    const value = parseFloat(v)
-    this.setState({cPercentage: value});
-    waitSetSettings(this.settings, this)
+    waitsetC(v, this);
   }
 
   setCTEMP(v){
-    const value = parseFloat(v);
-    this.setState({cTemp:value});
-    waitSetSettings(this.settings, this)
+    waitsetCTEMP(v, this);
   }
 
   setKr(v){
-    const value = parseFloat(v);
-    this.setState({kr: value})
-    waitSetSettings(this.settings, this)
+    waitsetKr(v,this);
   }
 
   setGravity(v){
-    const value = parseInt(v);
-    if(value === 0) this.setState({gravity:false});
-    if(value === 1) this.setState({gravity: true});
-    waitSetSettings(this.settings, this)
+    waitsetGravity(v, this);
   }
 
   setGravityType(v){
-    const value = parseInt(v);
-    if(value === 0) this.setState({gravityType: "Normal"});
-    if(value === 1) this.setState({gravityType: "Strong"});
-    waitSetSettings(this.settings, this)
+    waitsetGravityType(v, this);
   }
 
   setGravityStrength(v){
-    const value = parseFloat(v);
-    this.setState({kg: value});
-    waitSetSettings(this.settings, this)
+    waitsetGravityStrength(v, this);
   }
 
   setTau(v){
-    const value = parseFloat(v);
-    this.setState({tau:value});
-    waitSetSettings(this.settings, this)
+    waitsetTau(v, this);
   }
 
   setKsmax(v){
-    const value = parseFloat(v);
-    this.setState({ksmax:value})
-    waitSetSettings(this.settings, this)
+    waitsetKsmax(v, this);
   }
 
   setOverlappingNodes(v){
-    const value = parseInt(v);
-    if(value === 0) this.setState({overlappingNodes:true});
-    if(value === 1) this.setState({overlappingNodes: false})
-    waitSetSettings(this.settings, this)
+    waitsetOverlappingNodes(v, this);
   }
   setTempHeuristic(v){
-    const value = parseInt(v);
-    this.setState({tempHeuristicValue: value});
-    if(value===1) this.setState({tempHeuristic: "Logarithmic"});
-    if(value===2) this.setState({tempHeuristic: "Linear"});
-    if(value===3) this.setState({tempHeuristic: "Directional"});
-    if(value===4) this.setState({tempHeuristic: "None"});
-    waitSetSettings(this.settings, this);
+    waitsetTempHeuristic(v, this);
   }
 
   setCollision(v){
-    const value = parseInt(v);
-    this.setState({collision: value});
-    waitSetSettings(this.settings, this)
+    waitsetCollision(v, this);
   }
 
   setDistanceType(v){
-    const value = parseInt(v);
-    this.setState({distanceType : value});
-    waitSetSettings(this.settings, this)
+    waitsetDistanceType(v, this);
   }
 
-  setHelp(v){
-    this.state.parentHelp.current.setOpen(false)
-    const [title,info,details,open] = getHelpInfo(v);
-    this.help.current.setTitle(title);
-    this.help.current.setInfo(info);
-    this.help.current.setDetails(details);
-    this.help.current.setOpen(open);
-  }
 
   filter(e){
     if(e === "") {
@@ -471,8 +424,8 @@ class AlgorithmAttributes extends React.Component{
 export default AlgorithmAttributes;
 
 
-async function waitSetSettings(settings, that){
-  await settings.setState({
+async function waitSetSettings(app, that){
+  await app.setState({settings: {
     spring: {ka: that.state.cspring, kr: that.state.crep, eps: that.state.eps,
             delta: that.state.delta, areascaling: that.state.cPercentage,
             distanceType: that.state.distanceType},
@@ -485,6 +438,109 @@ async function waitSetSettings(settings, that){
     forceatlaslinlog: {fr: that.state.kr, gravity: that.state.gravity,
                   gravityType: that.state.gravityType, kg: that.state.kg,
                   tau: that.state.tau, ksmax: that.state.mskax,
-                  overlappingNodes: that.state.overlappingNodes}
-  });
+                  overlappingNodes: that.state.overlappingNodes}}});
+  console.log(app.state.settings);
+}
+
+
+async function waitsetCREP(v, that){
+  const value = parseFloat(v);
+  await that.setState({crep:value});
+  waitSetSettings(that.app, that)
+}
+
+async function waitsetCSPRING(v, that){
+  const value = parseFloat(v);
+  await that.setState({cspring:value});
+  waitSetSettings(that.app, that)
+}
+
+async function waitsetDelta(v, that){
+  const value = parseFloat(v);
+  await that.setState({delta:value});
+  waitSetSettings(that.app, that)
+}
+
+async function waitsetEpsilon(v, that){
+  const value = parseFloat(v);
+  await that.setState({eps:value});
+  waitSetSettings(that.app, that)
+}
+
+async function waitsetC(v, that){
+  const value = parseFloat(v)
+  await that.setState({cPercentage: value});
+  waitSetSettings(that.app, that)
+}
+
+async function waitsetCTEMP(v, that){
+  const value = parseFloat(v);
+  await that.setState({cTemp:value});
+  waitSetSettings(that.app, that)
+}
+
+async function waitsetKr(v, that){
+  const value = parseFloat(v);
+  await that.setState({kr: value})
+  waitSetSettings(that.app, that)
+}
+
+async function waitsetGravity(v, that){
+  const value = parseInt(v);
+  if(value === 0) await that.setState({gravity:false});
+  if(value === 1) await that.setState({gravity: true});
+  waitSetSettings(that.app, that)
+}
+
+async function waitsetGravityType(v, that){
+  const value = parseInt(v);
+  if(value === 0) await that.setState({gravityType: "Normal"});
+  if(value === 1) await that.setState({gravityType: "Strong"});
+  waitSetSettings(that.app, that)
+}
+
+async function waitsetGravityStrength(v, that){
+  const value = parseFloat(v);
+  await that.setState({kg: value});
+  waitSetSettings(that.app, that)
+}
+
+async function waitsetTau(v, that){
+  const value = parseFloat(v);
+  await that.setState({tau:value});
+  waitSetSettings(that.app, that)
+}
+
+async function waitsetKsmax(v, that){
+  const value = parseFloat(v);
+  await that.setState({ksmax:value})
+  waitSetSettings(that.app, that)
+}
+
+async function waitsetOverlappingNodes(v, that){
+  const value = parseInt(v);
+  if(value === 0) await that.setState({overlappingNodes:true});
+  if(value === 1) await that.setState({overlappingNodes: false})
+  waitSetSettings(that.app, that)
+}
+async function waitsetTempHeuristic(v, that){
+  const value = parseInt(v);
+  await that.setState({tempHeuristicValue: value});
+  if(value===1) await that.setState({tempHeuristic: "Logarithmic"});
+  if(value===2) await that.setState({tempHeuristic: "Linear"});
+  if(value===3) await that.setState({tempHeuristic: "Directional"});
+  if(value===4) await that.setState({tempHeuristic: "None"});
+  waitSetSettings(that.app, that);
+}
+
+async function waitsetCollision(v, that){
+  const value = parseInt(v);
+  await that.setState({collision: value});
+  waitSetSettings(that.app, that)
+}
+
+async function waitsetDistanceType(v, that){
+  const value = parseInt(v);
+  await that.setState({distanceType : value});
+  waitSetSettings(that.app, that)
 }

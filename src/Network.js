@@ -91,7 +91,7 @@ class NetworkVisualizer extends React.Component{
 
   generateForceDirectedLayout(){
     const values = springEmbedding(this.state.vertices, this.state.edges,
-                    this.state.width, this.state.height, this.state.iterations, 0.1,0.1, 2.0, 1.0, 1 );
+                    this.state.width, this.state.height, this.state.iterations, this.app.state.settings.spring );
     const new_vertices = values[0];
     const animations = values[1];
     this.animateNetwork(animations, new_vertices);
@@ -108,11 +108,13 @@ class NetworkVisualizer extends React.Component{
   }
 
   generateKamadaKawai(){
-    const values = kamadaKawai(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations);
+    const values = kamadaKawai(this.state.vertices, this.state.edges,
+      this.state.width, this.state.height, this.state.iterations);
   }
 
   generateForceAtlas2(){
-    const values = forceAtlas2(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations, this.state.degree_array);
+    const values = forceAtlas2(this.state.vertices, this.state.edges,
+      this.state.width, this.state.height, this.state.iterations, this.state.degree_array);
     const new_vertices = values[0];
     const animations = values[1];
     // console.log(new_vertices);
@@ -122,7 +124,8 @@ class NetworkVisualizer extends React.Component{
   }
 
   generateForceAtlasLinLog(){
-    const values = forceAtlasLinLog(this.state.vertices, this.state.edges, this.state.width, this.state.height, this.state.iterations, this.state.degree_array)
+    const values = forceAtlasLinLog(this.state.vertices, this.state.edges,
+      this.state.width, this.state.height, this.state.iterations, this.state.degree_array)
     const new_vertices = values[0];
     const animations = values[1];
 

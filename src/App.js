@@ -16,7 +16,20 @@ class App extends React.Component{
       connected: false,
       maxE: 600,
       minE: 20,
-      settings: {},
+      settings: {
+        spring: {ka: 2, kr: 1, eps: 0.5,
+                delta: 0.1, areascaling: 0,
+                distanceType: 1},
+        fruchterman: {cTemp: 1,
+                tempHeuristic: "Logarithmic", eps: 0.5},
+        forceatlas2: {fr: 10, gravity: true,
+                      gravityType: "Normal", kg: 10,
+                      tau: 0.1, ksmax: 10,
+                      overlappingNodes: true},
+        forceatlaslinlog: {fr: 10, gravity: true,
+                      gravityType: "Normal", kg: 10,
+                      tau: 0.1, ksmax: 10,
+                      overlappingNodes: true}},
       dimension: 2,
     }
     this.network = React.createRef();

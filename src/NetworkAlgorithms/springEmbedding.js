@@ -7,18 +7,19 @@ var ly = 0;
 /**
 * Basic spring embedding algorithm
 */
-export function springEmbedding(vertices,edges,graph_distancex, graph_distancey, iterations, threshold, constant, cspring, crep, forceAreaPercentage, distanceType){
+export function springEmbedding(vertices,edges,graph_distancex, graph_distancey, iterations, settings){
   // relevant constants for spring embedding
   const W = graph_distancex -6;
   const L = graph_distancey -6;
-  lx = 1 + ((Math.sqrt(W)/2-1)*forceAreaPercentage)/100;
-  ly = 1 + ((Math.sqrt(L)/2-1)*forceAreaPercentage)/100;
-  const K = iterations === undefined ? 300: iterations;
-  const epsilon = threshold === undefined? 0.1: threshold;
-  const delta = constant === undefined? 1.5: constant;
-  CREP = cspring === undefined? 20: cspring;
-  CSPRING = crep === undefined? 20: crep;
-  const distType = distanceType === undefined? 1:0;
+  lx = 1 + ((Math.sqrt(W)/2-1)*settings.areascaling)/100;
+  ly = 1 + ((Math.sqrt(L)/2-1)*settings.areascaling)/100;
+  const K = iterations;
+
+  const epsilon = settings.eps;
+  const delta = settings.delta;
+  CREP = settings.kr;
+  CSPRING = settings.ka;
+  const distType = settings.distanceType;
 
 
   let t = 1;

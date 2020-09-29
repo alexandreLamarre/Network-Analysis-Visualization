@@ -61,7 +61,7 @@ class NetworkSideDrawer extends React.Component{
             >
               <TutorialWindow ref = {this.tutorial} open = {false}/>
               <GeneralNetworkSettings ref = {this.generalsettings} app = {this.app}/>
-              <NetworkAlgorithmSettings ref = {this.algorithmsettings}/>
+              <NetworkAlgorithmSettings ref = {this.algorithmsettings} app = {this.app}/>
               <div className = "settings">
                 <br></br>
                 <button onClick = {() => this.tutorial.current.setOpen(true)}> Tutorial </button>
