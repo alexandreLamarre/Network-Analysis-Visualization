@@ -74,9 +74,9 @@ class NetworkSideDrawer extends React.Component{
                 <br></br>
                 <button> Upload Your Data</button>
                 <br></br>
-                <a href = "https://github.com/alexandreLamarre/Network-Algorithm-Visualization" target= "_blank" > Documentation & Code </a>
+                <a href = "https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization" target= "_blank" > Documentation & Code </a>
                 <br></br>
-                <button> More Information </button>
+                <a href ="https://github.com/alexandreLamarre/Network-Algorithm-Visualization/issues" target ="_blank"> Report a Bug </a>
                 <br></br>
               </div>
             </Modal>

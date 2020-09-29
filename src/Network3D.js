@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import {createRandomNetwork3D} from "./networkgeneration/createRandomNetwork3D";
 import {fruchtermanReingold3D} from "./NetworkAlgorithms/FruchtermanReingold3D";
+import {springEmbedding3D} from "./NetworkAlgorithms/springEmbedding3D";
 
 import "./Network3D.css";
 
@@ -27,6 +28,8 @@ class NetworkVisualizer3D extends React.Component{
       dragging: false,
       previousMouseX : 0,
       previousMouseY: 0,
+      algoType: "spring",
+      randomType: "random",
     }
     this.app = this.props.app;
     this.canvas = React.createRef();
@@ -52,7 +55,8 @@ class NetworkVisualizer3D extends React.Component{
     scene.add(camera);
     renderer.render(scene, camera);
 
-    const [vertices,edges] = createRandomNetwork3D(w, h,d, this.app.state.numV, this.app.state.numE, this.app.state.connected);
+    const [vertices,edges] = createRandomNetwork3D(w, h,d, this.app.state.numV,
+      this.app.state.numE, this.app.state.connected, this.state.randomType);
 
     const spheres = [];
     //displaying initial_vertices
@@ -60,7 +64,7 @@ class NetworkVisualizer3D extends React.Component{
       const color = vertices[i].color;
 
       //make a sphere
-      var geometry = new THREE.SphereGeometry(10,8,8);
+      var geometry = new THREE.SphereGeometry(5,8,8);
       var material = new THREE.MeshLambertMaterial({color: 0x00ffff});
       var sphere = new THREE.Mesh(geometry, material);
       const v = vertices[i]
@@ -136,12 +140,61 @@ class NetworkVisualizer3D extends React.Component{
     this.state.renderer.render(this.state.scene, this.state.camera);
   }
 
-  runAlgorithm(){
-    const values = fruchtermanReingold3D(this.state.vertices, this.state.edges,
-      this.state.width, this.state.height, this.state.iterations, this.app.state.settings.fruchterman)
+  generateForceDirectedLayout(){
+    const values = springEmbedding3D(this.state.vertices, this.state.edges,
+        this.state.width, this.state.height, this.state.iterations, this.app.state.settings.spring);
+    const final_vertices = values[0];
+    const animations = values[1];
+    // console.log(animations);
+    this.animateNetwork(animations, final_vertices);
+  }
+
+  generateReingold(){
+    const values = fruchtermanReingold3D(this.state.vertices, this.state.edges, this.state.width,
+        this.state.height, this.state.iterations, this.app.state.settings.fruchterman);
+
     const final_vertices = values[0];
     const animations = values[1];
     this.animateNetwork(animations, final_vertices);
+  }
+
+  generateKamadaKawai(){
+
+  }
+
+  generateForceAtlas2(){
+
+  }
+
+  generateForceAtlasLinLog(){
+
+  }
+
+  generateHall(){
+
+  }
+
+  generateSpectralDrawing(){
+
+  }
+
+  generateRadialFlowDirected(){
+
+  }
+
+  generateKruskal(){
+
+  }
+  runAlgorithm(){
+    if(this.state.algoType === "spring") this.generateForceDirectedLayout();
+    if(this.state.algoType === "fruchtermanReingold") this.generateReingold();
+    if(this.state.algoType === "kamadaKawai") this.generateKamadaKawai();
+    if(this.state.algoType === "forceAtlas2") this.generateForceAtlas2();
+    if(this.state.algoType === "forceAtlasLinLog") this.generateForceAtlasLinLog();
+    if(this.state.algoType === "hall") this.generateHall();
+    if(this.state.algoType === "spectralDrawing") this.generateSpectralDrawing();
+    if(this.state.algoType === "radialFlowDirected") this.generateRadialFlowDirected();
+    if(this.state.algoType === "kruskal") this.generateKruskal();
 
   }
 
@@ -178,14 +231,16 @@ class NetworkVisualizer3D extends React.Component{
     scene.add(camera);
     renderer.render(scene, camera);
 
-    const [vertices,edges] = createRandomNetwork3D(this.state.width,this.state.height,this.state.depth, this.app.state.numV, this.app.state.numE, this.app.state.connected);
+    const [vertices,edges] = createRandomNetwork3D(this.state.width,this.state.height,
+      this.state.depth, this.app.state.numV, this.app.state.numE, this.app.state.connected,
+            this.state.randomType);
     const spheres = [];
     //displaying initial_vertices
     for(let i = 0; i< vertices.length; i++){
       const color = vertices[i].color;
 
       //make a sphere
-      var geometry = new THREE.SphereGeometry(10,8,8);
+      var geometry = new THREE.SphereGeometry(5,8,8);
       var material = new THREE.MeshLambertMaterial({color: 0x00ffff});
       var sphere = new THREE.Mesh(geometry, material);
       const v = vertices[i]
@@ -261,6 +316,13 @@ class NetworkVisualizer3D extends React.Component{
     }
   }
 
+  setAlgoType(v){
+    this.setState({algoType: v});
+  }
+  setRandomizedType(v){
+    this.setState({randomType: v})
+  }
+
   render(){
     return <div>
               <canvas
@@ -273,12 +335,38 @@ class NetworkVisualizer3D extends React.Component{
               </canvas>
               <div className = "selectContainer">
                 <div className = "selectalgorow">
+                <select className = "selectalgo" onChange = {(event) => this.setAlgoType(event.target.value)}>
+                  <optgroup label = "Force Directed Algorithms">
+                  <option value = "spring"> Basic Spring Embedding </option>
+                  <option value = "fruchtermanReingold"> Fruchterman-Reingold </option>
+                  <option value = "kamadaKawai" disabled = {true}> Kamada-Kawai </option>
+                  <option value = "forceAtlas2" disabled = {true}> Force Atlas 2 (unfinished preview)</option>
+                  <option value = "forceAtlasLinLog" disabled = {true}> Force Atlas 2 (LinLog) (unfinished preview) </option>
+                  </optgroup>
+                  <optgroup label = "Spectral Layout Algorithms">
+                  <option value = "hall" disabled = {true}> Hall's algorithm </option>
+                  <option value = "spectralDrawing" disabled = {true}> Generalized Eigenvector Spectral Drawing (Koren)</option>
+                  </optgroup>
+                  <optgroup label = "Custom Algorithms">
+                    <option value = "radialFlowDirected" disabled = {true}>  Radial Flow Directed </option>
+                  </optgroup>
+                  <optgroup label = "Minimum Spanning Trees">
+                    <option value ="kruskal"> Kruskral's Algorithm</option>
+                    <option disabled = {true}> Prim's Algorithm </option>
+                  </optgroup>
+                </select>
                 <button className = "b"
                 disabled = {this.app.state.running === true }
                 onClick = {() => this.runAlgorithm()}> Run Algorithm
                 </button>
                 </div>
                 <div className = "selectalgorow">
+                <select className = "selectalgo" onChange = {(event) => this.setRandomizedType(event.target.value)}>
+                  <option value = "random"> Random </option>
+                  <option value = "randomcircle"> Random Sphere </option>
+                  <option value = "randomsymmetry" disabled = {true}> Random Symmetry </option>
+                  <option value = "randomclustering" disabled = {true}> Random Clustering </option>
+                </select>
                 <button className = "b"
                 disabled = {this.app.state.running === true }
                 onClick = {() => this.resetNetwork()}> Reset Network

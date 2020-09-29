@@ -17,9 +17,8 @@ class AlgorithmAttributes extends React.Component{
       C: 2, // spring
       maxX: 0,
       maxY: 0,
-      cTemp: 1,//this.props.app.settings.fruchterman.cTemp, //fruchtermanReingold
-      tempHeuristic: "Logarithmic",//this.props.app.settings.fruchterman.tempHeuristic, //fruchtermanReingold
-      tempHeuristicValue: 1,
+      cTemp: this.props.app.state.settings.fruchterman.cTemp, //fruchtermanReingold
+      tempHeuristic: this.props.app.state.settings.fruchterman.tempHeuristic,//this.props.app.settings.fruchterman.tempHeuristic, //fruchtermanReingold
       cPercentage: this.props.app.state.settings.spring.areascaling, // spring
       collision: 2, //fruchterman
       distanceType: this.props.app.state.settings.spring.distanceType, // spring
@@ -214,7 +213,7 @@ class AlgorithmAttributes extends React.Component{
                   type = "range"
                   min = "1"
                   max = "3"
-                  value = {this.state.tempHeuristicValue}
+                  value = {this.state.tempHeuristic === "Logarithmic"?1:this.state.tempHeuristic === "Linear"?2:3}
                   step = "1"
                   onChange = {(event)=> this.setTempHeuristic(event.target.value)}
                   disabled = {this.state.running}>
@@ -525,7 +524,6 @@ async function waitsetOverlappingNodes(v, that){
 }
 async function waitsetTempHeuristic(v, that){
   const value = parseInt(v);
-  await that.setState({tempHeuristicValue: value});
   if(value===1) await that.setState({tempHeuristic: "Logarithmic"});
   if(value===2) await that.setState({tempHeuristic: "Linear"});
   if(value===3) await that.setState({tempHeuristic: "Directional"});
