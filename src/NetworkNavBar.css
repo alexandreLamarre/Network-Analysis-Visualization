@@ -50,3 +50,18 @@
 .spacer{
   flex:0.4;
 }
+
+.toolbar__search{
+  position:absolute;
+  right: 5%;
+
+}
+.toolbar__search label{
+  color:white;
+  font-size: 1.4em;
+  vertical-align: middle;
+}
+
+.toolbar__search input{
+  vertical-align: middle;
+}

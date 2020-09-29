@@ -2,3 +2,25 @@
   margin-bottom: 5%;
   background-color: #787878;
 }
+
+.searchbar{
+  margin-top: 1%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+p{
+  color: white;
+  text-align: center;
+}
+
+.attributesearch{
+  margin-right: 1%;
+  color:white;
+  text-align: center;
+}
+
+label{
+  color:white;
+}

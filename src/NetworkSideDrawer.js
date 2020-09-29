@@ -53,7 +53,7 @@ class NetworkSideDrawer extends React.Component{
   render(){
 
     return <div>
-            <TutorialWindow open = {true}/>
+            <TutorialWindow open = {false}/>
             <Modal isOpen = {this.state.open}
             onRequestClose = {() => this.setOpen(false)}
             className = "sidedrawer"

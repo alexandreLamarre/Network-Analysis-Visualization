@@ -30,6 +30,8 @@ class AlgorithmAttributes extends React.Component{
       tau: 0.1,//forceAtlas2
       ksmax: 10, //forceAtlas2
       overlappingNodes: true, //forceAtlas2
+      filtering: false,
+      filter: "",
     }
     this.help = React.createRef();
     this.settings = this.props.settings;
@@ -146,11 +148,25 @@ class AlgorithmAttributes extends React.Component{
     this.help.current.setDetails(details);
     this.help.current.setOpen(open);
   }
+
+  filter(e){
+    if(e === "") {
+      this.setState({filtering: false});
+      console.log("default");
+    }
+    else{
+      this.setState({filtering: true, filter: e})
+    }
+  }
   render(){
       return <div className = "Attributes">
       <HelpWindow ref = {this.help}></HelpWindow>
-      <p> Spring Embedding</p>
-      <div className = "sliders">
+      <div className = "searchbar">
+        <label className = "attributesearch"> Search for Algorithm: </label>
+        <input onChange = {(e) => this.filter(e.target.value)}/>
+      </div>
+      {(this.state.filtering === true && "spring embedding".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
+      ?<div><p> Spring Embedding</p><div className = "sliders">
                 <input className = "slider"
                 type = "range"
                 min = "0.1"
@@ -222,8 +238,10 @@ class AlgorithmAttributes extends React.Component{
                 </input>
                 <label> Distance: {this.state.distanceType === 1? "Continuous": "Graph Theoretic"}</label>
                 </div>
-
-              <p>Fruchterman-Reingold</p>
+                </div>
+                : <></>}
+              {(this.state.filtering === true && "fruchterman-reingold".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
+              ?<div><p>Fruchterman-Reingold</p>
               <div className = "Attributes">
                 <HelpWindow ref = {this.help}></HelpWindow>
                 <div className = "sliders">
@@ -261,183 +279,191 @@ class AlgorithmAttributes extends React.Component{
                   <label> Convergence Bound : {this.state.eps}</label>
                 </div>
               </div>
+              </div>
+              : <></>}
+            {(this.state.filtering === true && "forceatlas2".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
+            ?<div><p> ForceAtlas2 </p>
+            <div className = "Attributes">
+                <HelpWindow ref = {this.help}></HelpWindow>
+                <div className = "sliders">
+                  <input className = "slider"
+                  type = "range"
+                  min = "0.1"
+                  max = "100"
+                  step = "0.1"
+                  value = {this.state.kr}
+                  onChange = {(event) => this.setKr(event.target.value)}
+                  disabled = {this.state.running}>
+                  </input>
+                  <label> Force of Repulsion: {this.state.kr}</label>
+                </div>
+                <div className = "sliders">
+                  <input className = "slider"
+                  type = "range"
+                  min = "0"
+                  max = "1"
+                  step = "1"
+                  value = {this.state.gravity === true? 1:0}
+                  onChange = {(event) => this.setGravity(event.target.value)}
+                  disabled = {this.state.running}>
+                  </input>
+                  <label> Gravity: {this.state.gravity === true? "On": "Off"}</label>
+                </div>
+                <div className = "sliders">
+                  <input className = "slider"
+                  type = "range"
+                  min = "0"
+                  max = "1"
+                  step = "1"
+                  value = {this.state.gravityType === "Normal"? 0: 1}
+                  onChange = {(event) => this.setGravityType(event.target.value)}
+                  disabled = {this.state.running || !(this.state.gravity)}>
+                  </input>
+                  <label> Gravity Type: {this.state.gravityType}</label>
+                </div>
+                <div className = "sliders">
+                  <input className = "slider"
+                  type = "range"
+                  min = "0"
+                  max = "20"
+                  step = "0.1"
+                  value = {this.state.kg}
+                  onChange = {(event) => this.setGravityStrength(event.target.value)}
+                  disabled = {this.state.running || !(this.state.gravity)}>
+                  </input>
+                  <label> Gravity Strength: {this.state.kg}</label>
+                </div>
+                <div className = "sliders">
+                  <input className = "slider"
+                  type = "range"
+                  min = "0.1"
+                  max = "2"
+                  step = "0.1"
+                  value = {this.state.tau}
+                  onChange = {(event) => this.setTau(event.target.value)}
+                  disabled = {this.state.running}>
+                  </input>
+                  <label> Tolerance(speed): {this.state.tau}</label>
+                </div>
+                <div className = "sliders">
+                  <input className = "slider"
+                  type = "range"
+                  min = "1"
+                  max = "20"
+                  step = "0.1"
+                  value = {this.state.ksmax}
+                  onChange = {(event) => this.setKsmax(event.target.value)}
+                  disabled = {this.state.running}>
+                  </input>
+                  <label> Temperature Cap: {this.state.ksmax}</label>
+                </div>
+                <div className = "sliders">
+                  <input className = "slider"
+                  type = "range"
+                  min = "0"
+                  max = "1"
+                  step = "1"
+                  value = {this.state.overlappingNodes === true? "0":"1"}
+                  onChange = {(event) => this.setOverlappingNodes(event.target.value)}
+                  disabled = {true}>
+                  </input>
+                  <label> Overlap Nodes: {this.state.overlappingNodes === true? "On": "Off"}</label>
+                </div>
+             </div>
+             </div>
+             : <> </>}
+             {(this.state.filtering === true && "forceatlaslinlog".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
+            ?<div><p>ForceAtlasLinLog</p>
+            <div className = "Attributes">
+                <HelpWindow ref = {this.help}></HelpWindow>
+                <div className = "sliders">
+                  <input className = "slider"
+                  type = "range"
+                  min = "0.1"
+                  max = "100"
+                  step = "0.1"
+                  value = {this.state.kr}
+                  onChange = {(event) => this.setKr(event.target.value)}
+                  disabled = {this.state.running}>
+                  </input>
+                  <label> Force of Repulsion: {this.state.kr}</label>
+                </div>
+                <div className = "sliders">
+                  <input className = "slider"
+                  type = "range"
+                  min = "0"
+                  max = "1"
+                  step = "1"
+                  value = {this.state.gravity === true? 1:0}
+                  onChange = {(event) => this.setGravity(event.target.value)}
+                  disabled = {this.state.running}>
+                  </input>
+                  <label> Gravity: {this.state.gravity === true? "On": "Off"}</label>
+                </div>
+                <div className = "sliders">
+                  <input className = "slider"
+                  type = "range"
+                  min = "0"
+                  max = "1"
+                  step = "1"
+                  value = {this.state.gravityType === "Normal"? 0: 1}
+                  onChange = {(event) => this.setGravityType(event.target.value)}
+                  disabled = {this.state.running || !(this.state.gravity)}>
+                  </input>
+                  <label> Gravity Type: {this.state.gravityType}</label>
+                </div>
+                <div className = "sliders">
+                  <input className = "slider"
+                  type = "range"
+                  min = "0"
+                  max = "20"
+                  step = "0.1"
+                  value = {this.state.kg}
+                  onChange = {(event) => this.setGravityStrength(event.target.value)}
+                  disabled = {this.state.running || !(this.state.gravity)}>
+                  </input>
+                  <label> Gravity Strength: {this.state.kg}</label>
+                </div>
+                <div className = "sliders">
+                  <input className = "slider"
+                  type = "range"
+                  min = "0.1"
+                  max = "2"
+                  step = "0.1"
+                  value = {this.state.tau}
+                  onChange = {(event) => this.setTau(event.target.value)}
+                  disabled = {this.state.running}>
+                  </input>
+                  <label> Tolerance(speed): {this.state.tau}</label>
+                </div>
+                <div className = "sliders">
+                  <input className = "slider"
+                  type = "range"
+                  min = "1"
+                  max = "20"
+                  step = "0.1"
+                  value = {this.state.ksmax}
+                  onChange = {(event) => this.setKsmax(event.target.value)}
+                  disabled = {this.state.running}>
+                  </input>
+                  <label> Temperature Cap: {this.state.ksmax}</label>
+                </div>
+                <div className = "sliders">
+                  <input className = "slider"
+                  type = "range"
+                  min = "0"
+                  max = "1"
+                  step = "1"
+                  value = {this.state.overlappingNodes === true? "0":"1"}
+                  onChange = {(event) => this.setOverlappingNodes(event.target.value)}
+                  disabled = {true}>
+                  </input>
+                  <label> Overlap Nodes: {this.state.overlappingNodes === true? "On": "Off"}</label>
+                </div>
+                </div>
 
-            <p> ForceAtlas2 </p>
-            <div className = "Attributes">
-                <HelpWindow ref = {this.help}></HelpWindow>
-                <div className = "sliders">
-                  <input className = "slider"
-                  type = "range"
-                  min = "0.1"
-                  max = "100"
-                  step = "0.1"
-                  value = {this.state.kr}
-                  onChange = {(event) => this.setKr(event.target.value)}
-                  disabled = {this.state.running}>
-                  </input>
-                  <label> Force of Repulsion: {this.state.kr}</label>
-                </div>
-                <div className = "sliders">
-                  <input className = "slider"
-                  type = "range"
-                  min = "0"
-                  max = "1"
-                  step = "1"
-                  value = {this.state.gravity === true? 1:0}
-                  onChange = {(event) => this.setGravity(event.target.value)}
-                  disabled = {this.state.running}>
-                  </input>
-                  <label> Gravity: {this.state.gravity === true? "On": "Off"}</label>
-                </div>
-                <div className = "sliders">
-                  <input className = "slider"
-                  type = "range"
-                  min = "0"
-                  max = "1"
-                  step = "1"
-                  value = {this.state.gravityType === "Normal"? 0: 1}
-                  onChange = {(event) => this.setGravityType(event.target.value)}
-                  disabled = {this.state.running || !(this.state.gravity)}>
-                  </input>
-                  <label> Gravity Type: {this.state.gravityType}</label>
-                </div>
-                <div className = "sliders">
-                  <input className = "slider"
-                  type = "range"
-                  min = "0"
-                  max = "20"
-                  step = "0.1"
-                  value = {this.state.kg}
-                  onChange = {(event) => this.setGravityStrength(event.target.value)}
-                  disabled = {this.state.running || !(this.state.gravity)}>
-                  </input>
-                  <label> Gravity Strength: {this.state.kg}</label>
-                </div>
-                <div className = "sliders">
-                  <input className = "slider"
-                  type = "range"
-                  min = "0.1"
-                  max = "2"
-                  step = "0.1"
-                  value = {this.state.tau}
-                  onChange = {(event) => this.setTau(event.target.value)}
-                  disabled = {this.state.running}>
-                  </input>
-                  <label> Tolerance(speed): {this.state.tau}</label>
-                </div>
-                <div className = "sliders">
-                  <input className = "slider"
-                  type = "range"
-                  min = "1"
-                  max = "20"
-                  step = "0.1"
-                  value = {this.state.ksmax}
-                  onChange = {(event) => this.setKsmax(event.target.value)}
-                  disabled = {this.state.running}>
-                  </input>
-                  <label> Temperature Cap: {this.state.ksmax}</label>
-                </div>
-                <div className = "sliders">
-                  <input className = "slider"
-                  type = "range"
-                  min = "0"
-                  max = "1"
-                  step = "1"
-                  value = {this.state.overlappingNodes === true? "0":"1"}
-                  onChange = {(event) => this.setOverlappingNodes(event.target.value)}
-                  disabled = {true}>
-                  </input>
-                  <label> Overlap Nodes: {this.state.overlappingNodes === true? "On": "Off"}</label>
-                </div>
              </div>
-            <p>ForceAtlasLinLog</p>
-            <div className = "Attributes">
-                <HelpWindow ref = {this.help}></HelpWindow>
-                <div className = "sliders">
-                  <input className = "slider"
-                  type = "range"
-                  min = "0.1"
-                  max = "100"
-                  step = "0.1"
-                  value = {this.state.kr}
-                  onChange = {(event) => this.setKr(event.target.value)}
-                  disabled = {this.state.running}>
-                  </input>
-                  <label> Force of Repulsion: {this.state.kr}</label>
-                </div>
-                <div className = "sliders">
-                  <input className = "slider"
-                  type = "range"
-                  min = "0"
-                  max = "1"
-                  step = "1"
-                  value = {this.state.gravity === true? 1:0}
-                  onChange = {(event) => this.setGravity(event.target.value)}
-                  disabled = {this.state.running}>
-                  </input>
-                  <label> Gravity: {this.state.gravity === true? "On": "Off"}</label>
-                </div>
-                <div className = "sliders">
-                  <input className = "slider"
-                  type = "range"
-                  min = "0"
-                  max = "1"
-                  step = "1"
-                  value = {this.state.gravityType === "Normal"? 0: 1}
-                  onChange = {(event) => this.setGravityType(event.target.value)}
-                  disabled = {this.state.running || !(this.state.gravity)}>
-                  </input>
-                  <label> Gravity Type: {this.state.gravityType}</label>
-                </div>
-                <div className = "sliders">
-                  <input className = "slider"
-                  type = "range"
-                  min = "0"
-                  max = "20"
-                  step = "0.1"
-                  value = {this.state.kg}
-                  onChange = {(event) => this.setGravityStrength(event.target.value)}
-                  disabled = {this.state.running || !(this.state.gravity)}>
-                  </input>
-                  <label> Gravity Strength: {this.state.kg}</label>
-                </div>
-                <div className = "sliders">
-                  <input className = "slider"
-                  type = "range"
-                  min = "0.1"
-                  max = "2"
-                  step = "0.1"
-                  value = {this.state.tau}
-                  onChange = {(event) => this.setTau(event.target.value)}
-                  disabled = {this.state.running}>
-                  </input>
-                  <label> Tolerance(speed): {this.state.tau}</label>
-                </div>
-                <div className = "sliders">
-                  <input className = "slider"
-                  type = "range"
-                  min = "1"
-                  max = "20"
-                  step = "0.1"
-                  value = {this.state.ksmax}
-                  onChange = {(event) => this.setKsmax(event.target.value)}
-                  disabled = {this.state.running}>
-                  </input>
-                  <label> Temperature Cap: {this.state.ksmax}</label>
-                </div>
-                <div className = "sliders">
-                  <input className = "slider"
-                  type = "range"
-                  min = "0"
-                  max = "1"
-                  step = "1"
-                  value = {this.state.overlappingNodes === true? "0":"1"}
-                  onChange = {(event) => this.setOverlappingNodes(event.target.value)}
-                  disabled = {true}>
-                  </input>
-                  <label> Overlap Nodes: {this.state.overlappingNodes === true? "On": "Off"}</label>
-                </div>
-             </div>
+             : <></>}
             </div>
   }
 }
