@@ -3,19 +3,20 @@ import Edge from "../datatypes/Edge";
 
 export function createRandomNetwork3D(maxWidth, maxHeight, maxDepth, numV, numE, conn, randomType){
   let connected = conn;
-  let seed = "random";
+  let seed = randomType;
   const maxDegree = numV-1;
   let maxEdges = Math.floor((maxDegree*numV)/2)
   const maxEdgesValue = maxEdges;
   let vertices = [];
   let available_vertices = [];
-  const center = [maxWidth/2, maxHeight/2];
+  const center = [maxWidth/2, maxHeight/2, maxDepth/2];
   const radius = (maxHeight/2)*0.90;
 
   //create random points on canvas
   for(let i = 0; i < numV; i ++){
     var point = [0,0]
     if(seed === "random") point = createRandomPos(maxWidth, maxHeight, maxDepth);
+    if(seed === "randomcircle") point = createRandomPosSphere(center, radius);
     const v = new Vertex(point[0], point[1], point[2]);
     // v.color = ("#111111")
     vertices.push(v);
@@ -87,6 +88,13 @@ export function createRandomNetwork3D(maxWidth, maxHeight, maxDepth, numV, numE,
 
 function createRandomPos(maxWidth, maxHeight, maxDepth){
   return [Math.random()*(maxWidth+1-5), Math.random()*(maxHeight+1-5), Math.random()*(maxDepth+1-5)];
+}
+
+function createRandomPosSphere(center, radius){
+  const randomAngle = Math.random()*(2*Math.PI);
+  const z = Math.random()*center[2] - center[2];
+  const theta = Math.asin(z/center[2]);
+  return [center[0]+ radius*Math.cos(theta)*Math.cos(randomAngle), center[1]+radius*Math.sin(theta)*Math.sin(randomAngle), center[2]+z]
 }
 
 function connectRandomVertices(vertices){
