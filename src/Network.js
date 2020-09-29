@@ -91,7 +91,8 @@ class NetworkVisualizer extends React.Component{
 
   generateForceDirectedLayout(){
     const values = springEmbedding(this.state.vertices, this.state.edges,
-                    this.state.width, this.state.height, this.state.iterations, this.app.state.settings.spring );
+                    this.state.width, this.state.height, this.state.iterations,
+                    this.app.state.settings.spring );
     const new_vertices = values[0];
     const animations = values[1];
     this.animateNetwork(animations, new_vertices);
@@ -99,7 +100,8 @@ class NetworkVisualizer extends React.Component{
 
   generateReingold(){
     const values = fruchtermanReingold(this.state.vertices, this.state.edges,
-            this.state.width,this.state.height, this.state.iterations, "Logarithmic", 1, 0.1);
+            this.state.width,this.state.height, this.state.iterations,
+            this.app.state.settings.fruchterman);
     const new_vertices = values[0];
     const animations = values[1];
     // console.log(animations);

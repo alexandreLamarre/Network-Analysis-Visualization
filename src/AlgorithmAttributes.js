@@ -430,7 +430,7 @@ async function waitSetSettings(app, that){
             delta: that.state.delta, areascaling: that.state.cPercentage,
             distanceType: that.state.distanceType},
     fruchterman: {cTemp: that.state.cTemp,
-            tempHeuristic: that.state.tempHeuristic, eps: that.state.epsilon},
+            tempHeuristic: that.state.tempHeuristic, eps: that.state.eps},
     forceatlas2: {fr: that.state.kr, gravity: that.state.gravity,
                   gravityType: that.state.gravityType, kg: that.state.kg,
                   tau: that.state.tau, ksmax: that.state.mskax,

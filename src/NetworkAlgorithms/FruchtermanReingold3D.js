@@ -4,19 +4,22 @@ var C= 1;
 var K = 0.01; //OPTIMAL DISTANCE
 var ITERATIONS = 300;
 
-export function fruchtermanReingold3D(vertices,edges,graph_distancex, graph_distancey, iterations, coolingtype, tempScale, eps){
+export function fruchtermanReingold3D(vertices,edges,graph_distancex, graph_distancey, iterations, settings){
   const W = graph_distancex -6;
   const L = graph_distancey -6;
-  const kIter = iterations === undefined ? 300: iterations;
+  const kIter = iterations;
   ITERATIONS = kIter;
-  const tempHeuristic = coolingtype === undefined? "Linear": coolingtype;
+  const coolingtype = settings.tempHeuristic;
+  const tempHeuristic = settings.tempHeuristic;
   C = 1;
   K = C* Math.sqrt((W)*(L)/(vertices.length));
-  const epsilon = eps;
+  const epsilon = settings.eps;
+
+  console.log(settings);
 
   let t = 1;
   let animations = [];
-  let temperature = (1/10)*W * tempScale;
+  let temperature = (1/10)*W * settings.cTemp;
   let temperature_list = [];
   let previousAngle = [];
   let scaling_factor = [];

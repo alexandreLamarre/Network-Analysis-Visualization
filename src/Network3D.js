@@ -72,7 +72,7 @@ class NetworkVisualizer3D extends React.Component{
     const lines = [];
     //displaying intial edges
     for(let j = 0; j < edges.length; j++){
-        var material = new THREE.LineBasicMaterial({color : 0xffffff});
+        var material = new THREE.LineBasicMaterial({color : 0xa9a9a9});
         material.opacity = 0.1;
         var points = [];
         const e = edges[j];
@@ -138,7 +138,7 @@ class NetworkVisualizer3D extends React.Component{
 
   runAlgorithm(){
     const values = fruchtermanReingold3D(this.state.vertices, this.state.edges,
-      this.state.width, this.state.height, this.state.iterations, "Logarithmic", 1, 0.1)
+      this.state.width, this.state.height, this.state.iterations, this.app.state.settings.fruchterman)
     const final_vertices = values[0];
     const animations = values[1];
     this.animateNetwork(animations, final_vertices);
@@ -197,7 +197,7 @@ class NetworkVisualizer3D extends React.Component{
     const lines = [];
     //displaying intial edges
     for(let j = 0; j < edges.length; j++){
-        var material = new THREE.LineBasicMaterial({color : 0xffffff});
+        var material = new THREE.LineBasicMaterial({color : 0xa9a9a9});
         material.opacity = 0.1;
         var points = [];
         const e = edges[j];
