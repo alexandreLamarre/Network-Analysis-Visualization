@@ -86,7 +86,7 @@ export function createRandomNetwork3D(maxWidth, maxHeight, maxDepth, numV, numE,
 }
 
 function createRandomPos(maxWidth, maxHeight, maxDepth){
-  return [Math.random()*(maxWidth+1-5) -maxWidth/2, Math.random()*(maxHeight+1-5)-maxHeight/2, Math.random()*(maxDepth+1-5)-maxDepth/2];
+  return [Math.random()*(maxWidth+1-5), Math.random()*(maxHeight+1-5), Math.random()*(maxDepth+1-5)];
 }
 
 function connectRandomVertices(vertices){

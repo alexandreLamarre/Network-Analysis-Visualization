@@ -43,7 +43,9 @@ class NetworkVisualizer3D extends React.Component{
     var pointLight = new THREE.PointLight( 0xffffff , 0.75);
     pointLight.position.set(1,1,2);
     camera.add(pointLight)
-    camera.position.z = d;
+    camera.position.z = 1.7*d;
+    camera.position.x = w/2;
+    camera.position.y = h/2;
     console.log(controls);
     scene.add(camera);
     renderer.render(scene, camera);
@@ -73,14 +75,16 @@ class NetworkVisualizer3D extends React.Component{
         var points = [];
         const e = edges[j];
         const v = vertices;
-        points.push(new THREE.Vector3(v[e.start].x, v[e.start].y, v[e.start].z));
-        points.push(new THREE.Vector3(v[e.end].x, v[e.end].y, v[e.end].z));
+        points.push(spheres[e.start].position);
+        points.push(spheres[e.end].position);
         var geometry = new THREE.BufferGeometry().setFromPoints(points);
+
+
         var line = new THREE.Line(geometry, material);
         scene.add(line);
         lines.push(line);
     }
-
+    console.log(lines);
 
     renderer.render(scene, camera);
 
@@ -105,16 +109,34 @@ class NetworkVisualizer3D extends React.Component{
       this.state.spheres[i].position.set(v.x, v.y, v.z);
     }
 
+
+    for(let j = 0; j< this.state.edges.length; j++){
+      const e = this.state.edges[j];
+      const v = this.state.vertices;
+
+      var pos = this.state.lines[j].geometry.attributes.position.array;
+      pos[0] = v[e.start].x;
+      pos[1] = v[e.start].y;
+      pos[2] = v[e.start].z;
+      pos[3] = v[e.end].x;
+      pos[4] = v[e.end].y;
+      pos[5] = v[e.end].z;
+      this.state.lines[j].geometry.attributes.position.needsUpdate = true;
+    }
+
     this.state.renderer.render(this.state.scene, this.state.camera);
   }
 
   runAlgorithm(){
-    console.log("called");
     const values = fruchtermanReingold3D(this.state.vertices, this.state.edges,
       this.state.width, this.state.height, this.state.iterations, "Logarithmic", 1, 0.1)
-    console.log(values[0]);
-    console.log(values[1]);
-    this.setState({vertices: values[0]});
+    const final_vertices = values[0];
+    const animations = values[1];
+
+  }
+
+  animateNetwork(){
+    
   }
 
   render(){
