@@ -8,7 +8,8 @@ const MAX_EDGES = 600;
 async function waitSetConnected(that,value){
   if(value === 0) await that.setState({connected:"False"});
   if(value === 1) await that.setState({connected:"True"});
-  that.network.current.resetNetwork();
+  if(that.state.dimension === 2) that.network.current.resetNetwork();
+  if(that.state.dimension === 3) that.network3d.current.resetNetwork();
 }
 
 async function waitSetVertices(that, v){
@@ -92,9 +93,6 @@ class GeneralNetworkSettings extends React.Component{
               <label>
                 AnimationSpeed : {this.app.state.animationSpeed}ms
               </label>
-              <button className = "helpb">
-                ?
-              </button>
               <input
                 type = "range"
                 min = "4"
@@ -109,11 +107,6 @@ class GeneralNetworkSettings extends React.Component{
               <label>
                 Vertices: {this.app.state.numV}
               </label>
-              <button
-                className = "helpb"
-                onClick = {() => this.setHelp("vertices")}>
-                ?
-              </button>
               <input
                 type = "range"
                 min =  {this.app.state.connected === "True"? this.app.state.numV-1: Math.min(20, this.app.state.numV-1)}
@@ -128,7 +121,6 @@ class GeneralNetworkSettings extends React.Component{
               <label>
                 Edges: {this.app.state.numE}
               </label>
-              <button className = "helpb"> ?</button>
               <input
                 type = "range"
                 min = "0"
@@ -142,9 +134,6 @@ class GeneralNetworkSettings extends React.Component{
               <label>
                 Force Connectedness: {this.app.state.connected}
               </label>
-              <button className = "helpb">
-                ?
-              </button>
               <input
                 type = "range"
                 min = "1"
@@ -158,9 +147,6 @@ class GeneralNetworkSettings extends React.Component{
               <label>
                 Disconnected Subgraphs: {this.app.state.disconnected}
               </label>
-              <button className = "helpb">
-                ?
-              </button>
               </div>
       </Modal>
     </div>

@@ -45,7 +45,7 @@ class NetworkVisualizer extends React.Component{
     const w = window.innerHeight * 0.55;
     const h = window.innerHeight * 0.55;
 
-    const [vertices, edges] = createRandomNetwork(w, h, this.app.state.numV, this.app.state.numE);
+    const [vertices, edges] = createRandomNetwork(w, h, this.app.state.numV, this.app.state.numE, this.app.state.connected, this.state.randomType);
     this.setState(
       {width: w,
       height: h,

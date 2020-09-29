@@ -42,11 +42,11 @@ class NetworkSideDrawer extends React.Component{
   switchDimension(){
     if(this.state.dimension == 2) {
       this.setState({dimension: 3});
-      this.app.setState({dimension: 3});
+      this.app.setState({dimension: 3, running: false});
     }
     if(this.state.dimension == 3) {
       this.setState({dimension: 2});
-      this.app.setState({dimension: 2});
+      this.app.setState({dimension: 2, running: false});
     }
   }
 

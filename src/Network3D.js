@@ -24,6 +24,9 @@ class NetworkVisualizer3D extends React.Component{
       randomType: "random",
       iterations: 100,
       maxtimeouts: 0,
+      dragging: false,
+      previousMouseX : 0,
+      previousMouseY: 0,
     }
     this.app = this.props.app;
     this.canvas = React.createRef();
@@ -49,7 +52,7 @@ class NetworkVisualizer3D extends React.Component{
     scene.add(camera);
     renderer.render(scene, camera);
 
-    const [vertices,edges] = createRandomNetwork3D(w, h,d, this.app.state.numV, this.app.state.numE);
+    const [vertices,edges] = createRandomNetwork3D(w, h,d, this.app.state.numV, this.app.state.numE, this.app.state.connected);
 
     const spheres = [];
     //displaying initial_vertices
@@ -69,7 +72,7 @@ class NetworkVisualizer3D extends React.Component{
     const lines = [];
     //displaying intial edges
     for(let j = 0; j < edges.length; j++){
-        var material = new THREE.LineBasicMaterial({color : 0x00000});
+        var material = new THREE.LineBasicMaterial({color : 0xffffff});
         material.opacity = 0.1;
         var points = [];
         const e = edges[j];
@@ -83,7 +86,6 @@ class NetworkVisualizer3D extends React.Component{
         scene.add(line);
         lines.push(line);
     }
-    console.log(lines);
 
     renderer.render(scene, camera);
 
@@ -176,7 +178,7 @@ class NetworkVisualizer3D extends React.Component{
     scene.add(camera);
     renderer.render(scene, camera);
 
-    const [vertices,edges] = createRandomNetwork3D(this.state.width,this.state.height,this.state.depth, this.app.state.numV, this.app.state.numE);
+    const [vertices,edges] = createRandomNetwork3D(this.state.width,this.state.height,this.state.depth, this.app.state.numV, this.app.state.numE, this.app.state.connected);
     const spheres = [];
     //displaying initial_vertices
     for(let i = 0; i< vertices.length; i++){
@@ -195,7 +197,7 @@ class NetworkVisualizer3D extends React.Component{
     const lines = [];
     //displaying intial edges
     for(let j = 0; j < edges.length; j++){
-        var material = new THREE.LineBasicMaterial({color : 0x00000});
+        var material = new THREE.LineBasicMaterial({color : 0xffffff});
         material.opacity = 0.1;
         var points = [];
         const e = edges[j];
@@ -224,9 +226,51 @@ class NetworkVisualizer3D extends React.Component{
     this.app.setState({numV: vertices.length, numE: edges.length});
   }
 
+  zoomCamera(v){
+    const delta = Math.sign(v);
+    this.state.camera.position.z += 10*delta;
+    this.state.renderer.render(this.state.scene, this.state.camera);
+  }
+
+  resetCamera(){
+    this.state.camera.position.z = this.state.depth * 1.7;
+    this.state.camera.position.x = this.state.width/2;
+    this.state.camera.position.y = this.state.height/2;
+    this.state.renderer.render(this.state.scene, this.state.camera);
+  }
+
+  startDrag(e){
+    this.state.previousMouseX = e.clientX;
+    this.state.previousMouseY = e.clientY;
+    this.state.dragging = true;
+  }
+
+  endDrag(){
+    this.state.dragging = false;
+  }
+
+  rotateCamera(e){
+    if(this.state.dragging){
+      const deltaX = e.clientX - this.state.previousMouseX;
+      const deltaY = e.clientY - this.state.previousMouseY;
+      this.state.previousMouseX = e.clientX;
+      this.state.previousMouseY = e.clientY;
+      this.state.camera.position.y += deltaY
+      this.state.camera.position.x += -deltaX
+      this.state.renderer.render(this.state.scene, this.state.camera);
+    }
+  }
+
   render(){
     return <div>
-              <canvas className = "canvas3d" ref = {this.canvas}></canvas>
+              <canvas
+              className = "canvas3d"
+              ref = {this.canvas}
+              onWheel = {(e) => this.zoomCamera(e.deltaY)}
+              onMouseDown = {(e) => this.startDrag(e)}
+              onMouseUp = {() => this.endDrag()}
+              onMouseMove = {(e) => this.rotateCamera(e)}>
+              </canvas>
               <div className = "selectContainer">
                 <div className = "selectalgorow">
                 <button className = "b"
@@ -239,6 +283,11 @@ class NetworkVisualizer3D extends React.Component{
                 disabled = {this.app.state.running === true }
                 onClick = {() => this.resetNetwork()}> Reset Network
                 </button>
+                </div>
+                <div className = "selectalgorow">
+                <button className = "b"
+                onClick = {() => this.resetCamera()}
+                > Reset Camera </button>
                 </div>
               </div>
           </div>

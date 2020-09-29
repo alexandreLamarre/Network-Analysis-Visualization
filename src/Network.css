@@ -91,7 +91,7 @@
 
 .selectContainer{
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   height:100%;
 }
 

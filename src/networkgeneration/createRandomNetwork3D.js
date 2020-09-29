@@ -2,7 +2,7 @@ import Vertex from "../datatypes/Vertex";
 import Edge from "../datatypes/Edge";
 
 export function createRandomNetwork3D(maxWidth, maxHeight, maxDepth, numV, numE, conn, randomType){
-  let connected = "False";
+  let connected = conn;
   let seed = "random";
   const maxDegree = numV-1;
   let maxEdges = Math.floor((maxDegree*numV)/2)
@@ -17,7 +17,7 @@ export function createRandomNetwork3D(maxWidth, maxHeight, maxDepth, numV, numE,
     var point = [0,0]
     if(seed === "random") point = createRandomPos(maxWidth, maxHeight, maxDepth);
     const v = new Vertex(point[0], point[1], point[2]);
-    v.color = ("#111111")
+    // v.color = ("#111111")
     vertices.push(v);
     available_vertices.push(i);
   }
