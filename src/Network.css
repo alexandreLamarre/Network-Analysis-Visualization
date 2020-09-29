@@ -8,9 +8,7 @@
   display:block;
   border: #000000 2px solid;
 }
-.network{
 
-}
 
 .helpb{
   align-self: flex-end;
@@ -72,14 +70,12 @@
 }
 
 .b{
- margin-top: 0;
- flex-basis: 17%;
+ margin-top: 1px;
  padding: 15px 32px;
  font-family:'Roboto',sans-serif;
  font-weight:300;
  font-size: 20px;
  color:white;
- text-align:center;
  transition: all 0.2s;
  background-color: #e7e7e7;
 }
@@ -93,23 +89,21 @@
   background-color: lightgrey;
 }
 
-.selectalgo{
-  font-size: 100%;
-  text-align: center;
-  margin-top: 0px;
-  border-radius: 0px;
-  padding: 20px 32px;
-  flex-basis: 17%;
+.selectContainer{
+  display: flex;
+  flex-direction: column-reverse;
+  height:100%;
 }
 
 .selectalgorow{
-  margin-top: 1%;
-  display: flex;
+  display:flex;
   flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
   align-content: center;
-  background-color: #787878;
+  justify-content: center;
+}
+
+.selectalgo{
+  padding: 20px 32px;
 }
 
 .sliderHeader{

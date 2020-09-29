@@ -269,53 +269,51 @@ class NetworkVisualizer extends React.Component{
             <canvas
             className = "networkCanvas" ref = {this.canvas}>
             </canvas>
-            <div className = "selectalgorow">
+            <div className = "selectContainer">
+              <div className = "selectalgorow">
 
-              <select className = "selectalgo" onChange = {(event) => this.setAlgoType(event.target.value)}>
-                <optgroup label = "Force Directed Algorithms">
-                <option value = "spring"> Basic Spring Embedding </option>
-                <option value = "fruchtermanReingold"> Fruchterman-Reingold </option>
-                <option value = "kamadaKawai" disabled = {true}> Kamada-Kawai </option>
-                <option value = "forceAtlas2" disabled = {true}> Force Atlas 2 (unfinished preview)</option>
-                <option value = "forceAtlasLinLog" disabled = {true}> Force Atlas 2 (LinLog) (unfinished preview) </option>
-                </optgroup>
-                <optgroup label = "Spectral Layout Algorithms">
-                <option value = "hall" disabled = {true}> Hall's algorithm </option>
-                <option value = "spectralDrawing" disabled = {true}> Generalized Eigenvector Spectral Drawing (Koren)</option>
-                </optgroup>
-                <optgroup label = "Custom Algorithms">
-                  <option value = "radialFlowDirected" disabled = {true}>  Radial Flow Directed </option>
-                </optgroup>
-                <optgroup label = "Minimum Spanning Trees">
-                  <option value ="kruskal"> Kruskral's Algorithm</option>
-                  <option disabled = {true}> Prim's Algorithm </option>
-                </optgroup>
-              </select>
+                <select className = "selectalgo" onChange = {(event) => this.setAlgoType(event.target.value)}>
+                  <optgroup label = "Force Directed Algorithms">
+                  <option value = "spring"> Basic Spring Embedding </option>
+                  <option value = "fruchtermanReingold"> Fruchterman-Reingold </option>
+                  <option value = "kamadaKawai" disabled = {true}> Kamada-Kawai </option>
+                  <option value = "forceAtlas2" disabled = {true}> Force Atlas 2 (unfinished preview)</option>
+                  <option value = "forceAtlasLinLog" disabled = {true}> Force Atlas 2 (LinLog) (unfinished preview) </option>
+                  </optgroup>
+                  <optgroup label = "Spectral Layout Algorithms">
+                  <option value = "hall" disabled = {true}> Hall's algorithm </option>
+                  <option value = "spectralDrawing" disabled = {true}> Generalized Eigenvector Spectral Drawing (Koren)</option>
+                  </optgroup>
+                  <optgroup label = "Custom Algorithms">
+                    <option value = "radialFlowDirected" disabled = {true}>  Radial Flow Directed </option>
+                  </optgroup>
+                  <optgroup label = "Minimum Spanning Trees">
+                    <option value ="kruskal"> Kruskral's Algorithm</option>
+                    <option disabled = {true}> Prim's Algorithm </option>
+                  </optgroup>
+                </select>
 
-              <button className = "helpbresized" onClick = {() => this.setHelp("algoType")}> ? </button>
-              <button className = "b" onClick = {() => this.runAlgorithm()} disabled = {this.app.state.running}> Run Algorithm </button>
-            </div>
+                <button className = "b" onClick = {() => this.runAlgorithm()} disabled = {this.app.state.running}> Run Algorithm </button>
+              </div>
 
 
-            <div className = "selectalgorow">
-              <select className = "selectalgo" onChange = {(event) => this.setRandomizedType(event.target.value)}>
-                <option value = "random"> Random </option>
-                <option value = "randomcircle"> Random Circle </option>
-                <option value = "randomsymmetry" disabled = {true}> Random Symmetry </option>
-                <option value = "randomclustering" disabled = {true}> Random Clustering </option>
-              </select>
-              <button className = "helpbresized" onClick = {() => this.setHelp("randomType")}>?</button>
-              <button className = "b" disabled = {this.app.state.running} onClick = {() => this.resetNetwork()}> Reset Network</button>
-            </div>
-
+              <div className = "selectalgorow">
+                <select className = "selectalgo" onChange = {(event) => this.setRandomizedType(event.target.value)}>
+                  <option value = "random"> Random </option>
+                  <option value = "randomcircle"> Random Circle </option>
+                  <option value = "randomsymmetry" disabled = {true}> Random Symmetry </option>
+                  <option value = "randomclustering" disabled = {true}> Random Clustering </option>
+                </select>
+                <button className = "b" disabled = {this.app.state.running} onClick = {() => this.resetNetwork()}> Reset Network</button>
+              </div>
 
             <div className = "selectalgorow">
               <select className = "selectalgo" onChange = {(event) => this.setLayoutType(event.target.value)} disabled = {this.app.state.running}>
                 <option value = "0"> Square </option>
                 <option value = "1"> Stretch to Fit </option>
               </select>
-              <button className = "helpbresized" onClick = {() => this.setHelp("Layout")}>?</button>
 
+            </div>
             </div>
             <HelpWindow ref = {this.help}></HelpWindow>
            </div>
