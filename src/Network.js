@@ -175,7 +175,7 @@ class NetworkVisualizer extends React.Component{
 
         if(animations[k].vIndex !== undefined){
           vertices[animations[k].vIndex].color = animations[k].color;
-          vertices[animations[k].vIndex].size = animations[k].size;
+          // vertices[animations[k].vIndex].size = animations[k].size;
         }
         if(animations[k].eIndex !== undefined){
           edges[animations[k].eIndex].setColor(animations[k].color);
@@ -295,6 +295,12 @@ class NetworkVisualizer extends React.Component{
                   <optgroup label = "Minimum Spanning Trees">
                     <option value ="kruskal"> Kruskral's Algorithm</option>
                     <option disabled = {true}> Prim's Algorithm </option>
+                  </optgroup>
+                  <optgroup label = "TSP">
+                    <option value = "2opt" disabled = {true} > 2-Opt </option>
+                    <option value = "3opt" disabled = {true}> 3-Opt </option>
+                    <option value = "2optannealing" disabled = {true}> 2-Opt Simulated Annealing </option>
+                    <option value = "3optannealing" disabled = {true}> 3-Opt Simulated Annealing </option>
                   </optgroup>
                 </select>
 

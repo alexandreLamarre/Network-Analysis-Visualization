@@ -391,6 +391,12 @@ class NetworkVisualizer3D extends React.Component{
                     <option value ="kruskal"> Kruskral's Algorithm</option>
                     <option disabled = {true}> Prim's Algorithm </option>
                   </optgroup>
+                  <optgroup label = "TSP">
+                    <option value = "2opt" disabled = {true} > 2-Opt </option>
+                    <option value = "3opt" disabled = {true}> 3-Opt </option>
+                    <option value = "2optannealing" disabled = {true}> 2-Opt Simulated Annealing </option>
+                    <option value = "3optannealing" disabled = {true}> 3-Opt Simulated Annealing </option>
+                  </optgroup>
                 </select>
                 <button className = "b"
                 disabled = {this.app.state.running === true }
