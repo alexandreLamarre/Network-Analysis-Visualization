@@ -11,6 +11,7 @@ import {hall} from "./NetworkAlgorithms/Hall";
 import {radialFlowDirected} from "./NetworkAlgorithms/radialFlowDirected";
 import {spectralDrawing} from "./NetworkAlgorithms/spectralDrawing";
 import {kruskal} from "./MSTAlgorithms/kruskal";
+import {prim} from "./MSTAlgorithms/prims";
 import getHelpInfo from "./helpInfoFunctions";
 
 import "./Network.css";
@@ -152,6 +153,12 @@ class NetworkVisualizer extends React.Component{
     waitSetEdges(that, new_edges, animations);
   }
 
+  generatePrim(){
+    const animations = prim(this.state.vertices, this.state.edges, 2);
+    this.animateColoring(animations);
+
+  }
+
   runAlgorithm(){
     if(this.state.algoType === "spring") this.generateForceDirectedLayout();
     if(this.state.algoType === "fruchtermanReingold") this.generateReingold();
@@ -162,6 +169,7 @@ class NetworkVisualizer extends React.Component{
     if(this.state.algoType === "spectralDrawing") this.generateSpectralDrawing();
     if(this.state.algoType === "radialFlowDirected") this.generateRadialFlowDirected();
     if(this.state.algoType === "kruskal") this.generateKruskal();
+    if(this.state.algoType === "prim") this.generatePrim();
   }
 
   animateColoring(animations){
@@ -294,7 +302,7 @@ class NetworkVisualizer extends React.Component{
                   </optgroup>
                   <optgroup label = "Minimum Spanning Trees">
                     <option value ="kruskal"> Kruskral's Algorithm</option>
-                    <option disabled = {true}> Prim's Algorithm </option>
+                    <option value = "prim"> Prim's Algorithm </option>
                   </optgroup>
                   <optgroup label = "TSP">
                     <option value = "2opt" disabled = {true} > 2-Opt </option>

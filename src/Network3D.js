@@ -5,6 +5,7 @@ import {createRandomNetwork3D} from "./networkgeneration/createRandomNetwork3D";
 import {fruchtermanReingold3D} from "./NetworkAlgorithms/FruchtermanReingold3D";
 import {springEmbedding3D} from "./NetworkAlgorithms/springEmbedding3D";
 import {kruskal} from "./MSTAlgorithms/kruskal";
+import {prim} from "./MSTAlgorithms/prims";
 
 import "./Network3D.css";
 
@@ -193,6 +194,12 @@ class NetworkVisualizer3D extends React.Component{
     // waitSetSortedEdges
     this.animateColoring(color_animations);
   }
+
+  generatePrim(){
+    const animations = prim(this.state.vertices, this.state.edges, 2);
+    this.animateColoring(animations);
+
+  }
   runAlgorithm(){
     if(this.state.algoType === "spring") this.generateForceDirectedLayout();
     if(this.state.algoType === "fruchtermanReingold") this.generateReingold();
@@ -203,6 +210,7 @@ class NetworkVisualizer3D extends React.Component{
     if(this.state.algoType === "spectralDrawing") this.generateSpectralDrawing();
     if(this.state.algoType === "radialFlowDirected") this.generateRadialFlowDirected();
     if(this.state.algoType === "kruskal") this.generateKruskal();
+    if(this.state.algoType === "prim") this.generatePrim();
 
   }
 
@@ -389,7 +397,7 @@ class NetworkVisualizer3D extends React.Component{
                   </optgroup>
                   <optgroup label = "Minimum Spanning Trees">
                     <option value ="kruskal"> Kruskral's Algorithm</option>
-                    <option disabled = {true}> Prim's Algorithm </option>
+                    <option value = "prim"> Prim's Algorithm </option>
                   </optgroup>
                   <optgroup label = "TSP">
                     <option value = "2opt" disabled = {true} > 2-Opt </option>
