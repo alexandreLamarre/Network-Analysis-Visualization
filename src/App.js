@@ -13,7 +13,7 @@ class App extends React.Component{
       animationSpeed: 50,
       numV: 120,
       numE: 300,
-      connected: false,
+      connected: "True",
       maxE: 600,
       minE: 20,
       settings: {
