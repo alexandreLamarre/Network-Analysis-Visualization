@@ -86,7 +86,7 @@ export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, it
     var swgG = 0;
     for(let i = 0; i < force_list.length; i++){
       const origin = new Force(0,0);
-      const combined_force  = new Force(force_list[i].x + previous_forces[i].x, force_list[i].y - previous_forces[i].y);
+      const combined_force  = new Force(force_list[i].x + previous_forces[i].x, force_list[i].y + previous_forces[i].y);
       const traN = distance(combined_force, origin)/2
       traG += (vertices[i].x+1) * traN;
       const direction_force = new Force(force_list[i].x - previous_forces[i].x, force_list[i].y - previous_forces[i].y);
