@@ -4,6 +4,8 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import {createRandomNetwork3D} from "./networkgeneration/createRandomNetwork3D";
 import {fruchtermanReingold3D} from "./NetworkAlgorithms/FruchtermanReingold3D";
 import {springEmbedding3D} from "./NetworkAlgorithms/springEmbedding3D";
+import {forceAtlasLinLog3D} from "./NetworkAlgorithms/forceAtlasLinLog-3D";
+import {forceAtlas23D} from "./NetworkAlgorithms/forceAtlas2-3D";
 import {kruskal} from "./MSTAlgorithms/kruskal";
 import {prim} from "./MSTAlgorithms/prims";
 
@@ -167,11 +169,18 @@ class NetworkVisualizer3D extends React.Component{
   }
 
   generateForceAtlas2(){
-
+    const [final_vertices, animations] = forceAtlas23D(this.state.vertices, this.state.edges,
+                this.state.width, this.state.height, this.state.iterations, this.app.state.settings.forceatlas2)
+    this.animateNetwork(animations, final_vertices);
   }
 
   generateForceAtlasLinLog(){
-
+    const values = forceAtlasLinLog3D(this.state.vertices, this.state.edges,
+                this.state.width, this.state.height, this.state.iterations, this.app.state.settings.forceatlaslinlog);
+    const animations = values[1];
+    console.log(animations);
+    const final_vertices = values[0];
+    this.animateNetwork(animations, final_vertices);
   }
 
   generateHall(){
@@ -385,8 +394,8 @@ class NetworkVisualizer3D extends React.Component{
                   <option value = "spring"> Basic Spring Embedding </option>
                   <option value = "fruchtermanReingold"> Fruchterman-Reingold </option>
                   <option value = "kamadaKawai" disabled = {true}> Kamada-Kawai </option>
-                  <option value = "forceAtlas2" disabled = {true}> Force Atlas 2 (unfinished preview)</option>
-                  <option value = "forceAtlasLinLog" disabled = {true}> Force Atlas 2 (LinLog) (unfinished preview) </option>
+                  <option value = "forceAtlas2"> Force Atlas 2 (unfinished preview)</option>
+                  <option value = "forceAtlasLinLog"> Force Atlas 2 (LinLog) (unfinished preview) </option>
                   </optgroup>
                   <optgroup label = "Spectral Layout Algorithms">
                   <option value = "hall" disabled = {true}> Hall's algorithm </option>
