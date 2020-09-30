@@ -121,7 +121,6 @@ class NetworkVisualizer extends React.Component{
     const new_vertices = values[0];
     const animations = values[1];
     // console.log(new_vertices);
-    console.log(animations);
 
     this.animateNetwork(animations, new_vertices);
   }
@@ -290,8 +289,8 @@ class NetworkVisualizer extends React.Component{
                   <option value = "spring"> Basic Spring Embedding </option>
                   <option value = "fruchtermanReingold"> Fruchterman-Reingold </option>
                   <option value = "kamadaKawai" disabled = {true}> Kamada-Kawai </option>
-                  <option value = "forceAtlas2"> Force Atlas 2 (unfinished preview)</option>
-                  <option value = "forceAtlasLinLog" > Force Atlas 2 (LinLog) (unfinished preview) </option>
+                  <option value = "forceAtlas2"> Force Atlas 2 </option>
+                  <option value = "forceAtlasLinLog" > Force Atlas 2 (LinLog) </option>
                   </optgroup>
                   <optgroup label = "Spectral Layout Algorithms">
                   <option value = "hall" disabled = {true}> Hall's algorithm </option>

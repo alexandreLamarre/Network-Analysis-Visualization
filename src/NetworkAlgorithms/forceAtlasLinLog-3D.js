@@ -12,7 +12,7 @@ export function forceAtlasLinLog3D(vertices,edges, graph_distancex, graph_distan
   const kIter = iterations;
   const W = graph_distancex -6;
   const L = graph_distancey -6;
-  console.log(settings);
+  // console.log(settings);
   kr = settings.fr;
   kg = settings.kg;
   tau = settings.tau;
@@ -61,7 +61,7 @@ export function forceAtlasLinLog3D(vertices,edges, graph_distancex, graph_distan
 
     // calculate forces of gravity
     if(settings.gravity === true){
-      console.log(settings.gravity);
+      // console.log(settings.gravity);
       const center = (t === 1)? [W/2, L/2, L/2]: [(W/2) * 1/(scaling_factor[t-2][3]),(L/2) * 1/(scaling_factor[t-2][4]), (L/2) * 1/(scaling_factor[t-2][5])];
       const center_force = new Force(center[0], center[1], center[2]);
 
@@ -110,12 +110,10 @@ export function forceAtlasLinLog3D(vertices,edges, graph_distancex, graph_distan
                                             force_list[i].z - previous_forces[i].z);
       const swgN = distance(direction_force, origin);
       sN = Math.min((ks*sG)/(1+sG*Math.sqrt(swgN)),ksmax/distance(force_list[i], origin));
-      if(t === 1)console.log(sN);
       // console.log("sN", sN);
       vertices[i].setX(vertices[i].x + sN*force_list[i].x);
       vertices[i].setY(vertices[i].y + sN*force_list[i].y);
       vertices[i].setZ(vertices[i].z + sN*force_list[i].z);
-      if(t === 1)console.log(force_list[i])
 
       //update previous forces
       previous_forces[i] = force_list[i];
@@ -134,7 +132,6 @@ export function forceAtlasLinLog3D(vertices,edges, graph_distancex, graph_distan
     animations.push(iter_animations);
     t+=1;
   }
-  console.log(animations);
   //Scale all the animations within the frame
   for(let i = 0; i < animations.length; i++){
     for(let j = 0; j < animations[i].length; j ++){
@@ -196,7 +193,7 @@ function fgravity(v, center){
   var dist_center = distance(v,center);
   var unitvector = unitVector(v,center);
   return [unitvector[0]*kg*(v.degree+1)*dist_center, unitvector[1]*kg*(v.degree+1)*dist_center,
-                unitVector[2]*unitvector[1]*kg*(v.degree+1)*dist_center];
+                unitvector[2]*kg*(v.degree+1)*dist_center];
 }
 
 function distance(v1,v2){

@@ -178,7 +178,7 @@ class NetworkVisualizer3D extends React.Component{
     const values = forceAtlasLinLog3D(this.state.vertices, this.state.edges,
                 this.state.width, this.state.height, this.state.iterations, this.app.state.settings.forceatlaslinlog);
     const animations = values[1];
-    console.log(animations);
+    // console.log(animations);
     const final_vertices = values[0];
     this.animateNetwork(animations, final_vertices);
   }
@@ -394,8 +394,8 @@ class NetworkVisualizer3D extends React.Component{
                   <option value = "spring"> Basic Spring Embedding </option>
                   <option value = "fruchtermanReingold"> Fruchterman-Reingold </option>
                   <option value = "kamadaKawai" disabled = {true}> Kamada-Kawai </option>
-                  <option value = "forceAtlas2"> Force Atlas 2 (unfinished preview)</option>
-                  <option value = "forceAtlasLinLog"> Force Atlas 2 (LinLog) (unfinished preview) </option>
+                  <option value = "forceAtlas2"> Force Atlas 2 </option>
+                  <option value = "forceAtlasLinLog"> Force Atlas 2 (LinLog) </option>
                   </optgroup>
                   <optgroup label = "Spectral Layout Algorithms">
                   <option value = "hall" disabled = {true}> Hall's algorithm </option>

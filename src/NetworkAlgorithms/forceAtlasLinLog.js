@@ -12,7 +12,7 @@ export function forceAtlasLinLog(vertices,edges, graph_distancex, graph_distance
   const kIter = iterations;
   const W = graph_distancex -6;
   const L = graph_distancey -6;
-  console.log(settings);
+  // console.log(settings);
   kr = settings.fr;
   kg = settings.kg;
   tau = settings.tau;
@@ -61,13 +61,10 @@ export function forceAtlasLinLog(vertices,edges, graph_distancex, graph_distance
 
     // calculate forces of gravity
     if(settings.gravity === true){
-      console.log(settings.gravity);
       const center = (t === 1)? [W/2, L/2]: [(W/2) * 1/(scaling_factor[t-2][2]), (L/2) * 1/(scaling_factor[t-2][3])];
       const center_force = new Force(center[0], center[1]);
-
       for(let i = 0; i < vertices.length; i ++){
         const gravity_force = fgravity(vertices[i], center_force);
-        // if(t === 1) console.log(gravity_force);
         force_list[i].addVector(gravity_force)
       }
     }

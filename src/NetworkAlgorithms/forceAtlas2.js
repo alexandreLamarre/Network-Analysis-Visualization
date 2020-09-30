@@ -12,7 +12,7 @@ export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, it
   const kIter = iterations;
   const W = graph_distancex -6;
   const L = graph_distancey -6;
-  console.log(settings);
+  // console.log(settings);
   kr = settings.fr;
   kg = settings.kg;
   tau = settings.tau;
@@ -61,7 +61,6 @@ export function forceAtlas2(vertices,edges, graph_distancex, graph_distancey, it
 
     // calculate forces of gravity
     if(settings.gravity === true){
-      console.log(settings.gravity);
       const center = (t === 1)? [W/2, L/2]: [(W/2) * 1/(scaling_factor[t-2][2]), (L/2) * 1/(scaling_factor[t-2][3])];
       const center_force = new Force(center[0], center[1]);
 
