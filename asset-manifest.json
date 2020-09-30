@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/Network-Algorithm-Visualization/static/css/main.6692691c.chunk.css",
-    "main.js": "/Network-Algorithm-Visualization/static/js/main.41a5eac6.chunk.js",
-    "main.js.map": "/Network-Algorithm-Visualization/static/js/main.41a5eac6.chunk.js.map",
+    "main.js": "/Network-Algorithm-Visualization/static/js/main.afcf7095.chunk.js",
+    "main.js.map": "/Network-Algorithm-Visualization/static/js/main.afcf7095.chunk.js.map",
     "runtime-main.js": "/Network-Algorithm-Visualization/static/js/runtime-main.3222e249.js",
     "runtime-main.js.map": "/Network-Algorithm-Visualization/static/js/runtime-main.3222e249.js.map",
-    "static/js/2.1360f0ac.chunk.js": "/Network-Algorithm-Visualization/static/js/2.1360f0ac.chunk.js",
-    "static/js/2.1360f0ac.chunk.js.map": "/Network-Algorithm-Visualization/static/js/2.1360f0ac.chunk.js.map",
+    "static/js/2.4b8e3184.chunk.js": "/Network-Algorithm-Visualization/static/js/2.4b8e3184.chunk.js",
+    "static/js/2.4b8e3184.chunk.js.map": "/Network-Algorithm-Visualization/static/js/2.4b8e3184.chunk.js.map",
     "index.html": "/Network-Algorithm-Visualization/index.html",
-    "precache-manifest.c8417237c5f65b944a638458c62bcc2e.js": "/Network-Algorithm-Visualization/precache-manifest.c8417237c5f65b944a638458c62bcc2e.js",
+    "precache-manifest.8abe72654e59a7dd161cc77891fd100d.js": "/Network-Algorithm-Visualization/precache-manifest.8abe72654e59a7dd161cc77891fd100d.js",
     "service-worker.js": "/Network-Algorithm-Visualization/service-worker.js",
     "static/css/main.6692691c.chunk.css.map": "/Network-Algorithm-Visualization/static/css/main.6692691c.chunk.css.map",
-    "static/js/2.1360f0ac.chunk.js.LICENSE.txt": "/Network-Algorithm-Visualization/static/js/2.1360f0ac.chunk.js.LICENSE.txt",
+    "static/js/2.4b8e3184.chunk.js.LICENSE.txt": "/Network-Algorithm-Visualization/static/js/2.4b8e3184.chunk.js.LICENSE.txt",
     "static/media/algorithmExample.jpg": "/Network-Algorithm-Visualization/static/media/algorithmExample.f39de4af.jpg",
     "static/media/algorithmHelpExamplejpg.jpg": "/Network-Algorithm-Visualization/static/media/algorithmHelpExamplejpg.b6aa24e0.jpg",
     "static/media/algorithmSelectExample.jpg": "/Network-Algorithm-Visualization/static/media/algorithmSelectExample.3744c0e4.jpg",
@@ -29,8 +29,8 @@
   },
   "entrypoints": [
     "static/js/runtime-main.3222e249.js",
-    "static/js/2.1360f0ac.chunk.js",
+    "static/js/2.4b8e3184.chunk.js",
     "static/css/main.6692691c.chunk.css",
-    "static/js/main.41a5eac6.chunk.js"
+    "static/js/main.afcf7095.chunk.js"
   ]
 }
