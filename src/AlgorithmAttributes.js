@@ -265,18 +265,6 @@ class AlgorithmAttributes extends React.Component{
                   <input className = "slider"
                   type = "range"
                   min = "0"
-                  max = "1"
-                  step = "1"
-                  value = {this.state.gravityType === "Normal"? 0: 1}
-                  onChange = {(event) => this.setGravityType(event.target.value)}
-                  disabled = {this.state.running || !(this.state.gravity)}>
-                  </input>
-                  <label> Gravity Type: {this.state.gravityType}</label>
-                </div>
-                <div className = "sliders">
-                  <input className = "slider"
-                  type = "range"
-                  min = "0"
                   max = "20"
                   step = "0.1"
                   value = {this.state.kg}
@@ -351,18 +339,6 @@ class AlgorithmAttributes extends React.Component{
                   disabled = {this.state.running}>
                   </input>
                   <label> Gravity: {this.state.gravity === true? "On": "Off"}</label>
-                </div>
-                <div className = "sliders">
-                  <input className = "slider"
-                  type = "range"
-                  min = "0"
-                  max = "1"
-                  step = "1"
-                  value = {this.state.gravityType === "Normal"? 0: 1}
-                  onChange = {(event) => this.setGravityType(event.target.value)}
-                  disabled = {this.state.running || !(this.state.gravity)}>
-                  </input>
-                  <label> Gravity Type: {this.state.gravityType}</label>
                 </div>
                 <div className = "sliders">
                   <input className = "slider"

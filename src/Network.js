@@ -128,7 +128,7 @@ class NetworkVisualizer extends React.Component{
 
   generateForceAtlasLinLog(){
     const values = forceAtlasLinLog(this.state.vertices, this.state.edges,
-      this.state.width, this.state.height, this.state.iterations, this.state.degree_array)
+      this.state.width, this.state.height, this.state.iterations, this.app.state.settings.forceatlaslinlog)
     const new_vertices = values[0];
     const animations = values[1];
 
@@ -291,7 +291,7 @@ class NetworkVisualizer extends React.Component{
                   <option value = "fruchtermanReingold"> Fruchterman-Reingold </option>
                   <option value = "kamadaKawai" disabled = {true}> Kamada-Kawai </option>
                   <option value = "forceAtlas2"> Force Atlas 2 (unfinished preview)</option>
-                  <option value = "forceAtlasLinLog" disabled = {true}> Force Atlas 2 (LinLog) (unfinished preview) </option>
+                  <option value = "forceAtlasLinLog" > Force Atlas 2 (LinLog) (unfinished preview) </option>
                   </optgroup>
                   <optgroup label = "Spectral Layout Algorithms">
                   <option value = "hall" disabled = {true}> Hall's algorithm </option>
