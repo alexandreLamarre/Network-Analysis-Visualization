@@ -5,9 +5,14 @@ class UnionSets{
   }
 
   add(el){
-    if(this.contents.length === 0){
-      this.representative = el;
-      this.contents.push(el);
+    if(this.contents.length === 0) this.representative = el;
+    this.contents.push(el);
+
+  }
+
+  push(contents){
+    for(let i = 0; i < contents.length; i++){
+      this.contents.push(contents[i]);
     }
   }
 

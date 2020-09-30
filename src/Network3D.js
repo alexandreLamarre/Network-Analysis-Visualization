@@ -4,6 +4,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import {createRandomNetwork3D} from "./networkgeneration/createRandomNetwork3D";
 import {fruchtermanReingold3D} from "./NetworkAlgorithms/FruchtermanReingold3D";
 import {springEmbedding3D} from "./NetworkAlgorithms/springEmbedding3D";
+import {kruskal} from "./MSTAlgorithms/kruskal";
 
 import "./Network3D.css";
 
@@ -120,6 +121,7 @@ class NetworkVisualizer3D extends React.Component{
     for(let i = 0; i< this.state.vertices.length; i++){
       const v = this.state.vertices[i];
       this.state.spheres[i].position.set(v.x, v.y, v.z);
+      this.state.spheres[i].material.color = new THREE.Color(this.state.vertices[i].color)
     }
 
 
@@ -135,6 +137,7 @@ class NetworkVisualizer3D extends React.Component{
       pos[4] = v[e.end].y;
       pos[5] = v[e.end].z;
       this.state.lines[j].geometry.attributes.position.needsUpdate = true;
+      this.state.lines[j].material.color = new THREE.Color(this.state.edges[j].color);
     }
 
     this.state.renderer.render(this.state.scene, this.state.camera);
@@ -183,7 +186,12 @@ class NetworkVisualizer3D extends React.Component{
   }
 
   generateKruskal(){
-
+    const values = kruskal(this.state.vertices, this.state.edges, 3);
+    const color_animations = values[0];
+    const sorted_edges = values[1];
+    // console.log(color_animations);
+    // waitSetSortedEdges
+    this.animateColoring(color_animations);
   }
   runAlgorithm(){
     if(this.state.algoType === "spring") this.generateForceDirectedLayout();
@@ -215,6 +223,35 @@ class NetworkVisualizer3D extends React.Component{
       }, k*this.app.state.animationSpeed)
     }
     this.setState({maxtimeouts: x})
+  }
+
+  animateColoring(animations){
+    let x = 0;
+    this.app.setState({running:true});
+
+    for(let k =0; k < animations.length; k++){
+      x = setTimeout(() => {
+        const vertices = this.state.vertices;
+        const edges= this.state.edges;
+
+        if(animations[k].vIndex !== undefined){
+          vertices[animations[k].vIndex].color = animations[k].color;
+          vertices[animations[k].vIndex].size = animations[k].size;
+        }
+        if(animations[k].eIndex !== undefined){
+          edges[animations[k].eIndex].setColor(animations[k].color);
+          edges[animations[k].eIndex].setAlpha(animations[k].alpha)
+        }
+
+        this.setState({vertices: vertices, edges:edges});
+        // console.log("animating")
+        if(k === animations.length-1){
+          this.app.setState({running:false});
+          // console.log(final_vertices);
+        }
+      }, k * this.app.state.animationSpeed)
+    }
+    this.setState({maxtimeouts: x});
   }
 
   resetNetwork(){

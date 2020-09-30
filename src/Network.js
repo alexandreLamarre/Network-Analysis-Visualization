@@ -147,7 +147,7 @@ class NetworkVisualizer extends React.Component{
   }
 
   generateKruskal(){
-    const [animations, new_edges] = kruskal(this.state.vertices, this.state.edges);
+    const [animations, new_edges] = kruskal(this.state.vertices, this.state.edges, 2);
     const that = this;
     waitSetEdges(that, new_edges, animations);
   }
