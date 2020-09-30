@@ -22,12 +22,12 @@ class AlgorithmAttributes extends React.Component{
       cPercentage: this.props.app.state.settings.spring.areascaling, // spring
       collision: 2, //fruchterman
       distanceType: this.props.app.state.settings.spring.distanceType, // spring
-      kr: 10, // forceAtlas2
-      gravity: false, //forceAtlas2
+      kr: this.props.app.state.settings.forceatlas2.fr, // forceAtlas2
+      gravity: this.props.app.state.settings.forceatlas2.gravity, //forceAtlas2
       gravityType : "Normal",//forceAtlas2
-      kg: 10, //forceAtlas2
-      tau: 0.1,//forceAtlas2
-      ksmax: 10, //forceAtlas2
+      kg: this.props.app.state.settings.forceatlas2.kg, //forceAtlas2
+      tau: this.props.app.state.settings.forceatlas2.tau,//forceAtlas2
+      ksmax: this.props.app.state.settings.forceatlas2.ksmax, //forceAtlas2
       overlappingNodes: true, //forceAtlas2
       filtering: false,
       filter: "",
@@ -432,11 +432,11 @@ async function waitSetSettings(app, that){
             tempHeuristic: that.state.tempHeuristic, eps: that.state.eps},
     forceatlas2: {fr: that.state.kr, gravity: that.state.gravity,
                   gravityType: that.state.gravityType, kg: that.state.kg,
-                  tau: that.state.tau, ksmax: that.state.mskax,
+                  tau: that.state.tau, ksmax: that.state.ksmax,
                   overlappingNodes: that.state.overlappingNodes},
     forceatlaslinlog: {fr: that.state.kr, gravity: that.state.gravity,
                   gravityType: that.state.gravityType, kg: that.state.kg,
-                  tau: that.state.tau, ksmax: that.state.mskax,
+                  tau: that.state.tau, ksmax: that.state.ksmax,
                   overlappingNodes: that.state.overlappingNodes}}});
   console.log(app.state.settings);
 }

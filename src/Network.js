@@ -117,11 +117,11 @@ class NetworkVisualizer extends React.Component{
 
   generateForceAtlas2(){
     const values = forceAtlas2(this.state.vertices, this.state.edges,
-      this.state.width, this.state.height, this.state.iterations, this.state.degree_array);
+      this.state.width, this.state.height, this.state.iterations, this.app.state.settings.forceatlas2);
     const new_vertices = values[0];
     const animations = values[1];
     // console.log(new_vertices);
-    // console.log(animations);
+    console.log(animations);
 
     this.animateNetwork(animations, new_vertices);
   }
@@ -290,7 +290,7 @@ class NetworkVisualizer extends React.Component{
                   <option value = "spring"> Basic Spring Embedding </option>
                   <option value = "fruchtermanReingold"> Fruchterman-Reingold </option>
                   <option value = "kamadaKawai" disabled = {true}> Kamada-Kawai </option>
-                  <option value = "forceAtlas2" disabled = {true}> Force Atlas 2 (unfinished preview)</option>
+                  <option value = "forceAtlas2"> Force Atlas 2 (unfinished preview)</option>
                   <option value = "forceAtlasLinLog" disabled = {true}> Force Atlas 2 (LinLog) (unfinished preview) </option>
                   </optgroup>
                   <optgroup label = "Spectral Layout Algorithms">
