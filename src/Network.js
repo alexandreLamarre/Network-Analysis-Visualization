@@ -86,11 +86,7 @@ class NetworkVisualizer extends React.Component{
     }
   }
   componentWillUnmount(){
-      var id = this.state.maxtimeouts;
-      while(id){
-        clearInterval(id);
-        id --;
-      }
+      this.cancelAnimation();
   }
 
   generateForceDirectedLayout(){
@@ -316,6 +312,15 @@ class NetworkVisualizer extends React.Component{
 
     this.app.setState({numV: vertices.length, numE: edges.length});
   }
+
+  cancelAnimation(){
+    var id = this.state.maxtimeouts;
+    while(id){
+      clearInterval(id);
+      id --;
+    }
+    this.app.setState({running: false});
+  }
   render(){
 
     return <div className = "network">
@@ -357,10 +362,11 @@ class NetworkVisualizer extends React.Component{
 
 
               <div className = "selectalgorow">
-                <select disabled = {this.app.state.running === true }className = "selectalgo" onChange = {(event) => this.setRandomizedType(event.target.value)} focus>
+                <select value = {this.state.randomType}
+                disabled = {this.app.state.running === true }className = "selectalgo" onChange = {(event) => this.setRandomizedType(event.target.value)}>
                   <option value = "random" disabled = {this.state.TSP === true}> Random </option>
                   <option value = "randomcircle" disabled = {this.state.TSP === true}> Random Circle </option>
-                  <option selected = {this.state.TSP === true} value = "cycle"> Random Hamiltonian Cycle </option>
+                  <option  value = "cycle"> Random Hamiltonian Cycle </option>
                   <option value = "randomclustering" disabled = {true}> Random Clustering </option>
                 </select>
                 <button className = "b" disabled = {this.app.state.running} onClick = {() => this.resetNetwork()}> Reset Network</button>
@@ -371,6 +377,8 @@ class NetworkVisualizer extends React.Component{
                 <option value = "0"> Square </option>
                 <option value = "1"> Stretch to Fit </option>
               </select>
+              <button className = "b" onClick = {() => this.cancelAnimation()}> Cancel Animation</button>
+              <button className = "b" disabled = {this.app.state.running === true}> Reset Coloring </button>
 
             </div>
             </div>
