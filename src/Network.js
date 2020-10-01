@@ -1,6 +1,8 @@
 import React from "react";
 import HelpWindow from "./HelpWindow";
 import AlgorithmAttributes from "./AlgorithmAttributes";
+import Vertex from "./datatypes/Vertex";
+import Edge from "./datatypes/Edge";
 import createRandomNetwork from "./networkgeneration/createRandomNetwork";
 import {springEmbedding} from "./NetworkAlgorithms/springEmbedding";
 import {fruchtermanReingold} from "./NetworkAlgorithms/FruchtermanReingold";
@@ -321,6 +323,18 @@ class NetworkVisualizer extends React.Component{
     }
     this.app.setState({running: false});
   }
+
+  resetColoring(){
+    const vertices = [];
+    const edges = [];
+    for(let i = 0; i < this.state.vertices.length; i ++){
+      vertices.push(new Vertex(this.state.vertices[i].x, this.state.vertices[i].y, this.state.vertices[i].z));
+    }
+    for(let j = 0; j < this.state.edges.length; j++){
+      edges.push(new Edge(this.state.edges[j].start, this.state.edges[j].end))
+    }
+    this.setState({vertices: vertices, edges: edges});
+  }
   render(){
 
     return <div className = "network">
@@ -362,6 +376,10 @@ class NetworkVisualizer extends React.Component{
 
 
               <div className = "selectalgorow">
+                <select className = "selectalgo" onChange = {(event) => this.setLayoutType(event.target.value)} disabled = {this.app.state.running}>
+                  <option value = "0"> Square </option>
+                  <option value = "1"> Stretch to Fit </option>
+                </select>
                 <select value = {this.state.randomType}
                 disabled = {this.app.state.running === true }className = "selectalgo" onChange = {(event) => this.setRandomizedType(event.target.value)}>
                   <option value = "random" disabled = {this.state.TSP === true}> Random </option>
@@ -373,12 +391,9 @@ class NetworkVisualizer extends React.Component{
               </div>
 
             <div className = "selectalgorow">
-              <select className = "selectalgo" onChange = {(event) => this.setLayoutType(event.target.value)} disabled = {this.app.state.running}>
-                <option value = "0"> Square </option>
-                <option value = "1"> Stretch to Fit </option>
-              </select>
               <button className = "b" onClick = {() => this.cancelAnimation()}> Cancel Animation</button>
-              <button className = "b" disabled = {this.app.state.running === true}> Reset Coloring </button>
+              <button className = "b" disabled = {this.app.state.running === true}
+              onClick = {() => this.resetColoring()}> Reset Coloring </button>
 
             </div>
             </div>
