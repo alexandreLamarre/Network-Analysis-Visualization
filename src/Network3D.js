@@ -291,7 +291,6 @@ class NetworkVisualizer3D extends React.Component{
     const [vertices,edges] = createRandomNetwork3D(this.state.width,this.state.height,
       this.state.depth, this.app.state.numV, this.app.state.numE, this.app.state.connected,
             this.state.randomType);
-    console.log(edges);
     const spheres = [];
     //displaying initial_vertices
     for(let i = 0; i< vertices.length; i++){
@@ -470,6 +469,12 @@ class NetworkVisualizer3D extends React.Component{
                 <button className = "b"
                 onClick = {() => this.resetCamera()}
                 > Reset Camera </button>
+                <button className = "b"
+                onClick = {() => this.cancelAnimation()}>
+                Cancel Animation </button>
+                <button className = "b"
+                onClick = {() => this.resetColoring()}>
+                Reset Coloring</button>
                 </div>
               </div>
           </div>
