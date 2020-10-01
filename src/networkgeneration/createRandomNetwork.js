@@ -1,6 +1,5 @@
 import Vertex from "../datatypes/Vertex";
 import Edge from "../datatypes/Edge";
-import {initial_random_cycle} from "../TSP/opt2";
 
 export default function createRandomNetwork(maxWidth, maxHeight, numV, numE, conn, randomType){
   let connected = conn === undefined? "False": conn;
@@ -112,4 +111,41 @@ function pickRandomVertex(array){
 
 function removeFromArray(array, index){
   return array.slice(0,index).concat(array.slice(index+1))
+}
+
+function initial_random_cycle(vertices){
+
+  var root = 0;
+  var initial_path = []
+
+  //construct adjacency matrix
+  const adj = []
+  var available_vertices = [];
+  for(let i = 0; i < vertices.length; i++){
+    available_vertices.push(i);
+
+  }
+
+
+  root = pick_random_array(available_vertices);
+  available_vertices = remove_from_array(available_vertices, root);
+
+  initial_path.push(root);
+  for(let i = 0; i < vertices.length -1; i++){
+    const next_node = pick_random_array(available_vertices);
+    available_vertices = remove_from_array(available_vertices, next_node);
+    initial_path.push(next_node);
+  }
+  initial_path.push(root);
+
+  return [initial_path, root];
+}
+
+function remove_from_array(array, item){
+  var index  = array.indexOf(item)
+  return array.slice(0,index).concat(array.slice(index+1));
+}
+
+function pick_random_array(array){
+  return array[Math.floor(Math.random()*array.length)];
 }
