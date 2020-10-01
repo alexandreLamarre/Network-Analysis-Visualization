@@ -12,6 +12,8 @@ import {radialFlowDirected} from "./NetworkAlgorithms/radialFlowDirected";
 import {spectralDrawing} from "./NetworkAlgorithms/spectralDrawing";
 import {kruskal} from "./MSTAlgorithms/kruskal";
 import {prim} from "./MSTAlgorithms/prims";
+import {initial_random_cycle} from "./TSP/opt2";
+import {opt2} from "./TSP/opt2";
 import getHelpInfo from "./helpInfoFunctions";
 
 import "./Network.css";
@@ -155,6 +157,13 @@ class NetworkVisualizer extends React.Component{
   generatePrim(){
     const animations = prim(this.state.vertices, this.state.edges, 2);
     this.animateColoring(animations);
+  }
+
+  generate2Opt(){
+    const [path, root] = initial_random_cycle(this.state.vertices, this.state.edges);
+    console.log(path);
+    console.log(root);
+    opt2(path,root,1,this.state.vertices,this.app.state.dimension);
 
   }
 
@@ -169,6 +178,7 @@ class NetworkVisualizer extends React.Component{
     if(this.state.algoType === "radialFlowDirected") this.generateRadialFlowDirected();
     if(this.state.algoType === "kruskal") this.generateKruskal();
     if(this.state.algoType === "prim") this.generatePrim();
+    if(this.state.algoType === "2opt") this.generate2Opt();
   }
 
   animateColoring(animations){
@@ -304,7 +314,7 @@ class NetworkVisualizer extends React.Component{
                     <option value = "prim"> Prim's Algorithm </option>
                   </optgroup>
                   <optgroup label = "TSP">
-                    <option value = "2opt" disabled = {true} > 2-Opt </option>
+                    <option value = "2opt"> 2-Opt </option>
                     <option value = "3opt" disabled = {true}> 3-Opt </option>
                     <option value = "2optannealing" disabled = {true}> 2-Opt Simulated Annealing </option>
                     <option value = "3optannealing" disabled = {true}> 3-Opt Simulated Annealing </option>
