@@ -40,6 +40,7 @@ class GeneralNetworkSettings extends React.Component{
       open: false,
     }
     this.app = this.props.app;
+    this.network = this.app.network.current === null? this.app.network3d.current: this.app.network.current;
   }
 
   setOpen(v){
@@ -115,7 +116,7 @@ class GeneralNetworkSettings extends React.Component{
                 step = "1"
                 className = "slider"
                 name = "weight"
-                disabled = {this.app.state.running}
+                disabled = {this.app.state.running || this.network.state.randomType === "cycle"}
                 onChange = {(event) => this.setEdges(event.target.value)}>
               </input>
               <label>

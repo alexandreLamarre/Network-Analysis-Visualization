@@ -12,13 +12,13 @@ import {radialFlowDirected} from "./NetworkAlgorithms/radialFlowDirected";
 import {spectralDrawing} from "./NetworkAlgorithms/spectralDrawing";
 import {kruskal} from "./MSTAlgorithms/kruskal";
 import {prim} from "./MSTAlgorithms/prims";
-import {initial_random_cycle} from "./TSP/opt2";
 import {opt2} from "./TSP/opt2";
 import getHelpInfo from "./helpInfoFunctions";
 
 import "./Network.css";
 
 var MAX_EDGES = 600;
+var MAX_TIMEOUT = 30; //seconds
 // var MAX_TIMEOUT = 0;
 
 
@@ -38,6 +38,7 @@ class NetworkVisualizer extends React.Component{
       algoType: "spring",
       randomType: "random",
       layoutType: 0,
+      TSP : false,
     };
     this.app = this.props.app;
     this.help = React.createRef();
@@ -160,11 +161,8 @@ class NetworkVisualizer extends React.Component{
   }
 
   generate2Opt(){
-    const [path, root] = initial_random_cycle(this.state.vertices, this.state.edges);
-    console.log(path);
-    console.log(root);
-    opt2(path,root,1,this.state.vertices,this.app.state.dimension);
-
+    const [new_edges, better_solution] = opt2(this.state.vertices, this.state.edges, 2);
+    this.animateTSP();
   }
 
   runAlgorithm(){
@@ -179,6 +177,32 @@ class NetworkVisualizer extends React.Component{
     if(this.state.algoType === "kruskal") this.generateKruskal();
     if(this.state.algoType === "prim") this.generatePrim();
     if(this.state.algoType === "2opt") this.generate2Opt();
+  }
+
+  animateTSP(){
+    let x = 0;
+    var STOP = 10;
+    var count = 0;
+    this.app.setState({running:true});
+    console.log(this.app.state.running)
+
+    for(let k =0; k < (MAX_TIMEOUT*1000)/this.app.state.animationSpeed; k++){
+      x = setTimeout(() => {
+        const [edges, better_solution]= opt2(this.state.vertices, this.state.edges, this.app.state.dimension);
+        const that = this;
+        animateEdges(that, edges);
+        //clear animation code;
+        // if(better_solution === true) count = 0;
+        // count ++;
+        // if(count >= STOP) break;
+        // console.log("animating")
+        if(k === ((MAX_TIMEOUT*1000)/this.app.state.animationSpeed) -1){
+          this.app.setState({running:false});
+          // console.log(final_vertices);
+        }
+      }, k * this.app.state.animationSpeed)
+    }
+    this.setState({maxtimeouts: x});
   }
 
   animateColoring(animations){
@@ -235,9 +259,16 @@ class NetworkVisualizer extends React.Component{
   setAlgoType(v){
     // this.attribute.current.setLayout(v)
     this.setState({algoType: v});
+    if(v === "2opt" || v === "3opt" ||
+        v === "2optannealing" || v === "3optannealing"){
+          this.setState({TSP:true});
+          if(this.state.randomType !== "cycle") this.setRandomizedType("cycle");
+        }
+    else{ this.setState({TSP: false})}
   }
   setRandomizedType(v){
-    this.setState({randomType: v})
+    const that = this;
+    waitSetRandomizedType(that, v);
   }
 
   setHelp(v){
@@ -326,10 +357,10 @@ class NetworkVisualizer extends React.Component{
 
 
               <div className = "selectalgorow">
-                <select className = "selectalgo" onChange = {(event) => this.setRandomizedType(event.target.value)}>
-                  <option value = "random"> Random </option>
-                  <option value = "randomcircle"> Random Circle </option>
-                  <option value = "randomsymmetry" disabled = {true}> Random Symmetry </option>
+                <select disabled = {this.app.state.running === true }className = "selectalgo" onChange = {(event) => this.setRandomizedType(event.target.value)} focus>
+                  <option value = "random" disabled = {this.state.TSP === true}> Random </option>
+                  <option value = "randomcircle" disabled = {this.state.TSP === true}> Random Circle </option>
+                  <option selected = {this.state.TSP === true} value = "cycle"> Random Hamiltonian Cycle </option>
                   <option value = "randomclustering" disabled = {true}> Random Clustering </option>
                 </select>
                 <button className = "b" disabled = {this.app.state.running} onClick = {() => this.resetNetwork()}> Reset Network</button>
@@ -359,4 +390,13 @@ async function waitSetLayout(that,w,h){
 async function waitSetEdges(that, sorted_edges,animations){
   await that.setState({edges: sorted_edges});
   that.animateColoring(animations)
+}
+
+async function waitSetRandomizedType(that,v){
+  await that.setState({randomType: v});
+  that.resetNetwork();
+}
+
+async function animateEdges(that, edges){
+  await that.setState({edges: edges});
 }
