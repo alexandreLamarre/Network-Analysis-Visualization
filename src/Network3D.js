@@ -1,4 +1,6 @@
 import React from "react";
+import Vertex from "./datatypes/Vertex";
+import Edge from "./datatypes/Edge";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import {createRandomNetwork3D} from "./networkgeneration/createRandomNetwork3D";
@@ -34,6 +36,7 @@ class NetworkVisualizer3D extends React.Component{
       previousMouseY: 0,
       algoType: "spring",
       randomType: "random",
+      TSP: false,
     }
     this.app = this.props.app;
     this.canvas = React.createRef();
@@ -288,6 +291,7 @@ class NetworkVisualizer3D extends React.Component{
     const [vertices,edges] = createRandomNetwork3D(this.state.width,this.state.height,
       this.state.depth, this.app.state.numV, this.app.state.numE, this.app.state.connected,
             this.state.randomType);
+    console.log(edges);
     const spheres = [];
     //displaying initial_vertices
     for(let i = 0; i< vertices.length; i++){
@@ -371,10 +375,40 @@ class NetworkVisualizer3D extends React.Component{
   }
 
   setAlgoType(v){
+    // this.attribute.current.setLayout(v)
     this.setState({algoType: v});
+    if(v === "2opt" || v === "3opt" ||
+        v === "2optannealing" || v === "3optannealing"){
+          this.setState({TSP:true});
+          if(this.state.randomType !== "cycle") this.setRandomizedType("cycle");
+        }
+    else{ this.setState({TSP: false})}
   }
+
   setRandomizedType(v){
-    this.setState({randomType: v})
+    const that = this;
+    waitSetRandomizedType(that, v);
+  }
+
+  cancelAnimation(){
+    var id = this.state.maxtimeouts;
+    while(id){
+      clearInterval(id);
+      id --;
+    }
+    this.app.setState({running: false});
+  }
+
+  resetColoring(){
+    const vertices = [];
+    const edges = [];
+    for(let i = 0; i < this.state.vertices.length; i ++){
+      vertices.push(new Vertex(this.state.vertices[i].x, this.state.vertices[i].y, this.state.vertices[i].z));
+    }
+    for(let j = 0; j < this.state.edges.length; j++){
+      edges.push(new Edge(this.state.edges[j].start, this.state.edges[j].end))
+    }
+    this.setState({vertices: vertices, edges: edges});
   }
 
   render(){
@@ -420,11 +454,11 @@ class NetworkVisualizer3D extends React.Component{
                 onClick = {() => this.runAlgorithm()}> Run Algorithm
                 </button>
                 </div>
-                <div className = "selectalgorow">
+                <div className = "selectalgorow" value = {this.state.randomType}>
                 <select className = "selectalgo" onChange = {(event) => this.setRandomizedType(event.target.value)}>
                   <option value = "random"> Random </option>
                   <option value = "randomcircle"> Random Sphere </option>
-                  <option value = "randomsymmetry" disabled = {true}> Random Symmetry </option>
+                  <option value = "cycle"> Random Hamiltonian Cycle </option>
                   <option value = "randomclustering" disabled = {true}> Random Clustering </option>
                 </select>
                 <button className = "b"
@@ -444,3 +478,8 @@ class NetworkVisualizer3D extends React.Component{
 }
 
 export default NetworkVisualizer3D;
+
+async function waitSetRandomizedType(that,v){
+  await that.setState({randomType: v});
+  that.resetNetwork();
+}
