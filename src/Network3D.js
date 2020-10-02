@@ -10,8 +10,11 @@ import {forceAtlasLinLog3D} from "./NetworkAlgorithms/forceAtlasLinLog-3D";
 import {forceAtlas23D} from "./NetworkAlgorithms/forceAtlas2-3D";
 import {kruskal} from "./MSTAlgorithms/kruskal";
 import {prim} from "./MSTAlgorithms/prims";
+import {opt2} from "./TSP/opt2";
 
 import "./Network3D.css";
+
+var MAX_TIMEOUT = 30; //seconds
 
 class NetworkVisualizer3D extends React.Component{
   constructor(props){
@@ -210,8 +213,12 @@ class NetworkVisualizer3D extends React.Component{
   generatePrim(){
     const animations = prim(this.state.vertices, this.state.edges, 2);
     this.animateColoring(animations);
-
   }
+
+  generate2Opt(){
+    this.animateTSP(opt2);
+  }
+
   runAlgorithm(){
     if(this.state.algoType === "spring") this.generateForceDirectedLayout();
     if(this.state.algoType === "fruchtermanReingold") this.generateReingold();
@@ -223,6 +230,7 @@ class NetworkVisualizer3D extends React.Component{
     if(this.state.algoType === "radialFlowDirected") this.generateRadialFlowDirected();
     if(this.state.algoType === "kruskal") this.generateKruskal();
     if(this.state.algoType === "prim") this.generatePrim();
+    if(this.state.algoType === "2opt") this.generate2Opt();
 
   }
 
@@ -266,6 +274,32 @@ class NetworkVisualizer3D extends React.Component{
         this.setState({vertices: vertices, edges:edges});
         // console.log("animating")
         if(k === animations.length-1){
+          this.app.setState({running:false});
+          // console.log(final_vertices);
+        }
+      }, k * this.app.state.animationSpeed)
+    }
+    this.setState({maxtimeouts: x});
+  }
+
+  animateTSP(func){
+    let x = 0;
+    var STOP = 10;
+    var count = 0;
+    this.app.setState({running:true});
+    console.log(this.app.state.running)
+
+    for(let k =0; k < (MAX_TIMEOUT*1000)/this.app.state.animationSpeed; k++){
+      x = setTimeout(() => {
+        const [edges, better_solution]= func(this.state.vertices, this.state.edges, this.app.state.dimension);
+        const that = this;
+        animateEdges(that, edges);
+        //clear animation code;
+        // if(better_solution === true) count = 0;
+        // count ++;
+        // if(count >= STOP) break;
+        // console.log("animating")
+        if(k === ((MAX_TIMEOUT*1000)/this.app.state.animationSpeed) -1){
           this.app.setState({running:false});
           // console.log(final_vertices);
         }
@@ -405,7 +439,8 @@ class NetworkVisualizer3D extends React.Component{
       vertices.push(new Vertex(this.state.vertices[i].x, this.state.vertices[i].y, this.state.vertices[i].z));
     }
     for(let j = 0; j < this.state.edges.length; j++){
-      edges.push(new Edge(this.state.edges[j].start, this.state.edges[j].end))
+      edges.push(new Edge(this.state.edges[j].start, this.state.edges[j].end));
+      edges[j].setColor("#d3d3d3");
     }
     this.setState({vertices: vertices, edges: edges});
   }
@@ -422,7 +457,9 @@ class NetworkVisualizer3D extends React.Component{
               </canvas>
               <div className = "selectContainer">
                 <div className = "selectalgorow">
-                <select className = "selectalgo" onChange = {(event) => this.setAlgoType(event.target.value)}>
+                <select className = "selectalgo"
+                onChange = {(event) => this.setAlgoType(event.target.value)}
+                disabled = {this.app.state.running}>
                   <optgroup label = "Force Directed Algorithms">
                   <option value = "spring"> Basic Spring Embedding </option>
                   <option value = "fruchtermanReingold"> Fruchterman-Reingold </option>
@@ -442,7 +479,7 @@ class NetworkVisualizer3D extends React.Component{
                     <option value = "prim"> Prim's Algorithm </option>
                   </optgroup>
                   <optgroup label = "TSP">
-                    <option value = "2opt" disabled = {true} > 2-Opt </option>
+                    <option value = "2opt"> 2-Opt </option>
                     <option value = "3opt" disabled = {true}> 3-Opt </option>
                     <option value = "2optannealing" disabled = {true}> 2-Opt Simulated Annealing </option>
                     <option value = "3optannealing" disabled = {true}> 3-Opt Simulated Annealing </option>
@@ -454,9 +491,11 @@ class NetworkVisualizer3D extends React.Component{
                 </button>
                 </div>
                 <div className = "selectalgorow" value = {this.state.randomType}>
-                <select className = "selectalgo" onChange = {(event) => this.setRandomizedType(event.target.value)}>
-                  <option value = "random"> Random </option>
-                  <option value = "randomcircle"> Random Sphere </option>
+                <select className = "selectalgo"
+                onChange = {(event) => this.setRandomizedType(event.target.value)}
+                value = {this.state.randomType}>
+                  <option value = "random" disabled = {this.state.TSP === true}> Random </option>
+                  <option value = "randomcircle" disabled = {this.state.TSP === true}> Random Sphere </option>
                   <option value = "cycle"> Random Hamiltonian Cycle </option>
                   <option value = "randomclustering" disabled = {true}> Random Clustering </option>
                 </select>
@@ -473,7 +512,8 @@ class NetworkVisualizer3D extends React.Component{
                 onClick = {() => this.cancelAnimation()}>
                 Cancel Animation </button>
                 <button className = "b"
-                onClick = {() => this.resetColoring()}>
+                onClick = {() => this.resetColoring()}
+                disabled = {this.app.state.running}>
                 Reset Coloring</button>
                 </div>
               </div>
@@ -487,4 +527,8 @@ export default NetworkVisualizer3D;
 async function waitSetRandomizedType(that,v){
   await that.setState({randomType: v});
   that.resetNetwork();
+}
+
+async function animateEdges(that, edges){
+  await that.setState({edges: edges});
 }

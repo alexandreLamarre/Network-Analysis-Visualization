@@ -15,6 +15,7 @@ import {spectralDrawing} from "./NetworkAlgorithms/spectralDrawing";
 import {kruskal} from "./MSTAlgorithms/kruskal";
 import {prim} from "./MSTAlgorithms/prims";
 import {opt2} from "./TSP/opt2";
+import {opt3} from "./TSP/opt3";
 import getHelpInfo from "./helpInfoFunctions";
 
 import "./Network.css";
@@ -159,8 +160,12 @@ class NetworkVisualizer extends React.Component{
   }
 
   generate2Opt(){
-    const [new_edges, better_solution] = opt2(this.state.vertices, this.state.edges, 2);
-    this.animateTSP();
+    this.animateTSP(opt2);
+  }
+
+  generate3Opt(){
+
+    const values = opt3(this.state.vertices, this.state.edges, 2)
   }
 
   runAlgorithm(){
@@ -175,9 +180,10 @@ class NetworkVisualizer extends React.Component{
     if(this.state.algoType === "kruskal") this.generateKruskal();
     if(this.state.algoType === "prim") this.generatePrim();
     if(this.state.algoType === "2opt") this.generate2Opt();
+    if(this.state.algoType === "3opt") this.generate3Opt();
   }
 
-  animateTSP(){
+  animateTSP(func){
     let x = 0;
     var STOP = 10;
     var count = 0;
@@ -186,7 +192,7 @@ class NetworkVisualizer extends React.Component{
 
     for(let k =0; k < (MAX_TIMEOUT*1000)/this.app.state.animationSpeed; k++){
       x = setTimeout(() => {
-        const [edges, better_solution]= opt2(this.state.vertices, this.state.edges, this.app.state.dimension);
+        const [edges, better_solution]= func(this.state.vertices, this.state.edges, this.app.state.dimension);
         const that = this;
         animateEdges(that, edges);
         //clear animation code;
@@ -365,7 +371,7 @@ class NetworkVisualizer extends React.Component{
                   </optgroup>
                   <optgroup label = "TSP">
                     <option value = "2opt"> 2-Opt </option>
-                    <option value = "3opt" disabled = {true}> 3-Opt </option>
+                    <option value = "3opt"> 3-Opt </option>
                     <option value = "2optannealing" disabled = {true}> 2-Opt Simulated Annealing </option>
                     <option value = "3optannealing" disabled = {true}> 3-Opt Simulated Annealing </option>
                   </optgroup>
