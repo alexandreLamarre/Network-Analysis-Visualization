@@ -29,11 +29,12 @@ class AlgorithmAttributes extends React.Component{
       tau: this.props.app.state.settings.forceatlas2.tau,//forceAtlas2
       ksmax: this.props.app.state.settings.forceatlas2.ksmax, //forceAtlas2
       overlappingNodes: true, //forceAtlas2
-      filtering: false,
-      filter: "",
+      filtering: this.props.filtering,
+      filter: this.props.filter,
     }
     this.help = React.createRef();
     this.app= this.props.app;
+    this.settings = this.props.settings;
   }
 
 
@@ -103,11 +104,13 @@ class AlgorithmAttributes extends React.Component{
 
   filter(e){
     if(e === "") {
-      this.setState({filtering: false});
+      this.setState({filtering: false, filter: e});
+      this.settings.setState({filtering: false, filter: e});
       console.log("default");
     }
     else{
-      this.setState({filtering: true, filter: e})
+      this.settings.setState({filtering: true, filter: e});
+      this.setState({filtering: true, filter: e});
     }
   }
   render(){
@@ -115,7 +118,7 @@ class AlgorithmAttributes extends React.Component{
       <HelpWindow ref = {this.help}></HelpWindow>
       <div className = "searchbar">
         <label className = "attributesearch"> Search for Algorithm: </label>
-        <input onChange = {(e) => this.filter(e.target.value)}/>
+        <input value = {this.state.filter} onChange = {(e) => this.filter(e.target.value)}/>
       </div>
       {(this.state.filtering === true && "spring embedding".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
       ?<div><p> Spring Embedding</p><div className = "sliders">
