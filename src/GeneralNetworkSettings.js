@@ -79,7 +79,7 @@ class GeneralNetworkSettings extends React.Component{
             overlayClassName = "generalsettingsoverlay"
             >
             <p className = "sliderHeader" style = {{color: "black"}}>
-              <b>General Network Settings</b>
+              <b style = {{color: "white"}} >General Network Settings</b>
             </p>
             <div className = "sliders">
               <input

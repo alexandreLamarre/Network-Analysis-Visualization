@@ -25,7 +25,26 @@ class NetworkNavBar extends React.Component{
                 <nav className ="toolbar__navigation">
                   <div><DrawerToggleButton openSettings = {() => this.openSettings()}></DrawerToggleButton></div>
                   <div className = "toolbar__logo"><a > Network Algorithm Visualizer {this.app.state.dimension ===3?3:2 }D </a></div>
-                  <div className ="toolbar__search"> <label> Search </label> <input/></div>
+                  <div className ="toolbar__search">
+                      <form>
+                      <label> Search :
+                      </label>
+                      <input minlength = "2" list = "search_values"/>
+                      <datalist id = "search_values">
+                        <option value = "Basic Spring Embedding"/>
+                        <option value = "Fruchterman-Reingold"/>
+                        <option value = "Force Atlas 2"/>
+                        <option value = "Force Atlas 2 (LinLog)"/>
+                        <option value = "Hall's Algorithm"/>
+                        <option value = "Generalized Eigenvector Spectral Drawing"/>
+                        <option value = "Kruskal's Algorithm"/>
+                        <option value = "Prim's Algorithm"/>
+                        <option value = "2-opt"/>
+                        <option value = "3-opt"/>
+                        <option value = "2-opt simulated annealing"/>
+                      </datalist>
+                      </form>
+                  </div>
                 </nav>
               </header>
             </div>

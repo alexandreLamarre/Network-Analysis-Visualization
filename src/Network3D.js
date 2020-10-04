@@ -488,7 +488,7 @@ class NetworkVisualizer3D extends React.Component{
                     <option value = "2opt"> 2-Opt </option>
                     <option value = "3opt"> 3-Opt </option>
                     <option value = "2optannealing" disabled = {true}> 2-Opt Simulated Annealing </option>
-                    <option value = "3optannealing" disabled = {true}> 3-Opt Simulated Annealing </option>
+                    <option value = "3optannealing" disabled = {true} hidden = {true}> 3-Opt Simulated Annealing </option>
                   </optgroup>
                 </select>
                 <button className = "b"
