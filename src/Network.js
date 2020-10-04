@@ -164,8 +164,7 @@ class NetworkVisualizer extends React.Component{
   }
 
   generate3Opt(){
-
-    const values = opt3(this.state.vertices, this.state.edges, 2)
+    this.animateTSP(opt3);
   }
 
   runAlgorithm(){
