@@ -353,7 +353,7 @@ class NetworkVisualizer extends React.Component{
                   <optgroup label = "Force Directed Algorithms">
                   <option value = "spring"> Basic Spring Embedding </option>
                   <option value = "fruchtermanReingold"> Fruchterman-Reingold </option>
-                  <option value = "kamadaKawai" disabled = {true}> Kamada-Kawai </option>
+                  <option value = "kamadaKawai" hidden = {true} disabled = {true}> Kamada-Kawai </option>
                   <option value = "forceAtlas2"> Force Atlas 2 </option>
                   <option value = "forceAtlasLinLog" > Force Atlas 2 (LinLog) </option>
                   </optgroup>
@@ -361,7 +361,7 @@ class NetworkVisualizer extends React.Component{
                   <option value = "hall" disabled = {true}> Hall's algorithm </option>
                   <option value = "spectralDrawing" disabled = {true}> Generalized Eigenvector Spectral Drawing (Koren)</option>
                   </optgroup>
-                  <optgroup label = "Custom Algorithms">
+                  <optgroup label = "Custom Algorithms" hidden = {true}>
                     <option value = "radialFlowDirected" disabled = {true}>  Radial Flow Directed </option>
                   </optgroup>
                   <optgroup label = "Minimum Spanning Trees">

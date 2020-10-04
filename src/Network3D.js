@@ -11,6 +11,7 @@ import {forceAtlas23D} from "./NetworkAlgorithms/forceAtlas2-3D";
 import {kruskal} from "./MSTAlgorithms/kruskal";
 import {prim} from "./MSTAlgorithms/prims";
 import {opt2} from "./TSP/opt2";
+import {opt3} from "./TSP/opt3";
 
 import "./Network3D.css";
 
@@ -219,6 +220,10 @@ class NetworkVisualizer3D extends React.Component{
     this.animateTSP(opt2);
   }
 
+  generate3Opt(){
+    this.animateTSP(opt3);
+  }
+
   runAlgorithm(){
     if(this.state.algoType === "spring") this.generateForceDirectedLayout();
     if(this.state.algoType === "fruchtermanReingold") this.generateReingold();
@@ -231,6 +236,7 @@ class NetworkVisualizer3D extends React.Component{
     if(this.state.algoType === "kruskal") this.generateKruskal();
     if(this.state.algoType === "prim") this.generatePrim();
     if(this.state.algoType === "2opt") this.generate2Opt();
+    if(this.state.algoType === "3opt") this.generate3Opt();
 
   }
 
@@ -463,7 +469,7 @@ class NetworkVisualizer3D extends React.Component{
                   <optgroup label = "Force Directed Algorithms">
                   <option value = "spring"> Basic Spring Embedding </option>
                   <option value = "fruchtermanReingold"> Fruchterman-Reingold </option>
-                  <option value = "kamadaKawai" disabled = {true}> Kamada-Kawai </option>
+                  <option value = "kamadaKawai" disabled = {true} hidden = {true}> Kamada-Kawai </option>
                   <option value = "forceAtlas2"> Force Atlas 2 </option>
                   <option value = "forceAtlasLinLog"> Force Atlas 2 (LinLog) </option>
                   </optgroup>
@@ -471,7 +477,7 @@ class NetworkVisualizer3D extends React.Component{
                   <option value = "hall" disabled = {true}> Hall's algorithm </option>
                   <option value = "spectralDrawing" disabled = {true}> Generalized Eigenvector Spectral Drawing (Koren)</option>
                   </optgroup>
-                  <optgroup label = "Custom Algorithms">
+                  <optgroup label = "Custom Algorithms" hidden = {true}>
                     <option value = "radialFlowDirected" disabled = {true}>  Radial Flow Directed </option>
                   </optgroup>
                   <optgroup label = "Minimum Spanning Trees">
@@ -480,7 +486,7 @@ class NetworkVisualizer3D extends React.Component{
                   </optgroup>
                   <optgroup label = "TSP">
                     <option value = "2opt"> 2-Opt </option>
-                    <option value = "3opt" disabled = {true}> 3-Opt </option>
+                    <option value = "3opt"> 3-Opt </option>
                     <option value = "2optannealing" disabled = {true}> 2-Opt Simulated Annealing </option>
                     <option value = "3optannealing" disabled = {true}> 3-Opt Simulated Annealing </option>
                   </optgroup>
