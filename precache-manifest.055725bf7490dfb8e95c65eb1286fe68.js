@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "1db6f84ec7c8f48cd308bf1a55667bcd",
+    "revision": "8c201fbebe2b2347950968078e85f57b",
     "url": "/Network-Algorithm-Visualization/index.html"
   },
   {
-    "revision": "6e29abae102b463f3746",
-    "url": "/Network-Algorithm-Visualization/static/css/main.6692691c.chunk.css"
+    "revision": "5bb7f058485cc08e109e",
+    "url": "/Network-Algorithm-Visualization/static/css/main.e055e811.chunk.css"
   },
   {
-    "revision": "0045b025cd90ad43a7c2",
-    "url": "/Network-Algorithm-Visualization/static/js/2.4b8e3184.chunk.js"
+    "revision": "5d1ebdd82c6d2c1bd7a5",
+    "url": "/Network-Algorithm-Visualization/static/js/2.22d6f4a2.chunk.js"
   },
   {
     "revision": "531d7b2065717e21d8dbdd1394bf24a4",
-    "url": "/Network-Algorithm-Visualization/static/js/2.4b8e3184.chunk.js.LICENSE.txt"
+    "url": "/Network-Algorithm-Visualization/static/js/2.22d6f4a2.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "6e29abae102b463f3746",
-    "url": "/Network-Algorithm-Visualization/static/js/main.fb5fca37.chunk.js"
+    "revision": "5bb7f058485cc08e109e",
+    "url": "/Network-Algorithm-Visualization/static/js/main.d25447e1.chunk.js"
   },
   {
     "revision": "af9ce49a12675298aa7b",
