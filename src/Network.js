@@ -170,7 +170,6 @@ class NetworkVisualizer extends React.Component{
 
   generateGreedyVertex(){
     const [vertices, animations] = GreedyColoring(this.state.vertices, this.state.edges, this.app.state.dimension, [255,255,0], [0,0,255])
-    console.log(animations);
     this.animateColoring(animations)
   }
 

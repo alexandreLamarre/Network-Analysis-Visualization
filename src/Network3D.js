@@ -227,7 +227,6 @@ class NetworkVisualizer3D extends React.Component{
 
   generateGreedyVertex(){
     const [vertices, animations] = GreedyColoring(this.state.vertices, this.state.edges, this.app.state.dimension, [255,0,0], [0,0,255]);
-    console.log(animations);
     this.animateColoring(animations);
   }
 
@@ -277,7 +276,6 @@ class NetworkVisualizer3D extends React.Component{
         const edges= this.state.edges;
 
         if(animations[k].vIndex !== undefined){
-          console.log(animations[k].color.toString());
           vertices[animations[k].vIndex].color = (animations[k].color);
           vertices[animations[k].vIndex].size = animations[k].size;
         }

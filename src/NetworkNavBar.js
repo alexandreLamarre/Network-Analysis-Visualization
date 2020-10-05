@@ -29,7 +29,7 @@ class NetworkNavBar extends React.Component{
                       <form>
                       <label> Search :
                       </label>
-                      <input minlength = "2" list = "search_values"/>
+                      <input minLength = "2" list = "search_values"/>
                       <datalist id = "search_values">
                         <option value = "Basic Spring Embedding"/>
                         <option value = "Fruchterman-Reingold"/>

@@ -9,13 +9,10 @@ export function GreedyColoring(vertices, edges, dimension, initial_color, end_co
   const adj = createAdjacencyMatrix(vertices, edges);
   const animations = [];
   var num_colors = max_degree+1;
-  console.log("num_colors", num_colors);
   // console.log("number of colors", num_colors);
   // console.log(initial_color, end_color);
   // console.log(num_colors);
   var colors = createColorGradient(initial_color, end_color, num_colors);
-  console.log("INITIAL COLORS", colors);
-  console.log(colors.length)
   // console.log("available colors", colors);
   for(let i = 0; i < vertices.length; i++){
     // console.log("iteration");
@@ -23,10 +20,6 @@ export function GreedyColoring(vertices, edges, dimension, initial_color, end_co
     // console.log(neighbors)
     const available_colors = getAvailableColors(assigned_colors, neighbors, colors);
     // console.log("available_colors", available_colors);
-    if(available_colors[0] === undefined) {
-      console.log(i);
-      console.log(assigned_colors);
-    }
     const new_color = convertColor(available_colors[0]);
     // console.log(new_color)
     // console.log(animations);
@@ -90,7 +83,6 @@ function getNeighbors(vertices, index, adj){
 function getAvailableColors(assigned_colors, neighbors, colors){
   const all_colors = [];
   const available_colors = [];
-  console.log("number of neighbors :", neighbors.length);
   for(let i = 0; i < neighbors.length; i++){
     // console.log(neighbors[i]);
     const color = assigned_colors[neighbors[i]];
@@ -103,12 +95,10 @@ function getAvailableColors(assigned_colors, neighbors, colors){
     if(!(checkColorIn(colors[i], all_colors))) available_colors.push(colors[i]);
 
   }
-  console.log("available colors", available_colors);
   return available_colors;
 }
 
 function convertColor(color){
-  console.log(color);
   return "rgb("+color[0].toString()+","+color[1].toString()+","+color[2].toString()+")";
 }
 
