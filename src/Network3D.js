@@ -510,7 +510,7 @@ class NetworkVisualizer3D extends React.Component{
                 </button>
                 </div>
                 <div className = "selectalgorow" value = {this.state.randomType}>
-                <select className = "selectalgo"
+                <select className = "selectalgo" disabled = {this.app.state.running === true}
                 onChange = {(event) => this.setRandomizedType(event.target.value)}
                 value = {this.state.randomType}>
                   <option value = "random" disabled = {this.state.TSP === true}> Random </option>
