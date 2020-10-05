@@ -43,7 +43,7 @@ export function createRandomNetwork3D(maxWidth, maxHeight, maxDepth, numV, numE,
         var v2 = unvisited[vIndex2];
         visited.push(v2); //add to visited
         const e = new Edge(v1,v2);
-        e.setColor("#d3d3d3");
+        e.setColor("rgb(211,211,211)");
         edges.push(e);
         vertices[v1].increment_degree();
         vertices[v2].increment_degree();
@@ -71,7 +71,7 @@ export function createRandomNetwork3D(maxWidth, maxHeight, maxDepth, numV, numE,
       const indexFrom = random2+1000*random1;
       if(already_connected.get(indexTo) === undefined ){
         const e = new Edge(random1, random2);
-        e.setColor("#d3d3d3");
+        e.setColor("rgb(211,211,211)");
         edges.push(e);
         vertices[random1].increment_degree();
         vertices[random2].increment_degree();
@@ -89,7 +89,10 @@ export function createRandomNetwork3D(maxWidth, maxHeight, maxDepth, numV, numE,
     var [path,root] = initial_random_cycle(vertices);
     for(let i = 0; i < path.length-1; i++){
       edges.push(new Edge(path[i], path[i+1]));
-      edges[i].setColor("#d3d3d3");
+      edges[i].setColor("rgb(211,211,211)");
+    }
+    for(let i = 0; i < vertices.length; i++){
+      vertices[i].degree = 2;
     }
   }
   return [vertices,edges];

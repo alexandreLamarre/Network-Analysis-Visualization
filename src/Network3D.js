@@ -12,6 +12,7 @@ import {kruskal} from "./MSTAlgorithms/kruskal";
 import {prim} from "./MSTAlgorithms/prims";
 import {opt2} from "./TSP/opt2";
 import {opt3} from "./TSP/opt3";
+import {GreedyColoring} from "./Coloring/GreedyColoring";
 
 import "./Network3D.css";
 
@@ -224,6 +225,12 @@ class NetworkVisualizer3D extends React.Component{
     this.animateTSP(opt3);
   }
 
+  generateGreedyVertex(){
+    const [vertices, animations] = GreedyColoring(this.state.vertices, this.state.edges, this.app.state.dimension, [255,0,0], [0,0,255]);
+    console.log(animations);
+    this.animateColoring(animations);
+  }
+
   runAlgorithm(){
     if(this.state.algoType === "spring") this.generateForceDirectedLayout();
     if(this.state.algoType === "fruchtermanReingold") this.generateReingold();
@@ -237,6 +244,7 @@ class NetworkVisualizer3D extends React.Component{
     if(this.state.algoType === "prim") this.generatePrim();
     if(this.state.algoType === "2opt") this.generate2Opt();
     if(this.state.algoType === "3opt") this.generate3Opt();
+    if(this.state.algoType === "greedyvertex") this.generateGreedyVertex();
 
   }
 
@@ -269,7 +277,8 @@ class NetworkVisualizer3D extends React.Component{
         const edges= this.state.edges;
 
         if(animations[k].vIndex !== undefined){
-          vertices[animations[k].vIndex].color = animations[k].color;
+          console.log(animations[k].color.toString());
+          vertices[animations[k].vIndex].color = (animations[k].color);
           vertices[animations[k].vIndex].size = animations[k].size;
         }
         if(animations[k].eIndex !== undefined){
@@ -446,7 +455,7 @@ class NetworkVisualizer3D extends React.Component{
     }
     for(let j = 0; j < this.state.edges.length; j++){
       edges.push(new Edge(this.state.edges[j].start, this.state.edges[j].end));
-      edges[j].setColor("#d3d3d3");
+      edges[j].setColor("#rgb(211,211,211)");
     }
     this.setState({vertices: vertices, edges: edges});
   }
@@ -494,7 +503,7 @@ class NetworkVisualizer3D extends React.Component{
                     <option value = "" disabled = {true}> Misra-Gries Algorithm (Fan Rotation)</option>
                   </optgroup>
                   <optgroup label = "Vertex Coloring Algorithms">
-                    <option value = "" disabled = {true}> Greedy </option>
+                    <option value = "greedyvertex"> Greedy Coloring </option>
                   </optgroup>
                 </select>
                 <button className = "b"

@@ -84,6 +84,9 @@ export default function createRandomNetwork(maxWidth, maxHeight, numV, numE, con
     for(let i = 0; i < path.length-1; i++){
       edges.push(new Edge(path[i], path[i+1]));
     }
+    for(let i = 0; i < vertices.length; i ++){
+      vertices[i].degree = 2;
+    }
   }
   return [vertices,edges];
 }

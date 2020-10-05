@@ -169,7 +169,7 @@ class NetworkVisualizer extends React.Component{
   }
 
   generateGreedyVertex(){
-    const [vertices, animations] = GreedyColoring(this.state.vertices, this.state.edges, [255,255,0], [0,0,255])
+    const [vertices, animations] = GreedyColoring(this.state.vertices, this.state.edges, this.app.state.dimension, [255,255,0], [0,0,255])
     console.log(animations);
     this.animateColoring(animations)
   }
@@ -386,7 +386,7 @@ class NetworkVisualizer extends React.Component{
                     <option value = "" disabled = {true}> Misra-Gries Algorithm (Fan Rotation)</option>
                   </optgroup>
                   <optgroup label = "Vertex Coloring Algorithms">
-                    <option value = "greedyvertex" > Greedy </option>
+                    <option value = "greedyvertex" > Greedy Coloring </option>
                   </optgroup>
                 </select>
 

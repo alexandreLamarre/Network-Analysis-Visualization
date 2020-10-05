@@ -1,4 +1,4 @@
-export function GreedyColoring(vertices, edges, initial_color, end_color){
+export function GreedyColoring(vertices, edges, dimension, initial_color, end_color){
 
   var max_degree = -Infinity;
   const assigned_colors = [];
@@ -30,7 +30,10 @@ export function GreedyColoring(vertices, edges, initial_color, end_color){
     const new_color = convertColor(available_colors[0]);
     // console.log(new_color)
     // console.log(animations);
-    animations.push({vIndex: i, color: new_color});
+    if(dimension === 2) animations.push({vIndex: i, color: new_color});
+    if(dimension === 3){
+      animations.push( {vIndex: i, color: construct3DacceptableRGB(new_color)});
+    }
     assigned_colors[i] = new_color;
   }
 
@@ -157,4 +160,14 @@ function check_degrees(hue, C, X){
   if(hue >= 240 && hue < 300 ) return [X, 0, C];
   if(hue >= 300 && hue < 360 ) return [C, 0, X];
   return [0,0,0];
+}
+
+function construct3DacceptableRGB(new_color){
+  const color_array = colorConvert(new_color);
+
+  color_array[0] = parseInt(color_array[0]);
+  color_array[1] = parseInt(color_array[1]);
+  color_array[2] = parseInt(color_array[2]);
+
+  return convertColor(color_array);
 }

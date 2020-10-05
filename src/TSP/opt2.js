@@ -51,7 +51,7 @@ export function opt2(vertices, edges, dimension){
   var new_edges = [];
   for(let i = 0; i < path.length-1; i++){
     new_edges.push(new Edge(new_path[i], new_path[i+1]))
-    if(dimension === 3) new_edges[i].setColor("#d3d3d3");
+    if(dimension === 3) new_edges[i].setColor("rgb(211,211,211)");
     if(i === I || i === K) {
       new_edges[i].setColor("rgb(255,0,0)");
       new_edges[i].setAlpha(0.4);
