@@ -1,18 +1,21 @@
 export function GreedyColoring(vertices, edges, initial_color, end_color){
 
   var max_degree = -Infinity;
-  var assigned_colors = [];
+  const assigned_colors = [];
   for(let i = 0; i < vertices.length; i ++){
     assigned_colors.push(-1);
     max_degree = Math.max(max_degree, vertices[i].degree);
   }
   const adj = createAdjacencyMatrix(vertices, edges);
   const animations = [];
-  var num_colors = max_degree;
+  var num_colors = max_degree+1;
+  console.log("num_colors", num_colors);
   // console.log("number of colors", num_colors);
   // console.log(initial_color, end_color);
   // console.log(num_colors);
   var colors = createColorGradient(initial_color, end_color, num_colors);
+  console.log("INITIAL COLORS", colors);
+  console.log(colors.length)
   // console.log("available colors", colors);
   for(let i = 0; i < vertices.length; i++){
     // console.log("iteration");
@@ -20,6 +23,10 @@ export function GreedyColoring(vertices, edges, initial_color, end_color){
     // console.log(neighbors)
     const available_colors = getAvailableColors(assigned_colors, neighbors, colors);
     // console.log("available_colors", available_colors);
+    if(available_colors[0] === undefined) {
+      console.log(i);
+      console.log(assigned_colors);
+    }
     const new_color = convertColor(available_colors[0]);
     // console.log(new_color)
     // console.log(animations);
@@ -40,7 +47,7 @@ function createColorGradient(color1, color2, num_colors){
   const uniform_factor = 360/num_colors;
   // console.log(red,green,blue);
   const new_colors = [];
-  for(let i = 0; i < num_colors+1; i++){
+  for(let i = 0; i < num_colors; i++){
     const new_hue = hue + (uniform_factor*i)%360;
     new_colors.push(convertHSLtoRGB(new_hue, saturation, lightness));
     // new_colors.push([color2[0]+red*(i/num_colors-1), color2[1]+green*(i/num_colors-1), color2[2]+ blue*(i/num_colors-1)]);
@@ -80,6 +87,7 @@ function getNeighbors(vertices, index, adj){
 function getAvailableColors(assigned_colors, neighbors, colors){
   const all_colors = [];
   const available_colors = [];
+  console.log("number of neighbors :", neighbors.length);
   for(let i = 0; i < neighbors.length; i++){
     // console.log(neighbors[i]);
     const color = assigned_colors[neighbors[i]];
@@ -92,11 +100,12 @@ function getAvailableColors(assigned_colors, neighbors, colors){
     if(!(checkColorIn(colors[i], all_colors))) available_colors.push(colors[i]);
 
   }
-
+  console.log("available colors", available_colors);
   return available_colors;
 }
 
 function convertColor(color){
+  console.log(color);
   return "rgb("+color[0].toString()+","+color[1].toString()+","+color[2].toString()+")";
 }
 
@@ -105,9 +114,13 @@ function checkColorIn(color, array){
   for(let i = 0; i < array.length; i++){
     // console.log("ARRAY ENTRY", array[i])
     // console.log("COLOR", color);
-    if(parseInt(array[i][0]) === parseInt(color[0]) && parseInt(array[i][1]) === parseInt(color[1])
-                                      && parseInt(array[i][2]) === parseInt(color[2])) return true;
+    if(array[i][0] === (color[0]) && array[i][1] === color[1]
+                                      && (array[i][2]) === (color[2])) {
+                                        console.log("accepted",array[i], color)
+                                        return true
+                                      };
   }
+
   return false;
 }
 
