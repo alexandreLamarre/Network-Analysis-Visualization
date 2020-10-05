@@ -475,7 +475,7 @@ class NetworkVisualizer3D extends React.Component{
                   </optgroup>
                   <optgroup label = "Spectral Layout Algorithms">
                   <option value = "hall" disabled = {true}> Hall's algorithm </option>
-                  <option value = "spectralDrawing" disabled = {true}> Generalized Eigenvector Spectral Drawing (Koren)</option>
+                  <option value = "spectralDrawing" disabled = {true}> Generalized Eigenvector (Koren)</option>
                   </optgroup>
                   <optgroup label = "Custom Algorithms" hidden = {true}>
                     <option value = "radialFlowDirected" disabled = {true}>  Radial Flow Directed </option>
@@ -489,6 +489,12 @@ class NetworkVisualizer3D extends React.Component{
                     <option value = "3opt"> 3-Opt </option>
                     <option value = "2optannealing" disabled = {true}> 2-Opt Simulated Annealing </option>
                     <option value = "3optannealing" disabled = {true} hidden = {true}> 3-Opt Simulated Annealing </option>
+                  </optgroup>
+                  <optgroup label = "Edge Coloring Algorithms">
+                    <option value = "" disabled = {true}> Misra-Gries Algorithm (Fan Rotation)</option>
+                  </optgroup>
+                  <optgroup label = "Vertex Coloring Algorithms">
+                    <option value = "" disabled = {true}> Greedy </option>
                   </optgroup>
                 </select>
                 <button className = "b"
