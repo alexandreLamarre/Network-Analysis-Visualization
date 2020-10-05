@@ -9,13 +9,14 @@ import {fruchtermanReingold} from "./NetworkAlgorithms/FruchtermanReingold";
 import {kamadaKawai} from "./NetworkAlgorithms/kamadaKawai";
 import {forceAtlas2} from "./NetworkAlgorithms/forceAtlas2";
 import {forceAtlasLinLog} from "./NetworkAlgorithms/forceAtlasLinLog";
-import {hall} from "./NetworkAlgorithms/Hall";
+import {hall} from "./Spectral/Hall";
 import {radialFlowDirected} from "./NetworkAlgorithms/radialFlowDirected";
-import {spectralDrawing} from "./NetworkAlgorithms/spectralDrawing";
+import {spectralDrawing} from "./Spectral/spectralDrawing";
 import {kruskal} from "./MSTAlgorithms/kruskal";
 import {prim} from "./MSTAlgorithms/prims";
 import {opt2} from "./TSP/opt2";
 import {opt3} from "./TSP/opt3";
+import {GreedyColoring} from "./Coloring/GreedyColoring";
 import getHelpInfo from "./helpInfoFunctions";
 
 import "./Network.css";
@@ -167,6 +168,12 @@ class NetworkVisualizer extends React.Component{
     this.animateTSP(opt3);
   }
 
+  generateGreedyVertex(){
+    const [vertices, animations] = GreedyColoring(this.state.vertices, this.state.edges, [255,255,0], [0,0,255])
+    console.log(animations);
+    this.animateColoring(animations)
+  }
+
   runAlgorithm(){
     if(this.state.algoType === "spring") this.generateForceDirectedLayout();
     if(this.state.algoType === "fruchtermanReingold") this.generateReingold();
@@ -180,6 +187,7 @@ class NetworkVisualizer extends React.Component{
     if(this.state.algoType === "prim") this.generatePrim();
     if(this.state.algoType === "2opt") this.generate2Opt();
     if(this.state.algoType === "3opt") this.generate3Opt();
+    if(this.state.algoType === "greedyvertex") this.generateGreedyVertex();
   }
 
   animateTSP(func){
@@ -378,7 +386,7 @@ class NetworkVisualizer extends React.Component{
                     <option value = "" disabled = {true}> Misra-Gries Algorithm (Fan Rotation)</option>
                   </optgroup>
                   <optgroup label = "Vertex Coloring Algorithms">
-                    <option value = "" disabled = {true}> Greedy </option>
+                    <option value = "greedyvertex" > Greedy </option>
                   </optgroup>
                 </select>
 

@@ -1,6 +1,6 @@
 import Edge from "../datatypes/Edge";
 
-var MAX_SIMULATIONS = 1000;
+var MAX_SIMULATIONS = 10000;
 
 export function opt3(vertices, edges, dimension){
   const path = [];
