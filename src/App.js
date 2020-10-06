@@ -31,6 +31,13 @@ class App extends React.Component{
                       tau: 0.1, ksmax: 10,
                       overlappingNodes: true}},
       dimension: 2,
+      degreesize: false,
+      startRed: 0,
+      startGreen: 255,
+      startBlue: 255,
+      endRed: 0,
+      endGreen: 255,
+      endBlue: 255,
     }
     this.network = React.createRef();
     this.network3d = React.createRef();

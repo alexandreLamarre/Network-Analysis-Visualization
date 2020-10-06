@@ -7,6 +7,8 @@
   outline:none;
   background-color: #787878;
   border: 1px solid white;
+  overflow: auto;
+  overflow-x: hidden;
 }
 
 .generalsettingsoverlay{
@@ -15,4 +17,12 @@
   left:0;
   right:0;
   bottom:0;
+}
+
+.colorCanvas{
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  display:block;
 }
