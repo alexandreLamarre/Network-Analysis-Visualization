@@ -7,7 +7,30 @@ layouts.
 
 ## Table of contents:
 
+- [Algorithms](#Algorithms)
+- [Random Network Generation](#Random-Generation)
+- [General Settings](#General-Settings)
 - [References](#References)
+
+
+### Algorithms
+
+- [Force Directed](#Force-Directed)
+- [Spectral Layout](#Spectral-Layout)
+- [Minimum Spanning Tree](#Minimum-Spanning-Tree)
+- [Travelling Salesperson](#Travelling-SalesPerson)
+- [Edge Coloring](#Edge-Coloring)
+- [Vertex Coloring](#Vertex-Coloring)
+
+
+
+
+### Random Network Generation
+
+- [Random](#Random)
+- [Random Circle](#Random-Circle)
+- [Random Hamiltonian Cycle](#Random-Hamiltonian-Cycle)
+- [Random Cluster](#Random-Cluster)
 
 
 ### References 
