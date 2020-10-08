@@ -8,7 +8,7 @@ layouts.
 ## Table of contents:
 
 - [Algorithms](#Algorithms)
-- [Random Network Generation](#Random-Generation)
+- [Random Network Generation](#Random-Network-Generation)
 - [General Settings](#General-Settings)
 - [References](#References)
 
@@ -97,9 +97,9 @@ Cons:
 
 ### Spectral Layout
 
-- [Hall's Algorithm]()
-- [Schwarz Based Method]()
-- [Generalize Eigenvector (Koren)]()
+- [Hall's Algorithm](#Hall's-Algorithm)
+- [Schwarz Based Method](#Schwarz-Based-Method)
+- [Generalize Eigenvector (Koren)](#Generalized-Eigenvector-(Koren))
 
 
 Spectral Layout Algorithms use linear algebra relating to Spectral Theory to solve the problem of Network Layouts. In general, they use specific eigenvectors and eigenvalues derived from different matrix representations of the networks.
@@ -114,8 +114,8 @@ Spectral Layout Algorithms use linear algebra relating to Spectral Theory to sol
 
 ### Minimum Spanning Tree
 
-- [Kruskal]()
-- [Prim]()
+- [Kruskal](#Kruskal)
+- [Prim](#Prim)
 
 A Minimum Spanning Tree is a tree that consists of all the vertices of the graph/network that minimizes the edges distance/weights of the graph/network.
 
@@ -172,7 +172,7 @@ Cons:
 
 Edge coloring describes the problem of assigning the minimum number of colors to vertices in the network such that no two edges that are incident to the same vertex share the same color. It is an NP-Hard problem in general.
 
-- [Misra-Gries](Misra-Gries)
+- [Misra-Gries](#misra-gries)
 
 #### Misra-Gries
 
@@ -186,7 +186,7 @@ Cons:
 - Suboptimal in the general case
 
 ### Vertex Coloring
-- [Greedy Coloring]()
+- [Greedy Coloring](#Greedy-Coloring)
 
 <b> Fields of Application :</b> Scheduling, Bandwidth Allocation, Register Allocation in compilers, Pattern Matching
 
@@ -205,7 +205,8 @@ Cons:
 ## Random Network Generation
 
 - [Random](#Random)
-- [Random Circle/Sphere](#Random-Circle/Sphere)
+- [Random Circle](#Random-Circle)
+- [Random Sphere](#Random-Sphere)
 - [Random Hamiltonian Cycle](#Random-Hamiltonian-Cycle)
 - [Random Cluster](#Random-Cluster)
 
