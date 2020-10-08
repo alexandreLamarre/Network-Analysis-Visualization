@@ -77,7 +77,6 @@ The Force Atlas 2 algorithm, is a non-theory/research based algorithm that attem
 It borrows the spring model from Eades, but implements the scaling and temperature improvements of Fruchterman-Reingold. In order to improve the temperature of vertices during the algorithm, the temperature is a function of the "swing" and trajectory of a vertex as the algorithm is running. If the vertex "swings" excessively, increase its temperature
 to get out of the oscillating state it is in. If the vertex remains on the same trajectory, increase its temperature to allow it to escape the forces acting on it. If the vertexc trajectory oscillates back and forth - decrease the temperature because it might be near a local minima. Force Atlas 2 also includes heuristics that implement forces of gravity, all vertices will attract to the center of the frame (Can cause weird visual effects with dynamic network resizing which is what we implement in our visualizer). Force Atlas 2 also allows to scale forces of attraction to the size of the vertices so that they do not overlap. 
 
-Pros:
 - Improvement over all previous algorithms
 - Smoother layouts than Fruchterman Reingold, combined with hamiltonian cycles produces smooth shortest paths 
 - Scalable to larger networks of about 50000 vertices
@@ -102,6 +101,10 @@ Cons:
 - [Schwarz Based Method]()
 - [Generalize Eigenvector (Koren)]()
 
+
+Spectral Layout Algorithms use linear algebra relating to Spectral Theory to solve the problem of Network Layouts. In general, they use specific eigenvectors and eigenvalues derived from different matrix representations of the networks.
+
+
 #### Hall's Algorithm
 
 #### Schwarz Based Method
@@ -114,32 +117,90 @@ Cons:
 - [Kruskal]()
 - [Prim]()
 
+A Minimum Spanning Tree is a tree that consists of all the vertices of the graph/network that minimizes the edges distance/weights of the graph/network.
+
+<b> Fields of Application :</b> Cluster Analysis, Computer Vision, Min-Max flow Network optimization, Convolutional Neural Networks, Circuit Designs
 #### Kruskal
+
+Kruskal's algorithm is a greedy algorithm for finding a Minimum Spanning Tree. It constructs the tree from a forest of all vertices, where it selects the next edge that has minimal weight and is not already part of the forest and does not create a cycle within the forest. The algorithm terminates when the forest of vertices is completely connected.
 
 #### Prim
 
+Prim's algorithm is a greedt algorithm for finding a Minimum Spanning Tree. It constructs a tree by starting at a random vertex and exploring the minimum weighed edge at each iteration, it adds this edge if it does not create a cycle in the already explored vertices.
 
 ### Travelling Salesperson
 
-- [2-Opt]()
-- [3-Opt]()
-- [2-Opt Simulated Annealing]()
+The Travelling Salesperson problem tries to find the minimum distance/weighed path that traverses all vertices exactly once. Such a path that ends at the start vertex is called a Hamiltonian Cycle. The travelling salesperson problem is an NP-hard problem.
+
+<b>Fields of Application:</b> Logistics, DNA sequencing, Computer Wiring, Scheduling, Routing, Network Communications
+
+- [2-Opt](#2-Opt)
+- [3-Opt](#3-Opt)
+- [2-Opt Simulated Annealing](#2-Opt-Simulated-Annealing)
 
 #### 2-Opt
 
+The 2-Opt algorithm is a simple and somewhat effective algorithm for finding the minimal hamiltonian cycle. It randomly switches 2 edges and checks if that has decreased the cycle length. If it has, it keeps those two edges swapped otherwise it looks for another two random edges to swap. It continues until it times out. 
+
+Pros: 
+- Simple Implementation
+
+Cons: 
+- Frequently poorly optimized solutions
+
 #### 3-Opt
+
+The 3-Opt algorithm is another simple and somewhat effective algorithm for finding the minimal hamiltonian cycle. It randomly checks 3 edges, and swaps them as necessary if they reduce the cycle length. This algorithm prioritizes swapping only 2 edges at a time, but if swapping 2 edges doesnt result in an improvement it will try and swap all three.
+
+Pros: 
+- Still relatively simple, and better expected minima than 3-Opt
+
+Cons: 
+- Frequently poorly optimizated solutions, many cases to check at iteration
 
 #### 2-Opt Simulated Annealing
 
+A 2-Opt algorithm augmented with the use of simulated annealing. Simulated annealing uses an initial "temperature" which dictates the probability of accepting worse solutions when swapping 2 edges. This temperature decreases over time, according to some heuristic function, as the algorithm converges to the minima. In practice, simulated annealing and 2-opt produce the actual global minima for networks only for very small networks. 2-Opt and simulated annealing will often produce worse solutions than 2-opt on larger networks. Simulated annealing and 2 opt are better combined with the combined use of other heuristics and techniques.
+
+Pros: 
+- Always has a chance to find the optimal cycle in polynomial time.
+
+Cons: 
+- Typically worse solutions than 2-opt 
+
 ### Edge Coloring
-- [Mista-Gries]()
+
+Edge coloring describes the problem of assigning the minimum number of colors to vertices in the network such that no two edges that are incident to the same vertex share the same color. It is an NP-Hard problem in general.
+
+- [Misra-Gries](Misra-Gries)
 
 #### Misra-Gries
+
+The Misra-Gries Algorithm is a greedy edge coloring algorithm that uses at most n+1 colors, where `n = |max degree|` over all vertices in the network. 
+
+
+Pros: 
+- Fast(polynomial time), and good approximations
+
+Cons: 
+- Suboptimal in the general case
 
 ### Vertex Coloring
 - [Greedy Coloring]()
 
+<b> Fields of Application :</b> Scheduling, Bandwidth Allocation, Register Allocation in compilers, Pattern Matching
+
+Vertex Coloring describes the problem of assigning the minimum number of colors to vertices in the network such that no two adjacent(connected by an edge) vertices share the same color. It is an NP-hard problem in general. 
+
 #### Greedy Coloring
+
+The greedy vertex coloring algorithm is a greedy algorithm for coloring the vertices of a graph. It uses at most n + 1 colors, where `n = |max degree|` over all vertices in the network.
+
+Pros: 
+- Fast (polynomial time) and typically good colorings.
+
+Cons: 
+- Suboptimal in general.
 
 ## Random Network Generation
 
