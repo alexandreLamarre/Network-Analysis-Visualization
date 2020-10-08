@@ -97,9 +97,9 @@ Cons:
 
 ### Spectral Layout
 
-- [Hall's Algorithm](#Hall's-Algorithm)
+- [Hall's Algorithm](#halls-algorithm)
 - [Schwarz Based Method](#Schwarz-Based-Method)
-- [Generalize Eigenvector (Koren)](#Generalized-Eigenvector-(Koren))
+- [Generalize Eigenvector (Koren)](#generalized-eigenvector-koren)
 
 
 Spectral Layout Algorithms use linear algebra relating to Spectral Theory to solve the problem of Network Layouts. In general, they use specific eigenvectors and eigenvalues derived from different matrix representations of the networks.
