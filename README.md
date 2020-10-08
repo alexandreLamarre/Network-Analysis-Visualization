@@ -40,7 +40,7 @@ In essence the goal, is to produce a aesthetic layout of a network to analyze it
 that these network layout algorithms also seem to "generally optimize" other attributes of the network, such as average path distance, vertex coloring selections
 and many other properties of interest, despite a lack of theoretical knowledge.
 
-<b> Fields of Application:</b> Software Engineering, Telecommunications Traffic, Computational Biology, Social Network Analysis
+<b> Fields of Application:</b> Software Engineering, Telecommunications Traffic, Computational Biology, Social Network Analysis, Cartography, Linguistics
 
 #### Basic Spring Embedding
 
@@ -98,21 +98,63 @@ Cons:
 
 ### Spectral Layout
 
+- [Hall's Algorithm]()
+- [Schwarz Based Method]()
+- [Generalize Eigenvector (Koren)]()
+
+#### Hall's Algorithm
+
+#### Schwarz Based Method
+
+#### Generalized Eigenvector (Koren)
+
+
 ### Minimum Spanning Tree
+
+- [Kruskal]()
+- [Prim]()
+
+#### Kruskal
+
+#### Prim
+
 
 ### Travelling Salesperson
 
+- [2-Opt]()
+- [3-Opt]()
+- [2-Opt Simulated Annealing]()
+
+#### 2-Opt
+
+#### 3-Opt
+
+#### 2-Opt Simulated Annealing
+
 ### Edge Coloring
+- [Mista-Gries]()
+
+#### Misra-Gries
 
 ### Vertex Coloring
+- [Greedy Coloring]()
 
+#### Greedy Coloring
 
 ## Random Network Generation
 
 - [Random](#Random)
-- [Random Circle](#Random-Circle)
+- [Random Circle/Sphere](#Random-Circle/Sphere)
 - [Random Hamiltonian Cycle](#Random-Hamiltonian-Cycle)
 - [Random Cluster](#Random-Cluster)
+
+#### Random
+
+#### Random Circle/Sphere
+
+#### Random Hamiltonian Cycle
+
+#### Random Cluster
 
 
 ## References 
