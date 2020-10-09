@@ -32,6 +32,8 @@ class App extends React.Component{
                       overlappingNodes: true}},
       dimension: 2,
       degreesize: false,
+      minsize: 3,
+      maxsize: 10,
       startRed: 0,
       startGreen: 255,
       startBlue: 255,

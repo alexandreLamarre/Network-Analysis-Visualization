@@ -1,9 +1,14 @@
 import Vertex from "../datatypes/Vertex";
 import Edge from "../datatypes/Edge";
 
-export default function createRandomNetwork(maxWidth, maxHeight, numV, numE, conn, randomType){
+export default function createRandomNetwork(maxWidth, maxHeight, numV, numE, conn, randomType, startColors, endColors, resize, minsize, maxsize){
   let connected = conn === undefined? "False": conn;
   let seed = randomType === undefined? "random": randomType;
+  console.log("startColors:", startColors);
+  console.log("endColors:", endColors);
+  console.log("resize", resize);
+  console.log("minsize", minsize);
+  console.log("maxsize", maxsize);
   const maxDegree = numV-1;
   let maxEdges = Math.floor((maxDegree*numV)/2)
   const maxEdgesValue = maxEdges;
@@ -88,6 +93,23 @@ export default function createRandomNetwork(maxWidth, maxHeight, numV, numE, con
       vertices[i].degree = 2;
     }
   }
+
+
+  var max_degree = find_max_degree(vertices);
+  console.log("max_degree", max_degree);
+  var shouldRecolor = !(sameColor(startColors, endColors));
+  console.log(shouldRecolor);
+  var colorGradient;
+  if(shouldRecolor === true) var colorGradient = createColorGradient(startColors, endColors, max_degree);
+  console.log(colorGradient);
+  if(resize === true || shouldRecolor === true){
+  for(let i = 0; i < vertices.length; i++){
+      if(resize === true) vertices[i].size = assign_size(vertices[i].degree, max_degree, minsize, maxsize);
+      if(shouldRecolor === true) vertices[i].color = assign_color(vertices[i].degree, maxDegree, colorGradient);
+      console.log(vertices[i].size)
+    }
+  }
+
   return [vertices,edges];
 }
 
@@ -151,4 +173,97 @@ function remove_from_array(array, item){
 
 function pick_random_array(array){
   return array[Math.floor(Math.random()*array.length)];
+}
+
+function find_max_degree(vertices){
+  var max_degree = -Infinity;
+  for(let i = 0; i < vertices.length; i++){
+    max_degree = Math.max(vertices[i].degree, max_degree);
+  }
+  return max_degree;
+}
+
+function assign_size(degree, max_degree, minsize, maxsize){
+  //min degree is 1 or 0
+  return minsize +(maxsize - minsize)*(degree/max_degree)
+}
+
+function assign_color(degree, max_degree, gradient){
+
+  var selection = gradient[Math.floor((degree/max_degree) * (gradient.length-1))]
+
+  return rgb_to_str(selection)
+}
+
+function createColorGradient(startColor, endColor, maxDegree){
+  console.log("inside color gradient", startColor, endColor, maxDegree);
+  var [startHue, startSaturation, startLightness] = rgb_to_hsl(startColor);
+  var [endHue, endSaturation, endLightness] = rgb_to_hsl(endColor);
+
+  console.log(startHue, startSaturation, startLightness);
+  console.log(endHue, endSaturation, endLightness);
+  var incrementHue = (startHue-endHue)/maxDegree;
+
+  const gradient = [];
+
+  for(let i = 0; i < maxDegree; i++){
+    const newHue = startHue+(incrementHue*i)%360;
+    gradient.push(hsl_to_rgb((startHue+incrementHue*i)%360, startSaturation,
+                                            startLightness));
+    console.log(gradient[i]);
+  }
+  return gradient;
+}
+
+function rgb_to_hsl(rgbColor){
+  var red = rgbColor[0]/255;
+  var green = rgbColor[1]/255;
+  var blue = rgbColor[2]/255;
+  var Cmax = Math.max(...[red,green,blue]);
+  var Cmin = Math.min(...[red,green,blue]);
+  var delta = Cmax-Cmin;
+
+
+  var hue = calculate_hue(delta, Cmax, red, green, blue);
+  var lightness = (Cmax+Cmin)/2;
+  var saturation = delta === 0? 0: delta/(1-Math.abs(2*lightness-1));
+
+  return [hue, saturation, lightness];
+}
+
+function hsl_to_rgb(hue, saturation, lightness){
+  const C = (1 - Math.abs(2*lightness-1))*saturation
+  const X = C * (1 - Math.abs(hue/60)%2 -1);
+  const m = lightness - C/2;
+  const [R_prime, G_prime, B_prime] = check_degrees(hue, C, X);
+  return [(R_prime+m)*255, (G_prime + m)* 255, (B_prime+m) * 255];
+}
+
+function calculate_hue(delta, Cmax, red, green, blue){
+  if(delta === 0) return 0;
+  if(Cmax === red) return 60*(((green-blue)/delta)%6);
+  if(Cmax === green) return 60*((blue-red)/delta+2);
+  if(Cmax === blue) return 60*((red- green)/delta + 4);
+}
+
+function rgb_to_str(color){
+  return "rgb(" + color[0] + "," + color[1] + "," + color[2]+")";
+}
+
+/*
+Input is RGB colors in 3d array
+*/
+function sameColor(startColor, endColor){
+  if(startColor[0] === endColor[0] && startColor[1] === endColor[1] && startColor[2] === endColor[2]) return true;
+  return false;
+}
+
+function check_degrees(hue, C, X){
+  if((hue >= 0 && hue < 60) || hue == 360) return [C,X,0];
+  if(hue >= 60 && hue < 120 ) return [X,C,0];
+  if(hue >= 120 && hue < 180 ) return [0, C, X];
+  if(hue >= 180 && hue < 240 ) return [0, X, C];
+  if(hue >= 240 && hue < 300 ) return [X, 0, C];
+  if(hue >= 300 && hue < 360 ) return [C, 0, X];
+  return [0,0,0];
 }

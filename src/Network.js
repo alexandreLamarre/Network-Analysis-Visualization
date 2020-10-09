@@ -53,7 +53,10 @@ class NetworkVisualizer extends React.Component{
     const w = window.innerHeight * 0.55;
     const h = window.innerHeight * 0.55;
 
-    const [vertices, edges] = createRandomNetwork(w, h, this.app.state.numV, this.app.state.numE, this.app.state.connected, this.state.randomType);
+    const [vertices, edges] = createRandomNetwork(w, h, this.app.state.numV,
+      this.app.state.numE, this.app.state.connected, this.state.randomType,
+      [this.app.state.startRed, this.app.state.startGreen, this.app.state.startBlue],
+      [this.app.state.endRed, this.app.state.endGreen, this.app.state.endBlue], this.app.state.degreesize, this.app.state.minsize, this.app.state.maxsize)
     this.setState(
       {width: w,
       height: h,
@@ -317,7 +320,10 @@ class NetworkVisualizer extends React.Component{
   }
 
   resetNetwork(){
-    const [vertices, edges] = createRandomNetwork(this.state.width, this.state.height, this.app.state.numV, this.app.state.numE, this.app.state.connected, this.state.randomType);
+    const [vertices, edges] = createRandomNetwork(this.state.width, this.state.height,
+       this.app.state.numV, this.app.state.numE, this.app.state.connected, this.state.randomType,
+       [this.app.state.startRed, this.app.state.startGreen, this.app.state.startBlue],
+       [this.app.state.endRed, this.app.state.endGreen, this.app.state.endBlue], this.app.state.degreesize, this.app.state.minsize, this.app.state.maxsize);
     this.setState(
       {vertices: vertices,
        edges: edges,

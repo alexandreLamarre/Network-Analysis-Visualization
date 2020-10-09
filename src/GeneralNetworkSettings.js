@@ -75,8 +75,8 @@ class GeneralNetworkSettings extends React.Component{
     this.network = this.app.network.current === null? this.app.network3d.current: this.app.network.current;
     this.canvasStartColor = React.createRef();
     this.canvasEndColor = React.createRef();
-    console.log(this.state.startColor);
-    console.log(this.state.endColor);
+    // console.log(this.state.startColor);
+    // console.log(this.state.endColor);
   }
   drawStart(){
       const ctx1 = this.canvasStartColor.current.getContext("2d");
@@ -169,6 +169,16 @@ class GeneralNetworkSettings extends React.Component{
     this.drawEnd();
   }
 
+  setMinVertexSize(v){
+    const value = parseInt(v);
+    this.app.setState({minsize:value});
+  }
+
+  setMaxVertexSize(v){
+    const value = parseInt(v);
+    this.app.setState({maxsize: value});
+  }
+
   render(){
     return<div>
           <Modal isOpen = {this.state.open}
@@ -234,9 +244,13 @@ class GeneralNetworkSettings extends React.Component{
                 Force Connectedness: {this.app.state.connected}
               </label>
               </div>
+
+
               <p className = "sliderHeader" style = {{color: "black"}}>
                 <b style = {{color: "white"}} > Size Settings</b>
               </p>
+
+
               <input
                 type = "range"
                 min = "0"
@@ -249,6 +263,34 @@ class GeneralNetworkSettings extends React.Component{
               </input>
               <label>
                 Scale Vertex Size to Degree : {this.app.state.degreesize === true?"On":"Off"}
+              </label>
+
+              <input
+                type = "range"
+                min = "1"
+                max = {this.app.state.maxsize}
+                step = "1"
+                value = {this.app.state.minsize}
+                className = "slider"
+                onChange = {(e) => this.setMinVertexSize(e.target.value)}
+                disabled = {this.app.state.running}>
+              </input>
+              <label>
+                Minimum Vertex Size: {this.app.state.minsize}
+              </label>
+
+              <input
+                type = "range"
+                min = {this.app.state.minsize}
+                max = "12"
+                step = "1"
+                value = {this.app.state.maxsize}
+                className = "slider"
+                onChange = {(e) => this.setMaxVertexSize(e.target.value)}
+                disabled = {this.app.state.running}>
+              </input>
+              <label>
+                Maximum Vertex Size: {this.app.state.maxsize}
               </label>
 
               <p className = "sliderHeader" style = {{color: "black"}}>
