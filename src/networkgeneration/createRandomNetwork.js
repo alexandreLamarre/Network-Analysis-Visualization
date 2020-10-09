@@ -105,8 +105,9 @@ export default function createRandomNetwork(maxWidth, maxHeight, numV, numE, con
   if(resize === true || shouldRecolor === true){
   for(let i = 0; i < vertices.length; i++){
       if(resize === true) vertices[i].size = assign_size(vertices[i].degree, max_degree, minsize, maxsize);
-      if(shouldRecolor === true) vertices[i].color = assign_color(vertices[i].degree, maxDegree, colorGradient);
-      console.log(vertices[i].size)
+      if(shouldRecolor === true) vertices[i].color = assign_color(vertices[i].degree, max_degree, colorGradient);
+      // console.log(vertices[i].size)
+      // console.log(vertices[i].color);
     }
   }
 
@@ -202,14 +203,15 @@ function createColorGradient(startColor, endColor, maxDegree){
 
   console.log(startHue, startSaturation, startLightness);
   console.log(endHue, endSaturation, endLightness);
-  var incrementHue = (startHue-endHue)/maxDegree;
+  var incrementHue = (endHue-startHue)/maxDegree;
 
   const gradient = [];
 
   for(let i = 0; i < maxDegree; i++){
     const newHue = startHue+(incrementHue*i)%360;
-    gradient.push(hsl_to_rgb((startHue+incrementHue*i)%360, startSaturation,
-                                            startLightness));
+    const [red,green,blue] = hsl_to_rgb((startHue+incrementHue*i)%360, startSaturation,
+                                            startLightness)
+    gradient.push([Math.abs(red%256), Math.abs(green%256), Math.abs(blue%256)]);
     console.log(gradient[i]);
   }
   return gradient;
@@ -224,7 +226,7 @@ function rgb_to_hsl(rgbColor){
   var delta = Cmax-Cmin;
 
 
-  var hue = calculate_hue(delta, Cmax, red, green, blue);
+  var hue = calculate_hue(delta, Cmax, red, green, blue)%360;
   var lightness = (Cmax+Cmin)/2;
   var saturation = delta === 0? 0: delta/(1-Math.abs(2*lightness-1));
 
@@ -236,7 +238,7 @@ function hsl_to_rgb(hue, saturation, lightness){
   const X = C * (1 - Math.abs(hue/60)%2 -1);
   const m = lightness - C/2;
   const [R_prime, G_prime, B_prime] = check_degrees(hue, C, X);
-  return [(R_prime+m)*255, (G_prime + m)* 255, (B_prime+m) * 255];
+  return [((R_prime+m)*255)%256, ((G_prime + m)* 255)%256, ((B_prime+m) * 255)%256];
 }
 
 function calculate_hue(delta, Cmax, red, green, blue){
