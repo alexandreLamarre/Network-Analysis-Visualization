@@ -353,6 +353,26 @@ class NetworkVisualizer extends React.Component{
     }
     this.setState({vertices: vertices, edges: edges});
   }
+
+  updateVertexSize(){
+    if(this.app.state.degreesize === false){
+      const new_size = 3;
+      const new_vertices = this.state.vertices.slice();
+      for(let i = 0; i < new_vertices.length; i++){
+        new_vertices[i].size = new_size;
+      }
+      this.setState({vertices: new_vertices});
+    }
+    else{
+      const max_degree = find_max_degree(this.state.vertices);
+      const new_vertices = this.state.vertices.slice();
+      for(let i = 0; i < new_vertices.length; i ++){
+        new_vertices[i].size = assign_size(new_vertices[i].degree,
+          max_degree, this.app.state.minsize, this.app.state.maxsize);
+      }
+      this.setState({vertices: new_vertices});
+    }
+  }
   render(){
 
     return <div className = "network">
@@ -446,4 +466,17 @@ async function waitSetRandomizedType(that,v){
 
 async function animateEdges(that, edges){
   await that.setState({edges: edges});
+}
+
+function find_max_degree(vertices){
+  var max_degree = -Infinity;
+  for(let i = 0; i < vertices.length; i++){
+    max_degree = Math.max(vertices[i].degree, max_degree);
+  }
+  return max_degree;
+}
+
+function assign_size(degree, max_degree, minsize, maxsize){
+  //min degree is 1 or 0
+  return minsize +(maxsize - minsize)*(degree/max_degree)
 }

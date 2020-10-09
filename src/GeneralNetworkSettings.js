@@ -31,8 +31,14 @@ async function waitSetLayout(that,w,h){
 }
 
 async function waitSetDegreeSize(that, v){
-  if(v === 0) await that.setState({degreesize: false});
-  if(v === 1) await that.setState({degreesize: true});
+  if(v === 0){
+    await that.setState({degreesize: false});
+    that.network.current.updateVertexSize();
+  }
+  if(v === 1){
+    await that.setState({degreesize: true});
+    that.network.current.updateVertexSize();
+  }
 }
 
 async function waitSetRed(that, v){
@@ -59,6 +65,17 @@ async function waitSetEndBlue(that, v){
   await that.setState({endBlue: v})
 }
 
+async function waitSetMinVertexSize(that, v){
+  const value = parseInt(v);
+  await that.setState({minsize:value});
+  if(that.state.dimension === 2) that.network.current.updateVertexSize();
+}
+
+async function waitSetMaxVertexSize(that, v){
+  const value = parseInt(v);
+  await that.setState({maxsize:value});
+  if(that.state.dimension === 2) that.network.current.updateVertexSize();
+}
 
 
 class GeneralNetworkSettings extends React.Component{
@@ -170,13 +187,13 @@ class GeneralNetworkSettings extends React.Component{
   }
 
   setMinVertexSize(v){
-    const value = parseInt(v);
-    this.app.setState({minsize:value});
+    const that = this.app;
+    waitSetMinVertexSize(that,v);
   }
 
   setMaxVertexSize(v){
-    const value = parseInt(v);
-    this.app.setState({maxsize: value});
+    const that = this.app;
+    waitSetMaxVertexSize(that, v);
   }
 
   render(){
