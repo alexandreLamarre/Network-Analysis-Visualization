@@ -9,6 +9,8 @@ class AlgorithmAttributes extends React.Component{
     super(props);
     this.state = {
       layout : "spring",
+      height: 75,
+      width: 75,
       parentHelp: null,
       delta: this.props.app.state.settings.spring.delta, //spring
       eps : this.props.app.state.settings.spring.eps, //spring
@@ -498,6 +500,12 @@ class AlgorithmAttributes extends React.Component{
              : <></>}
              {(this.state.filtering === true && "kruskal's algorithm".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
             ?<div> <p> Kruskal's Algorithm </p>
+            <canvas
+            height = {this.state.height}
+            width = {this.state.width}
+            style = {{backgroundColor: rgb_to_str([this.state.kruskalred, this.state.kruskalgreen,
+                      this.state.kruskalblue])}}
+            className = "colorCanvas"></canvas>
             <div className = "sliders">
               <input className = "slider"
               type = "range"
@@ -539,6 +547,12 @@ class AlgorithmAttributes extends React.Component{
 
             {(this.state.filtering === true && "prim's algorithm".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
            ?<div> <p> Prim's Algorithm </p>
+           <canvas
+           height = {this.state.height}
+           width = {this.state.width}
+           style = {{backgroundColor: rgb_to_str([this.state.primred, this.state.primgreen,
+                     this.state.primblue])}}
+           className = "colorCanvas"></canvas>
            <div className = "sliders">
              <input className = "slider"
              type = "range"
@@ -580,6 +594,12 @@ class AlgorithmAttributes extends React.Component{
 
            {(this.state.filtering === true && "2-opt".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
           ?<div>  <p> 2-Opt </p>
+          <canvas
+          height = {this.state.height}
+          width = {this.state.width}
+          style = {{backgroundColor: rgb_to_str([this.state.opt2red, this.state.opt2green,
+                    this.state.opt2blue])}}
+          className = "colorCanvas"></canvas>
           <div className = "sliders">
             <input className = "slider"
             type = "range"
@@ -633,6 +653,12 @@ class AlgorithmAttributes extends React.Component{
 
           {(this.state.filtering === true && "3-opt".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
          ?<div> <p> 3-Opt </p>
+         <canvas
+         height = {this.state.height}
+         width = {this.state.width}
+         style = {{backgroundColor: rgb_to_str([this.state.opt3red, this.state.opt3green,
+                   this.state.opt3blue])}}
+         className = "colorCanvas"></canvas>
          <div className = "sliders">
            <input className = "slider"
            type = "range"
@@ -753,6 +779,12 @@ class AlgorithmAttributes extends React.Component{
 
         {(this.state.filtering === true && "greedy coloring".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
        ?<div> <p> Greedy Coloring </p>
+       <canvas
+       height = {this.state.height}
+       width = {this.state.width}
+       style = {{backgroundColor: rgb_to_str([this.state.greedyStartRed, this.state.greedyStartGreen,
+                 this.state.greedyStartBlue])}}
+       className = "colorCanvas"></canvas>
        <div className = "sliders">
          <input className = "slider"
          type = "range"
@@ -789,6 +821,12 @@ class AlgorithmAttributes extends React.Component{
          </input>
          <label> Start Blue: {this.app.state.settings.greedy.startBlue} </label>
        </div>
+       <canvas
+       height = {this.state.height}
+       width = {this.state.width}
+       style = {{backgroundColor: rgb_to_str([this.state.greedyEndRed, this.state.greedyEndGreen,
+                 this.state.greedyEndBlue])}}
+       className = "colorCanvas"></canvas>
        <div className = "sliders">
          <input className = "slider"
          type = "range"
@@ -1092,4 +1130,8 @@ async function waitsetDistanceType(v, that){
   const value = parseInt(v);
   await that.setState({distanceType : value});
   waitSetSettings(that.app, that)
+}
+
+function rgb_to_str(color){
+  return "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")";
 }
