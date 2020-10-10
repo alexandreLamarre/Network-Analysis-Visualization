@@ -395,7 +395,313 @@ class AlgorithmAttributes extends React.Component{
 
              </div>
              : <></>}
+             {(this.state.filtering === true && "Kruskal's algorithm".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
+            ?<div> <p> Kruskal's Algorithm </p>
+            <div className = "sliders">
+              <input className = "slider"
+              type = "range"
+              min = "0"
+              max = "255"
+              value = {this.app.state.settings.kruskal.red}
+              step = "1"
+              disabled = {this.state.running}>
+              </input>
+              <label> Red: {this.app.state.settings.kruskal.red}</label>
             </div>
+            <div className = "sliders">
+              <input className = "slider"
+              type = "range"
+              min = "0"
+              max = "255"
+              value = {this.app.state.settings.kruskal.green}
+              step = "1"
+              disabled = {this.state.running}>
+              </input>
+              <label> Green: {this.app.state.settings.kruskal.green} </label>
+            </div>
+            <div className = "sliders">
+              <input className = "slider"
+              type = "range"
+              min = "0"
+              max = "255"
+              value = {this.app.state.settings.kruskal.blue}
+              step = "1"
+              disabled = {this.state.running}>
+              </input>
+              <label> Blue: {this.app.state.settings.kruskal.blue} </label>
+            </div>
+            </div>
+            : <></>}
+
+            {(this.state.filtering === true && "Prim's algorithm".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
+           ?<div> <p> Prim's Algorithm </p>
+           <div className = "sliders">
+             <input className = "slider"
+             type = "range"
+             min = "0"
+             max = "255"
+             value = {this.app.state.settings.prim.red}
+             step = "1"
+             disabled = {this.state.running}>
+             </input>
+             <label> Red: {this.app.state.settings.prim.red} </label>
+           </div>
+           <div className = "sliders">
+             <input className = "slider"
+             type = "range"
+             min = "0"
+             max = "255"
+             value = {this.app.state.settings.prim.green}
+             step = "1"
+             disabled = {this.state.running}>
+             </input>
+             <label> Green: {this.app.state.settings.prim.green} </label>
+           </div>
+           <div className = "sliders">
+             <input className = "slider"
+             type = "range"
+             min = "0"
+             max = "255"
+             value = {this.app.state.settings.prim.blue}
+             step = "1"
+             disabled = {this.state.running}>
+             </input>
+             <label> Blue: {this.app.state.settings.prim.blue} </label>
+           </div>
+           </div>
+           : <></>}
+
+           {(this.state.filtering === true && "2-Opt".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
+          ?<div>  <p> 2-Opt </p>
+          <div className = "sliders">
+            <input className = "slider"
+            type = "range"
+            min = "5"
+            max = "60"
+            value = {this.app.state.settings.opt2.timeout}
+            step = "1"
+            disabled = {this.state.running}>
+            </input>
+            <label> Timeout : {this.app.state.settings.opt2.timeout}</label>
+          </div>
+          <div className = "sliders">
+            <input className = "slider"
+            type = "range"
+            min = "0"
+            max = "255"
+            value = {this.app.state.settings.opt2.red}
+            step = "1"
+            disabled = {this.state.running}>
+            </input>
+            <label> Red: {this.app.state.settings.opt2.red} </label>
+          </div>
+          <div className = "sliders">
+            <input className = "slider"
+            type = "range"
+            min = "0"
+            max = "255"
+            value = {this.app.state.settings.opt2.green}
+            step = "1"
+            disabled = {this.state.running}>
+            </input>
+            <label> Green: {this.app.state.settings.opt2.green}</label>
+          </div>
+          <div className = "sliders">
+            <input className = "slider"
+            type = "range"
+            min = "0"
+            max = "255"
+            value = {this.app.state.settings.opt2.blue}
+            step = "1"
+            disabled = {this.state.running}>
+            </input>
+            <label> Blue: {this.app.state.settings.opt2.blue} </label>
+          </div>
+          </div>
+          : <></>}
+
+          {(this.state.filtering === true && "3-Opt".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
+         ?<div> <p> 3-Opt </p>
+         <div className = "sliders">
+           <input className = "slider"
+           type = "range"
+           min = "5"
+           max = "60"
+           value = {this.app.state.settings.opt3.timeout}
+           step = "1"
+           disabled = {this.state.running}>
+           </input>
+           <label> Timeout : {this.app.state.settings.opt3.timeout}</label>
+         </div>
+         <div className = "sliders">
+           <input className = "slider"
+           type = "range"
+           min = "0"
+           max = "255"
+           value = {this.app.state.settings.opt3.red}
+           step = "1"
+           disabled = {this.state.running}>
+           </input>
+           <label> Red: {this.app.state.settings.opt3.red} </label>
+         </div>
+         <div className = "sliders">
+           <input className = "slider"
+           type = "range"
+           min = "0"
+           max = "255"
+           value = {this.app.state.settings.opt3.green}
+           step = "1"
+           disabled = {this.state.running}>
+           </input>
+           <label> Green: {this.app.state.settings.opt3.green} </label>
+         </div>
+         <div className = "sliders">
+           <input className = "slider"
+           type = "range"
+           min = "0"
+           max = "255"
+           value = {this.app.state.settings.opt3.blue}
+           step = "1"
+           disabled = {this.state.running}>
+           </input>
+           <label> Blue: {this.app.state.settings.opt3.blue} </label>
+         </div>
+         </div>
+         : <></>}
+
+         {(this.state.filtering === true && "2-Opt Simulated Annealing".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
+        ?<div> <p> 2-Opt Simulated Annealing </p>
+        <div className = "sliders">
+          <input className = "slider"
+          type = "range"
+          min = "5"
+          max = "60"
+          step = "1"
+          disabled = {this.state.running}>
+          </input>
+          <label> Timeout :  </label>
+        </div>
+        <div className = "sliders">
+          <input className = "slider"
+          type = "range"
+          min = "5"
+          max = "60"
+          step = "1"
+          disabled = {this.state.running}>
+          </input>
+          <label> Initial Temperature: </label>
+        </div>
+        <div className = "sliders">
+          <input className = "slider"
+          type = "range"
+          min = "5"
+          max = "60"
+          step = "1"
+          disabled = {this.state.running}>
+          </input>
+          <label> Acceptance: </label>
+        </div>
+        <div className = "sliders">
+          <input className = "slider"
+          type = "range"
+          min = "0"
+          max = "255"
+          step = "1"
+          disabled = {this.state.running}>
+          </input>
+          <label> Red: </label>
+        </div>
+        <div className = "sliders">
+          <input className = "slider"
+          type = "range"
+          min = "0"
+          max = "255"
+          step = "1"
+          disabled = {this.state.running}>
+          </input>
+          <label> Green: </label>
+        </div>
+        <div className = "sliders">
+          <input className = "slider"
+          type = "range"
+          min = "0"
+          max = "255"
+          step = "1"
+          disabled = {this.state.running}>
+          </input>
+          <label> Blue: </label>
+        </div>
+        </div>
+        : <></>}
+
+
+
+        {(this.state.filtering === true && "Greedy Coloring".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
+       ?<div>
+       <div className = "sliders">
+         <input className = "slider"
+         type = "range"
+         min = "0"
+         max = "255"
+         step = "1"
+         disabled = {this.state.running}>
+         </input>
+         <label> Start Red: </label>
+       </div>
+       <div className = "sliders">
+         <input className = "slider"
+         type = "range"
+         min = "0"
+         max = "255"
+         step = "1"
+         disabled = {this.state.running}>
+         </input>
+         <label> Start Green: </label>
+       </div>
+       <div className = "sliders">
+         <input className = "slider"
+         type = "range"
+         min = "0"
+         max = "255"
+         step = "1"
+         disabled = {this.state.running}>
+         </input>
+         <label> Start Blue: </label>
+       </div>
+       <div className = "sliders">
+         <input className = "slider"
+         type = "range"
+         min = "0"
+         max = "255"
+         step = "1"
+         disabled = {this.state.running}>
+         </input>
+         <label> End Red: </label>
+       </div>
+       <div className = "sliders">
+         <input className = "slider"
+         type = "range"
+         min = "0"
+         max = "255"
+         step = "1"
+         disabled = {this.state.running}>
+         </input>
+         <label> End Green: </label>
+       </div>
+       <div className = "sliders">
+         <input className = "slider"
+         type = "range"
+         min = "0"
+         max = "255"
+         step = "1"
+         disabled = {this.state.running}>
+         </input>
+         <label> End Blue: </label>
+       </div>
+       </div>
+       : <></>}
+        </div>
+
   }
 }
 

@@ -29,7 +29,36 @@ class App extends React.Component{
         forceatlaslinlog: {fr: 10, gravity: false,
                       gravityType: "Normal", kg: 10,
                       tau: 0.1, ksmax: 10,
-                      overlappingNodes: true}},
+                      overlappingNodes: true},
+        kruskal: {red: 255,
+                  green: 0,
+                  blue: 0},
+        prim: {red:255,
+               green: 0,
+               blue: 0},
+        opt2:{
+          timeout: 30,
+          red:255,
+          green: 0,
+          blue: 0,
+        },
+        opt3:{
+          timeout: 30,
+          red:255,
+          green: 0,
+          blue: 0,
+        },
+        greedy:{
+          startRed: 0,
+          startGreen: 255,
+          startBlue: 0,
+          endRed: 255,
+          endGreen: 0,
+          endBlue: 0,
+        }  
+      },
+
+
       dimension: 2,
       degreesize: false,
       minsize: 3,
