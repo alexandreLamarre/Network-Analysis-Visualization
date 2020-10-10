@@ -43,26 +43,32 @@ async function waitSetDegreeSize(that, v){
 
 async function waitSetRed(that, v){
   await that.setState({startRed: v});
+  if(that.state.dimension === 2) that.network.current.updateColoring();
 }
 
 async function waitSetGreen(that, v){
   await that.setState({startGreen: v});
+  if(that.state.dimension === 2) that.network.current.updateColoring();
 }
 
 async function waitSetBlue(that, v){
-  await that.setState({startBlue: v})
+  await that.setState({startBlue: v});
+  if(that.state.dimension === 2) that.network.current.updateColoring();
 }
 
 async function waitSetEndRed(that, v){
   await that.setState({endRed: v});
+  if(that.state.dimension === 2) that.network.current.updateColoring();
 }
 
 async function waitSetEndGreen(that, v){
   await that.setState({endGreen: v});
+  if(that.state.dimension === 2) that.network.current.updateColoring();
 }
 
 async function waitSetEndBlue(that, v){
-  await that.setState({endBlue: v})
+  await that.setState({endBlue: v});
+  if(that.state.dimension === 2) that.network.current.updateColoring();
 }
 
 async function waitSetMinVertexSize(that, v){

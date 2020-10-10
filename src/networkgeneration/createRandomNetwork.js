@@ -197,12 +197,12 @@ function assign_color(degree, max_degree, gradient){
 }
 
 function createColorGradient(startColor, endColor, maxDegree){
-  console.log("inside color gradient", startColor, endColor, maxDegree);
+  // console.log("inside color gradient", startColor, endColor, maxDegree);
   var [startHue, startSaturation, startLightness] = rgb_to_hsl(startColor);
   var [endHue, endSaturation, endLightness] = rgb_to_hsl(endColor);
 
-  console.log(startHue, startSaturation, startLightness);
-  console.log(endHue, endSaturation, endLightness);
+  // console.log(startHue, startSaturation, startLightness);
+  // console.log(endHue, endSaturation, endLightness);
   var incrementHue = (endHue-startHue)/maxDegree;
 
   const gradient = [];
@@ -212,7 +212,7 @@ function createColorGradient(startColor, endColor, maxDegree){
     const [red,green,blue] = hsl_to_rgb((startHue+incrementHue*i)%360, startSaturation,
                                             startLightness)
     gradient.push([Math.abs(red%256), Math.abs(green%256), Math.abs(blue%256)]);
-    console.log(gradient[i]);
+    // console.log(gradient[i]);
   }
   return gradient;
 }

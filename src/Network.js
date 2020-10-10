@@ -373,6 +373,30 @@ class NetworkVisualizer extends React.Component{
       this.setState({vertices: new_vertices});
     }
   }
+
+  updateColoring(){
+    const shouldRecolor = !(sameColor([this.app.state.startRed, this.app.state.startGreen, this.app.state.startBlue],
+                              [this.app.state.endRed, this.app.state.endGreen, this.app.state.endBlue]));
+    if(shouldRecolor === true){
+      const new_vertices = this.state.vertices.slice();
+      const max_degree = find_max_degree(this.state.vertices);
+      var gradient = createColorGradient([this.app.state.startRed, this.app.state.startGreen,
+                                          this.app.state.startBlue], [this.app.state.endRed,
+                                          this.app.state.endGreen, this.app.state.endBlue], max_degree);
+      for(let i = 0; i < new_vertices.length; i++){
+        new_vertices[i].color = assign_color(new_vertices[i].degree, max_degree, gradient);
+      }
+      this.setState({vertices: new_vertices});
+    }
+    else{
+      const new_vertices = this.state.vertices.slice();
+      const color = rgb_to_str([this.app.state.startRed, this.app.state.startGreen, this.app.state.startBlue]);
+      for(let i = 0; i < new_vertices[i].length; i ++){
+        new_vertices[i].color = color;
+      }
+      this.setState({vertices: new_vertices});
+    }
+  }
   render(){
 
     return <div className = "network">
@@ -479,4 +503,82 @@ function find_max_degree(vertices){
 function assign_size(degree, max_degree, minsize, maxsize){
   //min degree is 1 or 0
   return minsize +(maxsize - minsize)*(degree/max_degree)
+}
+
+function sameColor(startColor, endColor){
+  if(startColor[0] === endColor[0] && startColor[1] === endColor[1] && startColor[2] === endColor[2]) return true;
+  return false;
+}
+
+function rgb_to_str(color){
+  return "rgb(" + color[0] + "," + color[1] + "," + color[2]+")";
+}
+
+function createColorGradient(startColor, endColor, maxDegree){
+  // console.log("inside color gradient", startColor, endColor, maxDegree);
+  var [startHue, startSaturation, startLightness] = rgb_to_hsl(startColor);
+  var [endHue, endSaturation, endLightness] = rgb_to_hsl(endColor);
+
+  // console.log(startHue, startSaturation, startLightness);
+  // console.log(endHue, endSaturation, endLightness);
+  var incrementHue = (endHue-startHue)/maxDegree;
+
+  const gradient = [];
+
+  for(let i = 0; i < maxDegree; i++){
+    const newHue = startHue+(incrementHue*i)%360;
+    const [red,green,blue] = hsl_to_rgb((startHue+incrementHue*i)%360, startSaturation,
+                                            startLightness)
+    gradient.push([Math.abs(red%256), Math.abs(green%256), Math.abs(blue%256)]);
+    // console.log(gradient[i]);
+  }
+  return gradient;
+}
+
+function rgb_to_hsl(rgbColor){
+  var red = rgbColor[0]/255;
+  var green = rgbColor[1]/255;
+  var blue = rgbColor[2]/255;
+  var Cmax = Math.max(...[red,green,blue]);
+  var Cmin = Math.min(...[red,green,blue]);
+  var delta = Cmax-Cmin;
+
+
+  var hue = calculate_hue(delta, Cmax, red, green, blue)%360;
+  var lightness = (Cmax+Cmin)/2;
+  var saturation = delta === 0? 0: delta/(1-Math.abs(2*lightness-1));
+
+  return [hue, saturation, lightness];
+}
+
+function hsl_to_rgb(hue, saturation, lightness){
+  const C = (1 - Math.abs(2*lightness-1))*saturation
+  const X = C * (1 - Math.abs(hue/60)%2 -1);
+  const m = lightness - C/2;
+  const [R_prime, G_prime, B_prime] = check_degrees(hue, C, X);
+  return [((R_prime+m)*255)%256, ((G_prime + m)* 255)%256, ((B_prime+m) * 255)%256];
+}
+
+function calculate_hue(delta, Cmax, red, green, blue){
+  if(delta === 0) return 0;
+  if(Cmax === red) return 60*(((green-blue)/delta)%6);
+  if(Cmax === green) return 60*((blue-red)/delta+2);
+  if(Cmax === blue) return 60*((red- green)/delta + 4);
+}
+
+function check_degrees(hue, C, X){
+  if((hue >= 0 && hue < 60) || hue == 360) return [C,X,0];
+  if(hue >= 60 && hue < 120 ) return [X,C,0];
+  if(hue >= 120 && hue < 180 ) return [0, C, X];
+  if(hue >= 180 && hue < 240 ) return [0, X, C];
+  if(hue >= 240 && hue < 300 ) return [X, 0, C];
+  if(hue >= 300 && hue < 360 ) return [C, 0, X];
+  return [0,0,0];
+}
+
+function assign_color(degree, max_degree, gradient){
+
+  var selection = gradient[Math.floor((degree/max_degree) * (gradient.length-1))]
+
+  return rgb_to_str(selection)
 }
