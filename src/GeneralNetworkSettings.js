@@ -101,32 +101,15 @@ class GeneralNetworkSettings extends React.Component{
       open: false,
       startColor: convertValuesToRgb(this.props.app.state.startRed, this.props.app.state.startGreen, this.props.app.state.startBlue),
       endColor: convertValuesToRgb(this.props.app.state.endRed, this.props.app.state.endGreen, this.props.app.state.endBlue),
-      width: 100,
-      height: 100,
+      width: 75,
+      height: 75,
     }
     this.app = this.props.app;
     this.network = this.app.network.current === null? this.app.network3d.current: this.app.network.current;
-    this.canvasStartColor = React.createRef();
-    this.canvasEndColor = React.createRef();
     // console.log(this.state.startColor);
     // console.log(this.state.endColor);
   }
-  drawStart(){
-      const ctx1 = this.canvasStartColor.current.getContext("2d");
-      ctx1.clearRect(0,0,this.state.width, this.state.height);
-      ctx1.beginPath();
-      ctx1.fillRect(0,0, this.state.width, this.state.height);
-      ctx1.fillStyle = this.state.startColor;
-      ctx1.fill();
-  }
-  drawEnd(){
-    const ctx2 = this.canvasEndColor.current.getContext("2d");
-    ctx2.clearRect(0,0,this.state.width, this.state.height);
-    ctx2.beginPath();
-    ctx2.fillRect(0,0, this.state.width, this.state.height);
-    ctx2.fillStyle = this.state.endColor;
-    ctx2.fill();
-  }
+
   setOpen(v){
     this.setState({open:v});
   }
@@ -164,42 +147,36 @@ class GeneralNetworkSettings extends React.Component{
     const value = parseInt(v);
     waitSetRed(this.app, value);
     this.setState({startColor: convertValuesToRgb(value, this.app.state.startGreen, this.app.state.startBlue)});
-    this.drawStart();
   }
 
   setGreen(v){
     const value = parseInt(v);
     waitSetGreen(this.app, value);
     this.setState({startColor: convertValuesToRgb(this.app.state.startRed, value, this.app.state.startBlue)});
-    this.drawStart()
   }
 
   setBlue(v){
     const value = parseInt(v);
     waitSetBlue(this.app, value);
     this.setState({startColor: convertValuesToRgb(this.app.state.startRed, this.app.state.startGreen, value)});
-    this.drawStart()
   }
 
   setEndRed(v){
     const value = parseInt(v);
     waitSetEndRed(this.app, value)
     this.setState({endColor: convertValuesToRgb(value, this.app.state.endGreen, this.app.state.endBlue)});
-    this.drawEnd();
   }
 
   setEndGreen(v){
     const value = parseInt(v);
     waitSetEndGreen(this.app, value);
     this.setState({endColor: convertValuesToRgb(this.app.state.endRed, value , this.app.state.endBlue)});
-    this.drawEnd();
   }
 
   setEndBlue(v){
     const value = parseInt(v);
     waitSetEndBlue(this.app, value);
     this.setState({endColor: convertValuesToRgb(this.app.state.endRed, this.app.state.endGreen, value)});
-    this.drawEnd();
   }
 
   setMinVertexSize(v){
@@ -219,6 +196,7 @@ class GeneralNetworkSettings extends React.Component{
             className = "generalsettings"
             overlayClassName = "generalsettingsoverlay"
             >
+            <div className = "modalContents">
             <p className = "sliderHeader" style = {{color: "black"}}>
               <b style = {{color: "white"}} >General Network Settings</b>
             </p>
@@ -333,7 +311,6 @@ class GeneralNetworkSettings extends React.Component{
               <canvas
               height = {this.state.height}
               width = {this.state.width}
-              ref = {this.canvasStartColor}
               style = {{backgroundColor: this.state.startColor}}
               className = "colorCanvas"></canvas>
 
@@ -385,7 +362,6 @@ class GeneralNetworkSettings extends React.Component{
               <canvas
               height = {this.state.height}
               width = {this.state.width}
-              ref = {this.canvasEndColor}
               style = {{backgroundColor: this.state.endColor}}
               className = "colorCanvas"></canvas>
 
@@ -429,7 +405,7 @@ class GeneralNetworkSettings extends React.Component{
               <label>
                 Blue: {this.app.state.endBlue}
               </label>
-
+              </div>
       </Modal>
     </div>
   }
