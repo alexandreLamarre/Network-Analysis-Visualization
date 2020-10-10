@@ -361,15 +361,35 @@ class NetworkVisualizer extends React.Component{
   }
 
   resetColoring(){
-    const vertices = [];
-    const edges = [];
-    for(let i = 0; i < this.state.vertices.length; i ++){
-      vertices.push(new Vertex(this.state.vertices[i].x, this.state.vertices[i].y, this.state.vertices[i].z));
+    const shouldRecolor = !(sameColor([this.app.state.startRed, this.app.state.startGreen, this.app.state.startBlue],
+                              [this.app.state.endRed, this.app.state.endGreen, this.app.state.endBlue]));
+    if(shouldRecolor === true){
+      const new_vertices = this.state.vertices.slice();
+      const max_degree = find_max_degree(this.state.vertices);
+      var gradient = createColorGradient([this.app.state.startRed, this.app.state.startGreen,
+                                          this.app.state.startBlue], [this.app.state.endRed,
+                                          this.app.state.endGreen, this.app.state.endBlue], max_degree);
+      for(let i = 0; i < new_vertices.length; i++){
+        new_vertices[i].color = assign_color(new_vertices[i].degree, max_degree, gradient);
+      }
+      const new_edges = [];
+      for(let j = 0; j < this.state.edges.length; j++){
+        new_edges.push(new Edge(this.state.edges[j].start, this.state.edges[j].end));
+      }
+      this.setState({vertices: new_vertices, edges: new_edges});
     }
-    for(let j = 0; j < this.state.edges.length; j++){
-      edges.push(new Edge(this.state.edges[j].start, this.state.edges[j].end))
+    else{
+      const new_vertices = this.state.vertices.slice();
+      const color = rgb_to_str([this.app.state.startRed, this.app.state.startGreen, this.app.state.startBlue]);
+      for(let i = 0; i < new_vertices[i].length; i ++){
+        new_vertices[i].color = color;
+      }
+      const new_edges = [];
+      for(let j = 0; j < this.state.edges.length; j++){
+        new_edges.push(new Edge(this.state.edges[j].start, this.state.edges[j].end));
+      }
+      this.setState({vertices: new_vertices, edges: new_edges});
     }
-    this.setState({vertices: vertices, edges: edges});
   }
 
   updateVertexSize(){
