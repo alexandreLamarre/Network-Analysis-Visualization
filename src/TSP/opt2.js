@@ -3,10 +3,10 @@ const MAX_SIMULATIONS = 1000;
 var I = -1;
 var K = -1;
 
-export function opt2(vertices, edges, dimension){
+export function opt2(vertices, edges, dimension, color){
   const path = [];
   var better_solution = false
-
+  const selected_color = rgb_to_str(color);
   var root = edges[0].start;
   path.push(root);
 
@@ -53,7 +53,7 @@ export function opt2(vertices, edges, dimension){
     new_edges.push(new Edge(new_path[i], new_path[i+1]))
     if(dimension === 3) new_edges[i].setColor("rgb(211,211,211)");
     if(i === I || i === K) {
-      new_edges[i].setColor("rgb(255,0,0)");
+      new_edges[i].setColor(selected_color);
       new_edges[i].setAlpha(0.4);
     };
   }
@@ -99,4 +99,8 @@ function try2OptSwap(path, vertices, i, k, dimension, dist){
   const new_dist = calculate_distance_path(new_path, vertices, dimension);
   if(new_dist< dist) return [new_path, true]
   else{ return [path, false]};
+}
+
+function rgb_to_str(color){
+  return "rgb("+color[0]+","+color[1]+","+color[2]+")";
 }

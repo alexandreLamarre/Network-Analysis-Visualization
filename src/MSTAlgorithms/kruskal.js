@@ -2,10 +2,10 @@ import UnionSets from "../datatypes/UnionSets";
 
 var VERTICES = [];
 
-export function kruskal(vertices, edges, dimension){
+export function kruskal(vertices, edges, dimension, color){
   VERTICES = vertices;
   const A = [];
-  const coloring = "rgb(255,0,0)";
+  const coloring = rgb_to_str(color);
 
   const make_set = [];
   for(let i = 0; i < vertices.length; i++){
@@ -55,4 +55,8 @@ function distance(v1,v2,dim){
   if(dim === 2) dist = Math.sqrt(Math.pow(v1.x-v2.x, 2) + Math.pow(v1.y-v2.y,2));
   if(dim === 3) dist = Math.sqrt(Math.pow(v1.x-v2.x,2) + Math.pow(v1.y-v2.y, 2) + Math.pow(v1.z-v2.z, 2));
   return dist === 0? 0.00000000000000000001: dist;
+}
+
+function rgb_to_str(color){
+  return "rgb(" + color[0]+","+color[1]+","+color[2]+")";
 }

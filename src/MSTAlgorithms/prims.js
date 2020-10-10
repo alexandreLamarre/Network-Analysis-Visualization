@@ -1,6 +1,6 @@
 
 export function prim(vertices, edges, dimension, color){
-  var coloring = color;
+  var coloring = rgb_to_str(color);
   if(coloring === null || coloring === undefined) coloring = "rgb(255,0,0)";
 
   //construct adjacency matrix
@@ -69,4 +69,8 @@ function distance(v1,v2, dimension){
   if(dimension === 3) dist =  Math.pow((v1.x-v2.x),2) + Math.pow((v1.y-v2.y),2)+ Math.pow((v1.z-v2.z),2);
   if(dist === 0) dist = 0.00000000000000000001;
   return Math.sqrt(dist);
+}
+
+function rgb_to_str(color){
+  return "rgb("+color[0]+","+color[1]+","+color[2]+")";
 }

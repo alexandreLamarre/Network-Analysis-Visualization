@@ -2,7 +2,8 @@ import Edge from "../datatypes/Edge";
 
 var MAX_SIMULATIONS = 10000;
 
-export function opt3(vertices, edges, dimension){
+export function opt3(vertices, edges, dimension, color){
+  const selected_color = rgb_to_str(color)
   const path = [];
   var root = edges[0].start;
   path.push(root);
@@ -10,7 +11,7 @@ export function opt3(vertices, edges, dimension){
     path.push(edges[i].start);
   }
   path.push(root);
-  console.log(calculate_distance_path(path, vertices, dimension))
+  // console.log(calculate_distance_path(path, vertices, dimension))
   var new_path = [];
   var a;
   var b;
@@ -36,14 +37,14 @@ export function opt3(vertices, edges, dimension){
     if(better_solution === true) break;
 
   }
-  console.log(calculate_distance_path(new_path, vertices, dimension));
+  // console.log(calculate_distance_path(new_path, vertices, dimension));
   const new_edges = [];
 
   for(let i = 0; i < new_path.length-1; i++){
     new_edges.push(new Edge(new_path[i], new_path[i+1]));
     if(dimension === 3) new_edges[i].setColor("rgb(211,211,211)");
     if(i === a || i === b || i === c){
-      new_edges[i].setColor("rgb(255,0,0)");
+      new_edges[i].setColor(selected_color);
       new_edges[i].setAlpha(0.4);
     }
   }
@@ -64,25 +65,25 @@ function reverse_segment_if_better(path, i, j, k, dimension, vertices){
   if(d0 > d1){
     // console.log("better");
     new_path =  reversed_path(path, i-1, j-1);
-    console.log("d0-d1", calculate_distance_path(new_path, vertices, dimension));
+    // console.log("d0-d1", calculate_distance_path(new_path, vertices, dimension));
     return [new_path, true];
   }
   else if(d0 > d2){
     // console.log("better");
     new_path =  reversed_path(path, j-1, k-1);
-    console.log("d0-d2", calculate_distance_path(new_path, vertices, dimension));
+    // console.log("d0-d2", calculate_distance_path(new_path, vertices, dimension));
     return [new_path, true];
   }
   else if(d0 > d4){
     // console.log("better");
     new_path =  reversed_path(path, i-1, k-1);
-    console.log("d0-d4", calculate_distance_path(new_path, vertices, dimension));
+    // console.log("d0-d4", calculate_distance_path(new_path, vertices, dimension));
     return [new_path,true];
   }
   else if(d0 > d3){
     // console.log("better");
     new_path =  reversed_path_three(path, i, j, k);
-    console.log("three", calculate_distance_path(new_path, vertices, dimension));
+    // console.log("three", calculate_distance_path(new_path, vertices, dimension));
     return  [new_path, true];
   }
   return  [path,false];
@@ -144,4 +145,8 @@ function calculate_distance_path(path, vertices, dimension){
     total_dist += distance(vertices[path[i]], vertices[path[i+1]], dimension);
   }
   return total_dist;
+}
+
+function rgb_to_str(color){
+  return "rgb("+color[0]+","+color[1]+","+color[2]+")";
 }

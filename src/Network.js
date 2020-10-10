@@ -153,13 +153,17 @@ class NetworkVisualizer extends React.Component{
   }
 
   generateKruskal(){
-    const [animations, new_edges] = kruskal(this.state.vertices, this.state.edges, 2);
+    const [animations, new_edges] = kruskal(this.state.vertices, this.state.edges, 2,
+      [this.app.state.settings.kruskal.red, this.app.state.settings.kruskal.green,
+        this.app.state.settings.kruskal.blue]);
     const that = this;
     waitSetEdges(that, new_edges, animations);
   }
 
   generatePrim(){
-    const animations = prim(this.state.vertices, this.state.edges, 2);
+    const animations = prim(this.state.vertices, this.state.edges, 2,
+      [this.app.state.settings.prim.red, this.app.state.settings.prim.green,
+      this.app.state.settings.prim.blue]);
     this.animateColoring(animations);
   }
 
@@ -198,10 +202,24 @@ class NetworkVisualizer extends React.Component{
     var count = 0;
     this.app.setState({running:true});
     console.log(this.app.state.running)
-
-    for(let k =0; k < (MAX_TIMEOUT*1000)/this.app.state.animationSpeed; k++){
+    var timeout;
+    var selected_color;
+    if(func === opt2) {
+      console.log(this.app.state.settings.opt2)
+      timeout = this.app.state.settings.opt2.timeout;
+      selected_color = [this.app.state.settings.opt2.red, this.app.state.settings.opt2.green,
+                        this.app.state.settings.opt2.blue];
+    }
+    if(func === opt3) {
+      timeout = this.app.state.settings.opt3.timeout;
+      selected_color = [this.app.state.settings.opt3.red, this.app.state.settings.opt3.green,
+                        this.app.state.settings.opt3.blue];
+    }
+    console.log("timeout", timeout);
+    for(let k =0; k < (timeout*1000)/this.app.state.animationSpeed; k++){
       x = setTimeout(() => {
-        const [edges, better_solution]= func(this.state.vertices, this.state.edges, this.app.state.dimension);
+        const [edges, better_solution]= func(this.state.vertices,
+          this.state.edges, this.app.state.dimension, selected_color);
         const that = this;
         animateEdges(that, edges);
         //clear animation code;
@@ -209,7 +227,7 @@ class NetworkVisualizer extends React.Component{
         // count ++;
         // if(count >= STOP) break;
         // console.log("animating")
-        if(k === ((MAX_TIMEOUT*1000)/this.app.state.animationSpeed) -1){
+        if(k === ((timeout*1000)/this.app.state.animationSpeed) -1){
           this.app.setState({running:false});
           // console.log(final_vertices);
         }
