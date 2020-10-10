@@ -29,6 +29,26 @@ class AlgorithmAttributes extends React.Component{
       tau: this.props.app.state.settings.forceatlas2.tau,//forceAtlas2
       ksmax: this.props.app.state.settings.forceatlas2.ksmax, //forceAtlas2
       overlappingNodes: true, //forceAtlas2
+      kruskalred: this.props.app.state.settings.kruskal.red,
+      kruskalgreen: this.props.app.state.settings.kruskal.green,
+      kruskalblue: this.props.app.state.settings.kruskal.blue,
+      primred: this.props.app.state.settings.prim.red,
+      primgreen: this.props.app.state.settings.prim.green,
+      primblue: this.props.app.state.settings.prim.blue,
+      opt2timeout: this.props.app.state.settings.opt2.timeout,
+      opt2red: this.props.app.state.settings.opt2.red,
+      opt2green: this.props.app.state.settings.opt2.green,
+      opt2blue: this.props.app.state.settings.opt2.blue,
+      opt3timeout: this.props.app.state.settings.opt3.timeout,
+      opt3red: this.props.app.state.settings.opt3.red,
+      opt3green: this.props.app.state.settings.opt3.green,
+      opt3blue: this.props.app.state.settings.opt3.blue,
+      greedyStartRed: this.props.app.state.settings.greedy.startRed,
+      greedyStartGreen: this.props.app.state.settings.greedy.startGreen,
+      greedyStartBlue: this.props.app.state.settings.greedy.startBlue,
+      greedyEndRed: this.props.app.state.settings.greedy.endRed,
+      greedyEndGreen: this.props.app.state.settings.greedy.endGreen,
+      greedyEndBlue: this.props.app.state.settings.greedy.endBlue,
       filtering: this.props.filtering,
       filter: this.props.filter,
     }
@@ -100,6 +120,87 @@ class AlgorithmAttributes extends React.Component{
   setDistanceType(v){
     waitsetDistanceType(v, this);
   }
+
+  setKruskalRed(v){
+    waitSetKruskalRed(v, this);
+  }
+
+  setKruskalGreen(v){
+    waitSetKruskalGreen(v, this);
+  }
+
+  setKruskalBlue(v){
+    waitSetKruskalBlue(v, this);
+  }
+
+  setPrimRed(v){
+    waitSetPrimRed(v, this);
+  }
+
+  setPrimGreen(v){
+    waitSetPrimGreen(v, this);
+  }
+
+  setPrimBlue(v){
+    waitSetPrimBlue(v, this);
+  }
+
+  setOpt2Timeout(v){
+    waitSetOpt2Timeout(v, this);
+  }
+
+  setOpt2Red(v){
+    waitSetOpt2Red(v, this);
+  }
+
+  setOpt2Green(v){
+    waitSetOpt2Green(v, this);
+  }
+
+  setOpt2Blue(v){
+    waitSetOpt2Blue(v, this);
+  }
+
+  setOpt3Timeout(v){
+    waitSetOpt3Timeout(v, this);
+  }
+
+  setOpt3Red(v){
+    waitSetOpt3Red(v, this);
+  }
+
+  setOpt3Green(v){
+    waitSetOpt3Green(v, this);
+  }
+
+  setOpt3Blue(v){
+    waitSetOpt3Blue(v, this);
+  }
+
+  setGreedyStartRed(v){
+    waitSetGreedyStartRed(v, this);
+  }
+
+  setGreedyStartGreen(v){
+    waitSetGreedyStartGreen(v, this);
+  }
+
+  setGreedyStartBlue(v){
+    waitSetGreedyStartBlue(v, this);
+  }
+
+  setGreedyEndRed(v){
+    waitSetGreedyEndRed(v, this);
+  }
+
+  setGreedyEndGreen(v){
+    waitSetGreedyEndGreen(v, this);
+  }
+
+  setGreedyEndBlue(v){
+    waitSetGreedyEndBlue(v, this);
+  }
+
 
 
   filter(e){
@@ -403,6 +504,7 @@ class AlgorithmAttributes extends React.Component{
               min = "0"
               max = "255"
               value = {this.app.state.settings.kruskal.red}
+              onChange = {(e) => this.setKruskalRed(e.target.value)}
               step = "1"
               disabled = {this.state.running}>
               </input>
@@ -414,6 +516,7 @@ class AlgorithmAttributes extends React.Component{
               min = "0"
               max = "255"
               value = {this.app.state.settings.kruskal.green}
+              onChange = {(e) => this.setKruskalGreen(e.target.value)}
               step = "1"
               disabled = {this.state.running}>
               </input>
@@ -425,6 +528,7 @@ class AlgorithmAttributes extends React.Component{
               min = "0"
               max = "255"
               value = {this.app.state.settings.kruskal.blue}
+              onChange = {(e) => this.setKruskalBlue(e.target.value)}
               step = "1"
               disabled = {this.state.running}>
               </input>
@@ -441,6 +545,7 @@ class AlgorithmAttributes extends React.Component{
              min = "0"
              max = "255"
              value = {this.app.state.settings.prim.red}
+             onChange = {(e) => this.setPrimRed(e.target.value)}
              step = "1"
              disabled = {this.state.running}>
              </input>
@@ -451,6 +556,7 @@ class AlgorithmAttributes extends React.Component{
              type = "range"
              min = "0"
              max = "255"
+             onChange = {(e) => this.setPrimGreen(e.target.value)}
              value = {this.app.state.settings.prim.green}
              step = "1"
              disabled = {this.state.running}>
@@ -462,6 +568,7 @@ class AlgorithmAttributes extends React.Component{
              type = "range"
              min = "0"
              max = "255"
+             onChange = {(e) => this.setPrimBlue(e.target.value)}
              value = {this.app.state.settings.prim.blue}
              step = "1"
              disabled = {this.state.running}>
@@ -479,6 +586,7 @@ class AlgorithmAttributes extends React.Component{
             min = "5"
             max = "60"
             value = {this.app.state.settings.opt2.timeout}
+            onChange = {(e) => this.setOpt2Timeout(e.target.value) }
             step = "1"
             disabled = {this.state.running}>
             </input>
@@ -490,6 +598,7 @@ class AlgorithmAttributes extends React.Component{
             min = "0"
             max = "255"
             value = {this.app.state.settings.opt2.red}
+            onChange = {(e) => this.setOpt2Red(e.target.value) }
             step = "1"
             disabled = {this.state.running}>
             </input>
@@ -501,6 +610,7 @@ class AlgorithmAttributes extends React.Component{
             min = "0"
             max = "255"
             value = {this.app.state.settings.opt2.green}
+            onChange = {(e) => this.setOpt2Green(e.target.value) }
             step = "1"
             disabled = {this.state.running}>
             </input>
@@ -512,6 +622,7 @@ class AlgorithmAttributes extends React.Component{
             min = "0"
             max = "255"
             value = {this.app.state.settings.opt2.blue}
+            onChange = {(e) => this.setOpt2Blue(e.target.value) }
             step = "1"
             disabled = {this.state.running}>
             </input>
@@ -528,6 +639,7 @@ class AlgorithmAttributes extends React.Component{
            min = "5"
            max = "60"
            value = {this.app.state.settings.opt3.timeout}
+           onChange = {(e) => this.setOpt3Timeout(e.target.value)}
            step = "1"
            disabled = {this.state.running}>
            </input>
@@ -539,6 +651,7 @@ class AlgorithmAttributes extends React.Component{
            min = "0"
            max = "255"
            value = {this.app.state.settings.opt3.red}
+           onChange = {(e) => this.setOpt3Red(e.target.value)}
            step = "1"
            disabled = {this.state.running}>
            </input>
@@ -550,6 +663,7 @@ class AlgorithmAttributes extends React.Component{
            min = "0"
            max = "255"
            value = {this.app.state.settings.opt3.green}
+           onChange = {(e) => this.setOpt3Green(e.target.value)}
            step = "1"
            disabled = {this.state.running}>
            </input>
@@ -561,6 +675,7 @@ class AlgorithmAttributes extends React.Component{
            min = "0"
            max = "255"
            value = {this.app.state.settings.opt3.blue}
+           onChange = {(e) => this.setOpt3Blue(e.target.value)}
            step = "1"
            disabled = {this.state.running}>
            </input>
@@ -643,60 +758,72 @@ class AlgorithmAttributes extends React.Component{
          type = "range"
          min = "0"
          max = "255"
+         value = {this.app.state.settings.greedy.startRed}
+         onChange = {(e) => this.setGreedyStartRed(e.target.value)}
          step = "1"
          disabled = {this.state.running}>
          </input>
-         <label> Start Red: </label>
+         <label> Start Red: {this.app.state.settings.greedy.startRed}</label>
        </div>
        <div className = "sliders">
          <input className = "slider"
          type = "range"
          min = "0"
          max = "255"
+         value = {this.app.state.settings.greedy.startGreen}
+         onChange = {(e) => this.setGreedyStartGreen(e.target.value)}
          step = "1"
          disabled = {this.state.running}>
          </input>
-         <label> Start Green: </label>
+         <label> Start Green: {this.app.state.settings.greedy.startGreen}</label>
        </div>
        <div className = "sliders">
          <input className = "slider"
          type = "range"
          min = "0"
          max = "255"
+         value = {this.app.state.settings.greedy.startBlue}
+         onChange = {(e) => this.setGreedyStartBlue(e.target.value)}
          step = "1"
          disabled = {this.state.running}>
          </input>
-         <label> Start Blue: </label>
+         <label> Start Blue: {this.app.state.settings.greedy.startBlue} </label>
        </div>
        <div className = "sliders">
          <input className = "slider"
          type = "range"
          min = "0"
          max = "255"
+         value = {this.app.state.settings.greedy.endRed}
+         onChange = {(e) => this.setGreedyEndRed(e.target.value)}
          step = "1"
          disabled = {this.state.running}>
          </input>
-         <label> End Red: </label>
+         <label> End Red: {this.app.state.settings.greedy.endRed} </label>
        </div>
        <div className = "sliders">
          <input className = "slider"
          type = "range"
          min = "0"
          max = "255"
+         value = {this.app.state.settings.greedy.endGreen}
+         onChange = {(e) => this.setGreedyEndGreen(e.target.value)}
          step = "1"
          disabled = {this.state.running}>
          </input>
-         <label> End Green: </label>
+         <label> End Green: {this.app.state.settings.greedy.endGreen}</label>
        </div>
        <div className = "sliders">
          <input className = "slider"
          type = "range"
          min = "0"
          max = "255"
+         value = {this.app.state.settings.greedy.endBlue}
+         onChange = {(e) => this.setGreedyEndBlue(e.target.value)}
          step = "1"
          disabled = {this.state.running}>
          </input>
-         <label> End Blue: </label>
+         <label> End Blue: {this.app.state.settings.greedy.endBlue}</label>
        </div>
        </div>
        : <></>}
@@ -722,10 +849,149 @@ async function waitSetSettings(app, that){
     forceatlaslinlog: {fr: that.state.kr, gravity: that.state.gravity,
                   gravityType: that.state.gravityType, kg: that.state.kg,
                   tau: that.state.tau, ksmax: that.state.ksmax,
-                  overlappingNodes: that.state.overlappingNodes}}});
+                  overlappingNodes: that.state.overlappingNodes},
+    kruskal: {red: that.state.kruskalred,
+              green: that.state.kruskalgreen,
+              blue: that.state.kruskalblue},
+    prim: {red: that.state.primred,
+          green: that.state.primgreen,
+          blue: that.state.primblue},
+    opt2: {timeout: that.state.opt2timeout,
+          red: that.state.opt2red,
+          green: that.state.opt2green,
+          blue: that.state.opt2blue},
+    opt3: {timeout: that.state.opt3timeout,
+          red: that.state.opt3red,
+          green: that.state.opt3green,
+          blue: that.state.opt3blue},
+    greedy:{startRed: that.state.greedyStartRed,
+            startGreen: that.state.greedyStartGreen,
+            startBlue: that.state.greedyStartBlue,
+            endRed: that.state.greedyEndRed,
+            endGreen: that.state.greedyEndGreen,
+            endBlue: that.state.greedyEndBlue}
+    }});
   console.log(app.state.settings);
 }
 
+async function waitSetKruskalRed(v, that){
+  const value = parseInt(v);
+  await that.setState({kruskalred: value})
+  waitSetSettings(that.app, that);
+}
+
+async function waitSetKruskalGreen(v, that){
+  const value = parseInt(v);
+  await that.setState({kruskalgreen: value})
+  waitSetSettings(that.app, that);
+}
+
+async function waitSetKruskalBlue(v, that){
+  const value = parseInt(v);
+  await that.setState({kruskalblue: value})
+  waitSetSettings(that.app, that);
+}
+
+async function waitSetPrimRed(v, that){
+  const value = parseInt(v);
+  await that.setState({primred: value})
+  waitSetSettings(that.app, that);
+}
+
+async function waitSetPrimGreen(v, that){
+  const value = parseInt(v);
+  await that.setState({primgreen: value})
+  waitSetSettings(that.app, that);
+}
+
+async function waitSetPrimBlue(v, that){
+  const value = parseInt(v);
+  await that.setState({primblue: value})
+  waitSetSettings(that.app, that);
+}
+
+async function waitSetOpt2Timeout(v, that){
+  const value = parseInt(v);
+  await that.setState({opt2timeout: value})
+  waitSetSettings(that.app, that);
+}
+
+async function waitSetOpt2Red(v, that){
+  const value = parseInt(v);
+  await that.setState({opt2red: value})
+  waitSetSettings(that.app, that);
+}
+
+async function waitSetOpt2Green(v, that){
+  const value = parseInt(v);
+  await that.setState({opt2green: value})
+  waitSetSettings(that.app, that);
+}
+
+async function waitSetOpt2Blue(v, that){
+  const value = parseInt(v);
+  await that.setState({opt2blue: value})
+  waitSetSettings(that.app, that);
+}
+
+async function waitSetOpt3Timeout(v, that){
+  const value = parseInt(v);
+  await that.setState({opt3timeout: value})
+  waitSetSettings(that.app, that);
+}
+
+async function waitSetOpt3Red(v, that){
+  const value = parseInt(v);
+  await that.setState({opt3red: value})
+  waitSetSettings(that.app, that);
+}
+
+async function waitSetOpt3Green(v, that){
+  const value = parseInt(v);
+  await that.setState({opt3green: value})
+  waitSetSettings(that.app, that);
+}
+
+async function waitSetOpt3Blue(v, that){
+  const value = parseInt(v);
+  await that.setState({opt3blue: value})
+  waitSetSettings(that.app, that);
+}
+
+async function waitSetGreedyStartRed(v, that){
+  const value = parseInt(v);
+  await that.setState({greedyStartRed: value});
+  waitSetSettings(that.app, that);
+}
+
+async function waitSetGreedyStartGreen(v, that){
+  const value = parseInt(v);
+  await that.setState({greedyStartGreen: value});
+  waitSetSettings(that.app, that);
+}
+
+async function waitSetGreedyStartBlue(v, that){
+  const value = parseInt(v);
+  await that.setState({greedyStartBlue: value});
+  waitSetSettings(that.app, that);
+}
+async function waitSetGreedyEndRed(v, that){
+  const value = parseInt(v);
+  await that.setState({greedyEndRed: value});
+  waitSetSettings(that.app, that);
+}
+
+async function waitSetGreedyEndGreen(v, that){
+  const value = parseInt(v);
+  await that.setState({greedyEndGreen: value});
+  waitSetSettings(that.app, that);
+}
+
+async function waitSetGreedyEndBlue(v, that){
+  const value = parseInt(v);
+  await that.setState({greedyEndBlue: value});
+  waitSetSettings(that.app, that);
+}
 
 async function waitsetCREP(v, that){
   const value = parseFloat(v);
