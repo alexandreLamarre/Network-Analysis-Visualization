@@ -637,7 +637,7 @@ class AlgorithmAttributes extends React.Component{
 
 
         {(this.state.filtering === true && "Greedy Coloring".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
-       ?<div>
+       ?<div> <p> Greedy Coloring </p>
        <div className = "sliders">
          <input className = "slider"
          type = "range"
