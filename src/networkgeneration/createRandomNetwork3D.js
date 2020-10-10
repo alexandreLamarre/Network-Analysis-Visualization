@@ -254,7 +254,7 @@ function calculate_hue(delta, Cmax, red, green, blue){
 }
 
 function rgb_to_str(color){
-  return "rgb(" + color[0] + "," + color[1] + "," + color[2]+")";
+  return "rgb(" + parseInt(color[0]) + "," + parseInt(color[1]) + "," + parseInt(color[2]) +")";
 }
 
 /*
