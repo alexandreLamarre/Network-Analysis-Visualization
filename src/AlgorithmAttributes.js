@@ -206,11 +206,11 @@ class AlgorithmAttributes extends React.Component{
   filter(e){
     if(e === "") {
       this.setState({filtering: false, filter: e});
-      this.settings.setState({filtering: false, filter: e});
+      this.app.setState({filtering: false, filter: e});
       console.log("default");
     }
     else{
-      this.settings.setState({filtering: true, filter: e});
+      this.app.setState({filtering: true, filter: e});
       this.setState({filtering: true, filter: e});
     }
   }
@@ -496,7 +496,7 @@ class AlgorithmAttributes extends React.Component{
 
              </div>
              : <></>}
-             {(this.state.filtering === true && "Kruskal's algorithm".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
+             {(this.state.filtering === true && "kruskal's algorithm".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
             ?<div> <p> Kruskal's Algorithm </p>
             <div className = "sliders">
               <input className = "slider"
@@ -537,7 +537,7 @@ class AlgorithmAttributes extends React.Component{
             </div>
             : <></>}
 
-            {(this.state.filtering === true && "Prim's algorithm".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
+            {(this.state.filtering === true && "prim's algorithm".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
            ?<div> <p> Prim's Algorithm </p>
            <div className = "sliders">
              <input className = "slider"
@@ -578,7 +578,7 @@ class AlgorithmAttributes extends React.Component{
            </div>
            : <></>}
 
-           {(this.state.filtering === true && "2-Opt".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
+           {(this.state.filtering === true && "2-opt".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
           ?<div>  <p> 2-Opt </p>
           <div className = "sliders">
             <input className = "slider"
@@ -631,7 +631,7 @@ class AlgorithmAttributes extends React.Component{
           </div>
           : <></>}
 
-          {(this.state.filtering === true && "3-Opt".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
+          {(this.state.filtering === true && "3-opt".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
          ?<div> <p> 3-Opt </p>
          <div className = "sliders">
            <input className = "slider"
@@ -684,7 +684,7 @@ class AlgorithmAttributes extends React.Component{
          </div>
          : <></>}
 
-         {(this.state.filtering === true && "2-Opt Simulated Annealing".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
+         {(this.state.filtering === true && "2-opt simulated annealing".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
         ?<div> <p> 2-Opt Simulated Annealing </p>
         <div className = "sliders">
           <input className = "slider"
@@ -751,7 +751,7 @@ class AlgorithmAttributes extends React.Component{
 
 
 
-        {(this.state.filtering === true && "Greedy Coloring".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
+        {(this.state.filtering === true && "greedy coloring".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
        ?<div> <p> Greedy Coloring </p>
        <div className = "sliders">
          <input className = "slider"

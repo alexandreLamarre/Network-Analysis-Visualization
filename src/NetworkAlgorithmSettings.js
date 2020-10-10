@@ -9,12 +9,6 @@ class NetworkAlgorithmSettings extends React.Component{
     super(props);
     this.state = {
       open: false,
-      spring: {},
-      fruchterman: {},
-      forceatlas2: {},
-      forceatlaslinlog: {},
-      filtering: false,
-      filter: "",
     }
     this.app = this.props.app;
     this.attributes = React.createRef();
@@ -33,8 +27,8 @@ class NetworkAlgorithmSettings extends React.Component{
               className = "algorithmsettings"
               overlayClassName = "algorithmsettingsoverlay">
                 <AlgorithmAttributes
-                 filtering = {this.state.filtering}
-                 filter = {this.state.filter}
+                 filtering = {this.app.state.filtering}
+                 filter = {this.app.state.filter}
                  settings = {this}
                  ref= {this.attributes}
                  app = {this.app}/>

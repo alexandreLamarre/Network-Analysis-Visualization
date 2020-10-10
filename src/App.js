@@ -55,7 +55,7 @@ class App extends React.Component{
           endRed: 255,
           endGreen: 0,
           endBlue: 0,
-        }  
+        }
       },
 
 
@@ -69,6 +69,8 @@ class App extends React.Component{
       endRed: 0,
       endGreen: 255,
       endBlue: 255,
+      filter: "",
+      filtering: false,
     }
     this.network = React.createRef();
     this.network3d = React.createRef();
