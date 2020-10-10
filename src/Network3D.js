@@ -68,7 +68,10 @@ class NetworkVisualizer3D extends React.Component{
     renderer.render(scene, camera);
 
     const [vertices,edges] = createRandomNetwork3D(w, h,d, this.app.state.numV,
-      this.app.state.numE, this.app.state.connected, this.state.randomType);
+      this.app.state.numE, this.app.state.connected, this.state.randomType,
+      [this.app.state.startRed, this.app.state.startGreen, this.app.state.startBlue],
+      [this.app.state.endRed, this.app.state.endGreen, this.app.state.endBlue],
+      this.app.state.degreesize, this.app.state.minsize, this.app.state.maxsize);
 
     const spheres = [];
     //displaying initial_vertices
@@ -76,8 +79,8 @@ class NetworkVisualizer3D extends React.Component{
       const color = vertices[i].color;
 
       //make a sphere
-      var geometry = new THREE.SphereGeometry(5,8,8);
-      var material = new THREE.MeshLambertMaterial({color: 0x00ffff});
+      var geometry = new THREE.SphereGeometry(vertices[i].size,8,8);
+      var material = new THREE.MeshLambertMaterial(new THREE.Color(vertices[i].color));
       var sphere = new THREE.Mesh(geometry, material);
       const v = vertices[i]
       sphere.position.set(v.x, v.y, v.z);
@@ -132,6 +135,7 @@ class NetworkVisualizer3D extends React.Component{
     for(let i = 0; i< this.state.vertices.length; i++){
       const v = this.state.vertices[i];
       this.state.spheres[i].position.set(v.x, v.y, v.z);
+      // this.state.spheres[i].
       this.state.spheres[i].material.color = new THREE.Color(this.state.vertices[i].color)
     }
 
@@ -337,15 +341,18 @@ class NetworkVisualizer3D extends React.Component{
 
     const [vertices,edges] = createRandomNetwork3D(this.state.width,this.state.height,
       this.state.depth, this.app.state.numV, this.app.state.numE, this.app.state.connected,
-            this.state.randomType);
+            this.state.randomType,
+            [this.app.state.startRed, this.app.state.startGreen, this.app.state.startBlue],
+            [this.app.state.endRed, this.app.state.endGreen, this.app.state.endBlue],
+            this.app.state.degreesize, this.app.state.minsize, this.app.state.maxsize);
     const spheres = [];
     //displaying initial_vertices
     for(let i = 0; i< vertices.length; i++){
       const color = vertices[i].color;
 
       //make a sphere
-      var geometry = new THREE.SphereGeometry(5,8,8);
-      var material = new THREE.MeshLambertMaterial({color: 0x00ffff});
+      var geometry = new THREE.SphereGeometry(vertices[i].size,8,8);
+      var material = new THREE.MeshLambertMaterial(new THREE.Color(vertices[i].color));
       var sphere = new THREE.Mesh(geometry, material);
       const v = vertices[i]
       sphere.position.set(v.x, v.y, v.z);
@@ -458,6 +465,34 @@ class NetworkVisualizer3D extends React.Component{
     this.setState({vertices: vertices, edges: edges});
   }
 
+  updateVertexSize(){
+    if(this.app.state.degreesize === false){
+      const new_size = 5;
+      const new_vertices = this.state.vertices.slice();
+      for(let i = 0; i < new_vertices.length; i++){
+        const old_size = new_vertices[i].size;
+        new_vertices[i].size = new_size;
+        this.state.spheres[i].scale.x = new_size/old_size;
+        this.state.spheres[i].scale.y = new_size/old_size;
+        this.state.spheres[i].scale.z = new_size/old_size;
+      }
+      const new_spheres = [];
+      this.setState({vertices: new_vertices});
+    }
+    else{
+      const max_degree = find_max_degree(this.state.vertices);
+      const new_vertices = this.state.vertices.slice();
+      for(let i = 0; i < new_vertices.length; i ++){
+        new_vertices[i].size = Math.floor(assign_size(new_vertices[i].degree,
+          max_degree, this.app.state.minsize, this.app.state.maxsize)+2);
+        this.state.spheres[i].scale.x = new_vertices[i].size/5;
+        this.state.spheres[i].scale.y = new_vertices[i].size/5;
+        this.state.spheres[i].scale.z = new_vertices[i].size/5;
+      }
+      this.setState({vertices: new_vertices});
+    }
+  }
+
   render(){
     return <div>
               <canvas
@@ -550,4 +585,17 @@ async function waitSetRandomizedType(that,v){
 
 async function animateEdges(that, edges){
   await that.setState({edges: edges});
+}
+
+function find_max_degree(vertices){
+  var max_degree = -Infinity;
+  for(let i = 0; i < vertices.length; i++){
+    max_degree = Math.max(vertices[i].degree, max_degree);
+  }
+  return max_degree;
+}
+
+function assign_size(degree, max_degree, minsize, maxsize){
+  //min degree is 1 or 0
+  return minsize +(maxsize - minsize)*(degree/max_degree)
 }

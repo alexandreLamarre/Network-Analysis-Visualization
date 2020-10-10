@@ -33,11 +33,13 @@ async function waitSetLayout(that,w,h){
 async function waitSetDegreeSize(that, v){
   if(v === 0){
     await that.setState({degreesize: false});
-    that.network.current.updateVertexSize();
+    if(that.state.dimension === 2) that.network.current.updateVertexSize();
+    if(that.state.dimension === 3) that.network3d.current.updateVertexSize();
   }
   if(v === 1){
     await that.setState({degreesize: true});
-    that.network.current.updateVertexSize();
+    if(that.state.dimension === 2) that.network.current.updateVertexSize();
+    if(that.state.dimension === 3) that.network3d.current.updateVertexSize();
   }
 }
 
@@ -75,12 +77,14 @@ async function waitSetMinVertexSize(that, v){
   const value = parseInt(v);
   await that.setState({minsize:value});
   if(that.state.dimension === 2) that.network.current.updateVertexSize();
+  if(that.state.dimension === 3) that.network3d.current.updateVertexSize();
 }
 
 async function waitSetMaxVertexSize(that, v){
   const value = parseInt(v);
   await that.setState({maxsize:value});
   if(that.state.dimension === 2) that.network.current.updateVertexSize();
+  if(that.state.dimension === 3) that.network3d.current.updateVertexSize();
 }
 
 
