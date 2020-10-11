@@ -484,6 +484,18 @@ class NetworkVisualizer extends React.Component{
             onMouseMove = {(e) => this.updateCamera(e)}
             onWheel = {(e) => this.zoomCamera(e.deltaY)}>
             </canvas>
+            <br></br>
+            <div className = "animationButtons">
+            <button className = "FirstFrameB"></button>
+            <button className = "FastBackB"></button>
+            <button className = "PreviousFrameB"></button>
+            <button className = {this.app.state.running === false?"StartB":"PauseB"}></button>
+            <button className = "NextFrameB"></button>
+            <button className = "FastForwardB"></button>
+            <button className = "LastFrameB"></button>
+            <button className= "CameraB"></button>
+            </div>
+            <br></br>
             <div className = "selectContainer">
               <div className = "selectalgorow">
 

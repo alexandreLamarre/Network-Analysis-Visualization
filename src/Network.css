@@ -9,6 +9,10 @@
   border: #000000 2px solid;
 }
 
+.animationButtons{
+  display: flex;
+  justify-content: center;
+}
 
 .helpb{
   align-self: flex-end;
@@ -108,4 +112,62 @@
 
 .sliderHeader{
   text-align: center;
+}
+
+.FirstFrameB{
+  background-image: url("../src/images/FirstButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+}
+
+.FastBackB{
+  background-image: url("../src/images/FastBackButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+}
+
+.PreviousFrameB{
+  background-image: url("../src/images/PreviousFrameButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+}
+.StartB{
+  background-image: url("../src/images/StartButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+}
+
+.PauseB{
+  background-image: url("../src/images/PauseButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+}
+.NextFrameB{
+  background-image: url("../src/images/NextFrameButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+}
+.FastForwardB{
+  background-image: url("../src/images/FastForwardButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+}
+.LastFrameB{
+  background-image: url("../src/images/LastButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+}
+.CameraB{
+  background-image: url("../src/images/CameraButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
 }
