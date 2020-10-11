@@ -42,6 +42,7 @@ class NetworkVisualizer3D extends React.Component{
       algoType: "spring",
       randomType: "random",
       TSP: false,
+      cameraChanged: false,
     }
     this.app = this.props.app;
     this.canvas = React.createRef();
@@ -413,6 +414,7 @@ class NetworkVisualizer3D extends React.Component{
     const delta = Math.sign(v);
     this.state.camera.position.z += 10*delta;
     this.state.renderer.render(this.state.scene, this.state.camera);
+    if(this.state.cameraChanged === false) this.setState({cameraChanged: true})
   }
 
   resetCamera(){
@@ -420,6 +422,7 @@ class NetworkVisualizer3D extends React.Component{
     this.state.camera.position.x = this.state.width/2;
     this.state.camera.position.y = this.state.height/2;
     this.state.renderer.render(this.state.scene, this.state.camera);
+    this.setState({cameraChanged:false})
   }
 
   startDrag(e){
@@ -441,6 +444,7 @@ class NetworkVisualizer3D extends React.Component{
       this.state.camera.position.y += deltaY
       this.state.camera.position.x += -deltaX
       this.state.renderer.render(this.state.scene, this.state.camera);
+      if(this.state.cameraChanged === false) this.setState({cameraChanged:true})
     }
   }
 
@@ -567,6 +571,38 @@ class NetworkVisualizer3D extends React.Component{
               onMouseUp = {() => this.endDrag()}
               onMouseMove = {(e) => this.rotateCamera(e)}>
               </canvas>
+              <br></br>
+              <div className = "animationButtons">
+              <button className = "FirstFrameB" disabled = {this.app.state.running === false}
+              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+              <button className = "FastBackB" disabled = {this.app.state.running === false}
+                style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+              <button className = "PreviousFrameB" disabled = {this.app.state.running === false}
+                style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+              <button className = "StartB" hidden = {this.app.state.running === true}
+              onClick={() => this.runAlgorithm()}
+                style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+              <button className = "PauseB" hidden = {this.app.state.running === false}
+              onClick = {() => this.cancelAnimation()}
+                style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+              <button className = "StopB" disabled = {this.app.state.running === false}
+              onClick = {() => this.cancelAnimation()}
+                style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+              <button className = "NextFrameB" disabled = {this.app.state.running === false}
+                style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+              <button className = "FastForwardB" disabled = {this.app.state.running === false}
+                style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+              <button className = "LastFrameB" disabled = {this.app.state.running === false}
+                style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+              <button className= "CameraB"
+              disabled = {this.state.cameraChanged === false}
+              onClick = {() => this.resetCamera()}
+                style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+              <button className = "ResetColoringB" disabled = {this.app.state.cameraChanged=== true}
+              onClick = {() => this.resetColoring()}
+                style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+              </div>
+              <br></br>
               <div className = "selectContainer">
                 <div className = "selectalgorow">
                 <select className = "selectalgo"
@@ -603,10 +639,6 @@ class NetworkVisualizer3D extends React.Component{
                     <option value = "greedyvertex"> Greedy Coloring </option>
                   </optgroup>
                 </select>
-                <button className = "b"
-                disabled = {this.app.state.running === true }
-                onClick = {() => this.runAlgorithm()}> Run Algorithm
-                </button>
                 </div>
                 <div className = "selectalgorow" value = {this.state.randomType}>
                 <select className = "selectalgo" disabled = {this.app.state.running === true}
@@ -622,18 +654,7 @@ class NetworkVisualizer3D extends React.Component{
                 onClick = {() => this.resetNetwork()}> Reset Network
                 </button>
                 </div>
-                <div className = "selectalgorow">
-                <button className = "b"
-                onClick = {() => this.resetCamera()}
-                > Reset Camera </button>
-                <button className = "b"
-                onClick = {() => this.cancelAnimation()}>
-                Cancel Animation </button>
-                <button className = "b"
-                onClick = {() => this.resetColoring()}
-                disabled = {this.app.state.running}>
-                Reset Coloring</button>
-                </div>
+
               </div>
           </div>
   }
