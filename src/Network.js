@@ -457,8 +457,8 @@ class NetworkVisualizer extends React.Component{
     if(this.state.dragging){
       const deltaX = e.clientX - this.state.previousMouseX;
       const deltaY = e.clientY - this.state.previousMouseY;
-      const new_offsetX = this.state.offsetX +=deltaX;
-      const new_offsetY = this.state.offsetY += deltaY;
+      const new_offsetX = this.state.offsetX += 0.75*deltaX;
+      const new_offsetY = this.state.offsetY += 0.75*deltaY;
       this.setState({previousMouseX: e.clientX, previousMouseY: e.clientY,
                     offsetX: new_offsetX, offsetY: new_offsetY});
     }
@@ -486,14 +486,34 @@ class NetworkVisualizer extends React.Component{
             </canvas>
             <br></br>
             <div className = "animationButtons">
-            <button className = "FirstFrameB"></button>
-            <button className = "FastBackB"></button>
-            <button className = "PreviousFrameB"></button>
-            <button className = {this.app.state.running === false?"StartB":"PauseB"}></button>
-            <button className = "NextFrameB"></button>
-            <button className = "FastForwardB"></button>
-            <button className = "LastFrameB"></button>
-            <button className= "CameraB"></button>
+            <button className = "FirstFrameB" disabled = {this.app.state.running === false}
+            style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+            <button className = "FastBackB" disabled = {this.app.state.running === false}
+              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+            <button className = "PreviousFrameB" disabled = {this.app.state.running === false}
+              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+            <button className = "StartB" hidden = {this.app.state.running === true}
+            onClick={() => this.runAlgorithm()}
+              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+            <button className = "PauseB" hidden = {this.app.state.running === false}
+            onClick = {() => this.cancelAnimation()}
+              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+            <button className = "StopB" disabled = {this.app.state.running === false}
+            onClick = {() => this.cancelAnimation()}
+              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+            <button className = "NextFrameB" disabled = {this.app.state.running === false}
+              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+            <button className = "FastForwardB" disabled = {this.app.state.running === false}
+              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+            <button className = "LastFrameB" disabled = {this.app.state.running === false}
+              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+            <button className= "CameraB"
+            disabled = {this.state.offsetX === 0 && this.state.offsetY === 0 && this.state.scaleFactor === 1}
+            onClick = {() => this.resetCamera()}
+              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+            <button className = "ResetColoringB" disabled = {this.app.state.running === true}
+            onClick = {() => this.resetColoring()}
+              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
             </div>
             <br></br>
             <div className = "selectContainer">
@@ -532,8 +552,6 @@ class NetworkVisualizer extends React.Component{
                     <option value = "greedyvertex" > Greedy Coloring </option>
                   </optgroup>
                 </select>
-
-                <button className = "b" onClick = {() => this.runAlgorithm()} disabled = {this.app.state.running}> Run Algorithm </button>
               </div>
 
 
@@ -552,13 +570,7 @@ class NetworkVisualizer extends React.Component{
                 <button className = "b" disabled = {this.app.state.running} onClick = {() => this.resetNetwork()}> Reset Network</button>
               </div>
 
-            <div className = "selectalgorow">
-              <button className = "b" onClick = {() => this.cancelAnimation()}> Cancel Animation</button>
-              <button className = "b" disabled = {this.app.state.running === true}
-              onClick = {() => this.resetColoring()}> Reset Coloring </button>
-              <button className = "b" onClick = {() => this.resetCamera()}> Reset Camera </button>
 
-            </div>
             </div>
             <HelpWindow ref = {this.help}></HelpWindow>
            </div>

@@ -119,6 +119,10 @@
   background-size: 50px 50px;
   height: 50px;
   width: 50px;
+  border: 1px solid black;
+  outline: none;
+  max-height: 200px;
+  max-width: 200px;
 }
 
 .FastBackB{
@@ -126,6 +130,8 @@
   background-size: 50px 50px;
   height: 50px;
   width: 50px;
+  border: 1px solid black;
+  outline: none;
 }
 
 .PreviousFrameB{
@@ -133,12 +139,16 @@
   background-size: 50px 50px;
   height: 50px;
   width: 50px;
+  border: 1px solid black;
+  outline: none;
 }
 .StartB{
   background-image: url("../src/images/StartButton.png");
   background-size: 50px 50px;
   height: 50px;
   width: 50px;
+  border: 1px solid black;
+  outline: none;
 }
 
 .PauseB{
@@ -146,28 +156,305 @@
   background-size: 50px 50px;
   height: 50px;
   width: 50px;
+  border: 1px solid black;
+  outline: none;
 }
+
+.StopB{
+  background-image: url("../src/images/StopButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
 .NextFrameB{
   background-image: url("../src/images/NextFrameButton.png");
   background-size: 50px 50px;
   height: 50px;
   width: 50px;
+  border: 1px solid black;
+  outline: none;
 }
 .FastForwardB{
   background-image: url("../src/images/FastForwardButton.png");
   background-size: 50px 50px;
   height: 50px;
   width: 50px;
+  border: 1px solid black;
+  outline: none;
 }
 .LastFrameB{
   background-image: url("../src/images/LastButton.png");
   background-size: 50px 50px;
   height: 50px;
   width: 50px;
+  border: 1px solid black;
+  outline: none;
 }
 .CameraB{
   background-image: url("../src/images/CameraButton.png");
   background-size: 50px 50px;
   height: 50px;
   width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+.ResetColoringB{
+  background-image: url("../src/images/ResetColoring.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.FirstFrameB:disabled{
+  background: linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)),url("../src/images/FirstButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.FastBackB:disabled{
+  background:linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/FastBackButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.PreviousFrameB:disabled{
+  background:linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/PreviousFrameButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.StopB:disabled{
+  background-image: linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)),url("../src/images/StopButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.NextFrameB:disabled{
+  background:linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/NextFrameButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+.FastForwardB:disabled{
+  background: linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/FastForwardButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+.LastFrameB:disabled{
+  background:linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/LastButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+.CameraB:disabled{
+  background: linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/CameraButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.ResetColoringB:disabled{
+  background: linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/ResetColoring.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.FirstFrameB:hover{
+  background: linear-gradient(rgba(0,255,0,0.7), rgba(0,100,0,0.7)), url("../src/images/FirstButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.FastBackB:hover{
+  background: linear-gradient(rgba(0,255,0,0.7), rgba(0,100,0,0.7)),url("../src/images/FastBackButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.PreviousFrameB:hover{
+  background: linear-gradient(rgba(0,255,0,0.7), rgba(0,100,0,0.7)),url("../src/images/PreviousFrameButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+.StartB:hover{
+  background: linear-gradient(rgba(0,255,0,0.7), rgba(0,100,0,0.7)),url("../src/images/StartButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.PauseB:hover{
+  background:linear-gradient(rgba(200,165,0,0.7), rgba(200,65,0,0.7)), url("../src/images/PauseButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+.StopB:hover{
+  background-image: linear-gradient(rgba(255,0,0,0.7), rgba(200,0,0,0.7)),url("../src/images/StopButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+.NextFrameB:hover{
+  background: linear-gradient(rgba(0,255,0,0.7), rgba(0,100,0,0.7)),url("../src/images/NextFrameButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+.FastForwardB:hover{
+  background: linear-gradient(rgba(0,255,0,0.7), rgba(0,100,0,0.7)),url("../src/images/FastForwardButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+.LastFrameB:hover{
+  background: linear-gradient(rgba(0,255,0,0.7), rgba(0,100,0,0.7)),url("../src/images/LastButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+.CameraB:hover{
+  background: linear-gradient(rgba(0,255,0,0.7), rgba(0,100,0,0.7)),url("../src/images/CameraButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+.ResetColoringB:hover{
+  background: linear-gradient(rgba(0,255,0,0.7), rgba(0,100,0,0.7)),url("../src/images/ResetColoring.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.FirstFrameB:disabled:hover{
+  background: linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)),url("../src/images/FirstButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.FastBackB:disabled:hover{
+  background:linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/FastBackButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.PreviousFrameB:disabled:hover{
+  background:linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/PreviousFrameButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.StopB:disabled:hover{
+  background-image: linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)),url("../src/images/StopButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+
+.NextFrameB:disabled:hover{
+  background:linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/NextFrameButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+.FastForwardB:disabled:hover{
+  background: linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/FastForwardButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+.LastFrameB:disabled:hover{
+  background:linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/LastButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+.CameraB:disabled:hover{
+  background: linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/CameraButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.ResetColoringB:disabled:hover{
+  background: linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/ResetColoring.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
 }
