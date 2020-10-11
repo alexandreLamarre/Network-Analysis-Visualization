@@ -384,12 +384,13 @@ class NetworkVisualizer extends React.Component{
       for(let j = 0; j < this.state.edges.length; j++){
         new_edges.push(new Edge(this.state.edges[j].start, this.state.edges[j].end));
       }
+
       this.setState({vertices: new_vertices, edges: new_edges});
     }
     else{
       const new_vertices = this.state.vertices.slice();
       const color = rgb_to_str([this.app.state.startRed, this.app.state.startGreen, this.app.state.startBlue]);
-      for(let i = 0; i < new_vertices[i].length; i ++){
+      for(let i = 0; i < new_vertices.length; i ++){
         new_vertices[i].color = color;
       }
       const new_edges = [];
@@ -437,7 +438,7 @@ class NetworkVisualizer extends React.Component{
     else{
       const new_vertices = this.state.vertices.slice();
       const color = rgb_to_str([this.app.state.startRed, this.app.state.startGreen, this.app.state.startBlue]);
-      for(let i = 0; i < new_vertices[i].length; i ++){
+      for(let i = 0; i < new_vertices.length; i ++){
         new_vertices[i].color = color;
       }
       this.setState({vertices: new_vertices});
