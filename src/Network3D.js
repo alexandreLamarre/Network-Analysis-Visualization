@@ -512,7 +512,6 @@ class NetworkVisualizer3D extends React.Component{
       const new_vertices = this.state.vertices.slice();
       for(let i = 0; i < new_vertices.length; i++){
         const old_size = new_vertices[i].size;
-        new_vertices[i].size = new_size;
         this.state.spheres[i].scale.x = new_size/old_size;
         this.state.spheres[i].scale.y = new_size/old_size;
         this.state.spheres[i].scale.z = new_size/old_size;

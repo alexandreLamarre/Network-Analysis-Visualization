@@ -43,6 +43,13 @@ class NetworkVisualizer extends React.Component{
       randomType: "random",
       layoutType: 0,
       TSP : false,
+      offsetX: 0,
+      offsetY: 0,
+      dragging: false,
+      previousMouseX: 0,
+      previousMouseY: 0,
+      scaleFactor: 1,
+
     };
     this.app = this.props.app;
     this.help = React.createRef();
@@ -70,12 +77,13 @@ class NetworkVisualizer extends React.Component{
     this.canvas.current.width = this.state.width;
     this.canvas.current.height = this.state.height;
     const ctx = this.canvas.current.getContext("2d");
+    ctx.scale(this.state.scaleFactor,this.state.scaleFactor);
     for(let i =0; i < this.state.vertices.length; i++){
       ctx.beginPath();
       const c = this.state.vertices[i].color;
       ctx.fillStyle= c;
       // ctx.fillRect(this.state.vertices[i][0], this.state.vertices[i][1], 6, 6);
-      ctx.arc(this.state.vertices[i].x, this.state.vertices[i].y, this.state.vertices[i].size, 0, Math.PI*2)
+      ctx.arc(this.state.vertices[i].x+this.state.offsetX, this.state.vertices[i].y+this.state.offsetY, this.state.vertices[i].size, 0, Math.PI*2)
       ctx.fill();
       ctx.closePath();
     }
@@ -84,8 +92,8 @@ class NetworkVisualizer extends React.Component{
       ctx.beginPath();
       const index1 = this.state.edges[j].start;
       const index2 = this.state.edges[j].end;
-      ctx.moveTo(this.state.vertices[index1].x,this.state.vertices[index1].y);
-      ctx.lineTo(this.state.vertices[index2].x,this.state.vertices[index2].y);
+      ctx.moveTo(this.state.vertices[index1].x+this.state.offsetX,this.state.vertices[index1].y+this.state.offsetY);
+      ctx.lineTo(this.state.vertices[index2].x+this.state.offsetX,this.state.vertices[index2].y+this.state.offsetY);
       ctx.globalAlpha = this.state.edges[j].alpha;
       ctx.strokeStyle = this.state.edges[j].color;
       ctx.stroke();
@@ -435,11 +443,45 @@ class NetworkVisualizer extends React.Component{
       this.setState({vertices: new_vertices});
     }
   }
+
+  setDrag(e,v){
+    if(v === true) {
+      this.state.previousMouseX = e.clientX;
+      this.state.previousMouseY = e.clientY;
+    }
+    this.setState({dragging:v});
+  }
+
+  updateCamera(e){
+    if(this.state.dragging){
+      const deltaX = e.clientX - this.state.previousMouseX;
+      const deltaY = e.clientY - this.state.previousMouseY;
+      const new_offsetX = this.state.offsetX +=deltaX;
+      const new_offsetY = this.state.offsetY += deltaY;
+      this.setState({previousMouseX: e.clientX, previousMouseY: e.clientY,
+                    offsetX: new_offsetX, offsetY: new_offsetY});
+    }
+  }
+
+  resetCamera(){
+    this.setState({offsetX:0,offsetY:0, scaleFactor: 1})
+  }
+
+  zoomCamera(v){
+    const delta = -Math.sign(v);
+    const new_scale_factor = this.state.scaleFactor + delta*0.05;
+    this.setState({scaleFactor: new_scale_factor});
+  }
+
   render(){
 
     return <div className = "network">
             <canvas
-            className = "networkCanvas" ref = {this.canvas}>
+            className = "networkCanvas" ref = {this.canvas}
+            onMouseDown = {(e) => this.setDrag(e,true)}
+            onMouseUp = {(e) => this.setDrag(e,false)}
+            onMouseMove = {(e) => this.updateCamera(e)}
+            onWheel = {(e) => this.zoomCamera(e.deltaY)}>
             </canvas>
             <div className = "selectContainer">
               <div className = "selectalgorow">
@@ -454,6 +496,7 @@ class NetworkVisualizer extends React.Component{
                   </optgroup>
                   <optgroup label = "Spectral Layout Algorithms">
                   <option value = "hall" disabled = {true}> Hall's algorithm </option>
+                  <option value = "schwarz" disabled = {true}> Schwarz Based Method </option>
                   <option value = "spectralDrawing" disabled = {true}> Generalized Eigenvector (Koren)</option>
                   </optgroup>
                   <optgroup label = "Custom Algorithms" hidden = {true}>
@@ -500,6 +543,7 @@ class NetworkVisualizer extends React.Component{
               <button className = "b" onClick = {() => this.cancelAnimation()}> Cancel Animation</button>
               <button className = "b" disabled = {this.app.state.running === true}
               onClick = {() => this.resetColoring()}> Reset Coloring </button>
+              <button className = "b" onClick = {() => this.resetCamera()}> Reset Camera </button>
 
             </div>
             </div>

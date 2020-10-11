@@ -909,7 +909,7 @@ async function waitSetSettings(app, that){
             endGreen: that.state.greedyEndGreen,
             endBlue: that.state.greedyEndBlue}
     }});
-  console.log(app.state.settings);
+  // console.log(app.state.settings);
 }
 
 async function waitSetKruskalRed(v, that){
