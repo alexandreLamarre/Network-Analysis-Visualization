@@ -25,6 +25,14 @@ var MAX_EDGES = 600;
 var MAX_TIMEOUT = 30; //seconds
 // var MAX_TIMEOUT = 0;
 
+async function waitAnimateNetwork(that,startIndex, endIndex, animations){
+  if(animations !== null) await that.setState({currentAnimations: animations});
+  await that.setState({currentAnimationIndex: startIndex, animationIndex: endIndex, paused: false});
+  console.log("start",startIndex,"end", endIndex,"animations", animations);
+  if(that.state.group === "layout") that.animateNetwork();
+  // if(that.state.group === "coloring") continue;
+  // if(that.state.group === "TSP") continue;
+}
 
 class NetworkVisualizer extends React.Component{
   constructor(props){
@@ -49,6 +57,11 @@ class NetworkVisualizer extends React.Component{
       previousMouseX: 0,
       previousMouseY: 0,
       scaleFactor: 1,
+      currentAnimations: [],
+      currentAnimationIndex: 0,
+      animationIndex: 0,
+      paused: true,
+      group: "layout", // layout, coloring or TSP
 
     };
     this.app = this.props.app;
@@ -110,7 +123,7 @@ class NetworkVisualizer extends React.Component{
                     this.app.state.settings.spring );
     const new_vertices = values[0];
     const animations = values[1];
-    this.animateNetwork(animations, new_vertices);
+    waitAnimateNetwork(this, 0,animations.length, animations);
   }
 
   generateReingold(){
@@ -120,8 +133,7 @@ class NetworkVisualizer extends React.Component{
     const new_vertices = values[0];
     const animations = values[1];
     // console.log(animations);
-
-    this.animateNetwork(animations, new_vertices);
+    waitAnimateNetwork(this, 0, animations.length, animations);
   }
 
   generateKamadaKawai(){
@@ -136,7 +148,7 @@ class NetworkVisualizer extends React.Component{
     const animations = values[1];
     // console.log(new_vertices);
 
-    this.animateNetwork(animations, new_vertices);
+    waitAnimateNetwork(this, 0, animations.length, animations);
   }
 
   generateForceAtlasLinLog(){
@@ -145,7 +157,7 @@ class NetworkVisualizer extends React.Component{
     const new_vertices = values[0];
     const animations = values[1];
 
-    this.animateNetwork(animations, new_vertices);
+    waitAnimateNetwork(this, 0, animations.length, animations);
   }
 
   generateHall(){
@@ -189,19 +201,24 @@ class NetworkVisualizer extends React.Component{
   }
 
   runAlgorithm(){
-    if(this.state.algoType === "spring") this.generateForceDirectedLayout();
-    if(this.state.algoType === "fruchtermanReingold") this.generateReingold();
-    if(this.state.algoType === "kamadaKawai") this.generateKamadaKawai();
-    if(this.state.algoType === "forceAtlas2") this.generateForceAtlas2();
-    if(this.state.algoType === "forceAtlasLinLog") this.generateForceAtlasLinLog();
-    if(this.state.algoType === "hall") this.generateHall();
-    if(this.state.algoType === "spectralDrawing") this.generateSpectralDrawing();
-    if(this.state.algoType === "radialFlowDirected") this.generateRadialFlowDirected();
-    if(this.state.algoType === "kruskal") this.generateKruskal();
-    if(this.state.algoType === "prim") this.generatePrim();
-    if(this.state.algoType === "2opt") this.generate2Opt();
-    if(this.state.algoType === "3opt") this.generate3Opt();
-    if(this.state.algoType === "greedyvertex") this.generateGreedyVertex();
+    if(this.app.state.running === false){
+      if(this.state.algoType === "spring") this.generateForceDirectedLayout();
+      if(this.state.algoType === "fruchtermanReingold") this.generateReingold();
+      if(this.state.algoType === "kamadaKawai") this.generateKamadaKawai();
+      if(this.state.algoType === "forceAtlas2") this.generateForceAtlas2();
+      if(this.state.algoType === "forceAtlasLinLog") this.generateForceAtlasLinLog();
+      if(this.state.algoType === "hall") this.generateHall();
+      if(this.state.algoType === "spectralDrawing") this.generateSpectralDrawing();
+      if(this.state.algoType === "radialFlowDirected") this.generateRadialFlowDirected();
+      if(this.state.algoType === "kruskal") this.generateKruskal();
+      if(this.state.algoType === "prim") this.generatePrim();
+      if(this.state.algoType === "2opt") this.generate2Opt();
+      if(this.state.algoType === "3opt") this.generate3Opt();
+      if(this.state.algoType === "greedyvertex") this.generateGreedyVertex();
+    }
+    else{
+      waitAnimateNetwork(this, this.state.currentAnimationIndex, this.state.currentAnimations.length-1, null);
+    }
   }
 
   animateTSP(func){
@@ -273,24 +290,22 @@ class NetworkVisualizer extends React.Component{
     this.setState({maxtimeouts: x});
   }
 
-  animateNetwork(animations, final_vertices){
+  animateNetwork(){
     let x = 0;
     this.app.setState({running:true});
-    for(let k = 0; k < animations.length; k++){
+    const start = this.state.currentAnimationIndex;
+    const end = this.state.animationIndex;
+    for(let k = start; k < end; k++){
 
       x = setTimeout(() => {
         const vertices = this.state.vertices;
         for(let i = 0; i <vertices.length; i++){
-          vertices[i].setVector(animations[k][i]);
+          vertices[i].setVector(this.state.currentAnimations[k][i]);
         }
-        this.setState({vertices: vertices});
+        this.setState({vertices: vertices, currentAnimationIndex: this.state.currentAnimationIndex+1});
+        if(k === end-1) this.setState({paused: true, currentAnimationIndex: end});
         // console.log("animating")
-        if(k === animations.length-1){
-          this.setState({sorted:true, vertices:final_vertices});
-          this.app.setState({running:false});
-          // console.log(final_vertices);
-        }
-      }, k * this.app.state.animationSpeed)
+      }, (k-start) * this.app.state.animationSpeed)
     }
     this.setState({maxtimeouts: x});
   }
@@ -300,11 +315,19 @@ class NetworkVisualizer extends React.Component{
     this.setState({algoType: v});
     if(v === "2opt" || v === "3opt" ||
         v === "2optannealing" || v === "3optannealing"){
-          this.setState({TSP:true});
+          this.setState({group:"TSP"});
           if(this.state.randomType !== "cycle") this.setRandomizedType("cycle");
         }
-    else{ this.setState({TSP: false})}
+    else if(v === "spring" || v === "fruchterman" || v === "forceAtlas2"
+                      || v === "forceatlaslinlog"){
+        this.setState({group:"layout"});
+      }
+    else if(v === "kruskal" || v === "prim" || v === "greedyvertex" ||
+                                        v === "misra"){
+        this.setState({group:"coloring"});
+    }
   }
+
   setRandomizedType(v){
     const that = this;
     waitSetRandomizedType(that, v);
@@ -359,13 +382,24 @@ class NetworkVisualizer extends React.Component{
     this.app.setState({numV: vertices.length, numE: edges.length});
   }
 
-  cancelAnimation(){
+  clearAnimations(){
     var id = this.state.maxtimeouts;
     while(id){
       clearInterval(id);
       id --;
     }
+  }
+
+  cancelAnimation(){
+    this.setState({currentAnimations: [], paused: true});
+    this.clearAnimations();
     this.app.setState({running: false});
+  }
+
+  pauseAnimation(){
+    this.setState({paused:true});
+    this.clearAnimations();
+    console.log(this.state.currentAnimationIndex);
   }
 
   resetColoring(){
@@ -474,6 +508,49 @@ class NetworkVisualizer extends React.Component{
     this.setState({scaleFactor: new_scale_factor});
   }
 
+  skipFrame(){
+    this.clearAnimations();
+    const animations_index = Math.min(this.state.currentAnimationIndex + 1,
+                                      this.state.currentAnimations.length-1);
+    waitAnimateNetwork(this, animations_index, animations_index+1, null);
+  }
+
+  rewindFrame(){
+    this.clearAnimations();
+    const animations_index = Math.max(this.state.currentAnimationIndex -2, 0);
+    waitAnimateNetwork(this, animations_index, animations_index+1, null);
+  }
+
+  skipForward(){
+    this.clearAnimations();
+    const animations_index = Math.min(this.state.currentAnimations.length-1,
+        this.state.currentAnimationIndex + Math.floor(1000/this.app.state.animationSpeed));
+    const end_index = this.state.paused === true? animations_index+1:
+                              this.state.currentAnimations.length-1;
+    waitAnimateNetwork(this, animations_index, end_index, null);
+  }
+
+  skipBackward(){
+    this.clearAnimations();
+    const animations_index = Math.max(0,
+        this.state.currentAnimationIndex - Math.floor(1000/this.app.state.animationSpeed));
+    const end_index = this.state.paused === true? animations_index+1:
+                            this.state.currentAnimations.length-1;
+    waitAnimateNetwork(this, animations_index, end_index, null);
+  }
+
+  skipToBeginning(){
+    this.clearAnimations();
+    const animations_index = 0
+    this.setState({currentAnimationIndex:0})
+    waitAnimateNetwork(this, 0, 1,null);
+  }
+  skipToEnd(){
+    this.clearAnimations();
+    const animations_index = this.state.currentAnimations.length-1;
+    waitAnimateNetwork(this, animations_index, animations_index+1, null)
+  }
+
   render(){
 
     return <div className = "network">
@@ -486,34 +563,63 @@ class NetworkVisualizer extends React.Component{
             </canvas>
             <br></br>
             <div className = "animationButtons">
-            <button className = "FirstFrameB" disabled = {this.app.state.running === false}
-            style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
-            <button className = "FastBackB" disabled = {this.app.state.running === false}
-              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
-            <button className = "PreviousFrameB" disabled = {this.app.state.running === false}
-              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
-            <button className = "StartB" hidden = {this.app.state.running === true}
+            <button className = "FirstFrameB"
+            disabled = {this.app.state.running === false || this.state.currentAnimationIndex === 1}
+            style = {{height:Math.min(this.state.width/10,100),
+              width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
+              onClick = {() => this.skipToBeginning()}></button>
+            <button className = "FastBackB"
+            disabled = {this.app.state.running === false || this.state.currentAnimationIndex === 1}
+              style = {{height:Math.min(this.state.width/10,100),
+                width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
+                onClick = {() => this.skipBackward()}></button>
+            <button className = "PreviousFrameB"
+            disabled = {this.app.state.running === false || this.state.currentAnimationIndex === 1}
+              style = {{height:Math.min(this.state.width/10,100),
+                width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
+                onClick = {() => this.rewindFrame()}></button>
+            <button className = "StartB" hidden = {this.state.paused === false}
+            disabled = {(this.state.currentAnimationIndex === this.state.currentAnimations.length
+            || this.state.currentAnimationIndex === this.state.currentAnimations.length-1)
+            && this.state.currentAnimations.length !== 0}
             onClick={() => this.runAlgorithm()}
-              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
-            <button className = "PauseB" hidden = {this.app.state.running === false}
-            onClick = {() => this.cancelAnimation()}
-              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+              style = {{height:Math.min(this.state.width/10,100),
+                width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+            <button className = "PauseB" hidden = {this.state.paused === true}
+            onClick = {() => this.pauseAnimation()}
+              style = {{height:Math.min(this.state.width/10,100),
+                 width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
             <button className = "StopB" disabled = {this.app.state.running === false}
             onClick = {() => this.cancelAnimation()}
-              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
-            <button className = "NextFrameB" disabled = {this.app.state.running === false}
-              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
-            <button className = "FastForwardB" disabled = {this.app.state.running === false}
-              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
-            <button className = "LastFrameB" disabled = {this.app.state.running === false}
-              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+              style = {{height:Math.min(this.state.width/10,100),
+                width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+            <button className = "NextFrameB" disabled = {this.app.state.running === false
+                        || this.state.currentAnimationIndex === this.state.currentAnimations.length
+                        || this.state.currentAnimationIndex === this.state.currentAnimations.length-1}
+              style = {{height:Math.min(this.state.width/10,100),
+                width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
+                onClick = {() => this.skipFrame()}></button>
+            <button className = "FastForwardB" disabled = {this.app.state.running === false
+                        || this.state.currentAnimationIndex === this.state.currentAnimations.length
+                        || this.state.currentAnimationIndex === this.state.currentAnimations.length-1}
+              style = {{height:Math.min(this.state.width/10,100),
+                width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
+                onClick = {() => this.skipForward()}></button>
+            <button className = "LastFrameB" disabled = {this.app.state.running === false
+                        || this.state.currentAnimationIndex === this.state.currentAnimations.length
+                        || this.state.currentAnimationIndex === this.state.currentAnimations.length-1}
+              style = {{height:Math.min(this.state.width/10,100),
+                width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
+                onClick = {() => this.skipToEnd()}></button>
             <button className= "CameraB"
             disabled = {this.state.offsetX === 0 && this.state.offsetY === 0 && this.state.scaleFactor === 1}
             onClick = {() => this.resetCamera()}
-              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+              style = {{height:Math.min(this.state.width/10,100),
+                width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
             <button className = "ResetColoringB" disabled = {this.app.state.running === true}
             onClick = {() => this.resetColoring()}
-              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+              style = {{height:Math.min(this.state.width/10,100),
+                width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
             </div>
             <br></br>
             <div className = "selectContainer">
@@ -546,7 +652,7 @@ class NetworkVisualizer extends React.Component{
                     <option value = "3optannealing" disabled = {true} hidden = {true}> 3-Opt Simulated Annealing </option>
                   </optgroup>
                   <optgroup label = "Edge Coloring Algorithms">
-                    <option value = "" disabled = {true}> Misra-Gries Algorithm (Fan Rotation)</option>
+                    <option value = "misra" disabled = {true}> Misra-Gries Algorithm (Fan Rotation)</option>
                   </optgroup>
                   <optgroup label = "Vertex Coloring Algorithms">
                     <option value = "greedyvertex" > Greedy Coloring </option>
@@ -562,8 +668,8 @@ class NetworkVisualizer extends React.Component{
                 </select>
                 <select value = {this.state.randomType}
                 disabled = {this.app.state.running === true }className = "selectalgo" onChange = {(event) => this.setRandomizedType(event.target.value)}>
-                  <option value = "random" disabled = {this.state.TSP === true}> Random </option>
-                  <option value = "randomcircle" disabled = {this.state.TSP === true}> Random Circle </option>
+                  <option value = "random" disabled = {this.state.group === "TSP"}> Random </option>
+                  <option value = "randomcircle" disabled = {this.state.group === "TSP"}> Random Circle </option>
                   <option  value = "cycle"> Random Hamiltonian Cycle </option>
                   <option value = "randomclustering" disabled = {true}> Random Clustering </option>
                 </select>
