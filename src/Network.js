@@ -570,60 +570,71 @@ class NetworkVisualizer extends React.Component{
             </canvas>
             <br></br>
             <div className = "animationButtons">
-            <button className = "FirstFrameB"
+            <button className = "FirstFrameB" title = "Skip to algorithm start"
             disabled = {this.app.state.running === false || this.state.currentAnimationIndex === 1}
             style = {{height:Math.min(this.state.width/10,100),
               width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
               onClick = {() => this.skipToBeginning()}></button>
-            <button className = "FastBackB"
+            <button className = "FastBackB" title = "Rewind algorithm 1 second"
             disabled = {this.app.state.running === false || this.state.currentAnimationIndex === 1}
               style = {{height:Math.min(this.state.width/10,100),
                 width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
                 onClick = {() => this.skipBackward()}></button>
-            <button className = "PreviousFrameB"
+            <button className = "PreviousFrameB" title = "Previous frame"
             disabled = {this.app.state.running === false || this.state.currentAnimationIndex === 1}
               style = {{height:Math.min(this.state.width/10,100),
                 width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
                 onClick = {() => this.rewindFrame()}></button>
-            <button className = "StartB" hidden = {this.state.paused === false}
+            <button className = "StartB" hidden = {this.state.paused === false} title = "Run algorithm"
             disabled = {(this.state.currentAnimationIndex === this.state.currentAnimations.length
             || this.state.currentAnimationIndex === this.state.currentAnimations.length-1)
             && this.state.currentAnimations.length !== 0}
             onClick={() => this.runAlgorithm()}
               style = {{height:Math.min(this.state.width/10,100),
                 width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
-            <button className = "PauseB" hidden = {this.state.paused === true}
+            <button className = "PauseB" hidden = {this.state.paused === true} title = "Pause Algorithm"
             onClick = {() => this.pauseAnimation()}
               style = {{height:Math.min(this.state.width/10,100),
                  width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
-            <button className = "StopB" disabled = {this.app.state.running === false}
+            <button className = "StopB"
+            title = "Clear algorithm"
+            disabled = {this.app.state.running === false}
             onClick = {() => this.cancelAnimation()}
               style = {{height:Math.min(this.state.width/10,100),
                 width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
-            <button className = "NextFrameB" disabled = {this.app.state.running === false
+            <button className = "NextFrameB"
+            title = "Next Frame"
+            disabled = {this.app.state.running === false
                         || this.state.currentAnimationIndex === this.state.currentAnimations.length
                         || this.state.currentAnimationIndex === this.state.currentAnimations.length-1}
               style = {{height:Math.min(this.state.width/10,100),
                 width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
                 onClick = {() => this.skipFrame()}></button>
-            <button className = "FastForwardB" disabled = {this.app.state.running === false
+            <button className = "FastForwardB"
+            title = "Skip forward 1 second"
+            disabled = {this.app.state.running === false
                         || this.state.currentAnimationIndex === this.state.currentAnimations.length
                         || this.state.currentAnimationIndex === this.state.currentAnimations.length-1}
               style = {{height:Math.min(this.state.width/10,100),
                 width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
                 onClick = {() => this.skipForward()}></button>
-            <button className = "LastFrameB" disabled = {this.app.state.running === false
+            <button className = "LastFrameB"
+            title = "Skip to algorithm termination"
+            disabled = {this.app.state.running === false
                         || this.state.currentAnimationIndex === this.state.currentAnimations.length
                         || this.state.currentAnimationIndex === this.state.currentAnimations.length-1}
               style = {{height:Math.min(this.state.width/10,100),
                 width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
                 onClick = {() => this.skipToEnd()}></button>
             <button className= "CameraB"
+            title = "Reset camera"
             disabled = {this.state.offsetX === 0 && this.state.offsetY === 0 && this.state.scaleFactor === 1}
             onClick = {() => this.resetCamera()}
               style = {{height:Math.min(this.state.width/10,100),
                 width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
-            <button className = "ResetColoringB" disabled = {this.app.state.running === true}
+            <button className = "ResetColoringB"
+            title = "Reset Coloring"
+            disabled = {this.app.state.running === true}
             onClick = {() => this.resetColoring()}
               style = {{height:Math.min(this.state.width/10,100),
                 width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>

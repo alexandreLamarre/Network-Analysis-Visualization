@@ -161,7 +161,7 @@
 }
 
 .StopB{
-  background-image: url("../src/images/StopButton.png");
+  background: linear-gradient(rgba(255,165,0,0.4),rgba(255,165,0,0.4)),url("../src/images/StopButton.png");
   background-size: 50px 50px;
   height: 50px;
   width: 50px;
