@@ -152,6 +152,15 @@
   outline: none;
 }
 
+.StartB:disabled{
+  background:linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/StartButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
 .StopB:disabled{
   background-image: linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)),url("../src/images/StopButton.png");
   background-size: 50px 50px;
@@ -315,6 +324,15 @@
 
 .PreviousFrameB:disabled:hover{
   background:linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/PreviousFrameButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.StartB:disabled:hover{
+  background:linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/StartButton.png");
   background-size: 50px 50px;
   height: 50px;
   width: 50px;

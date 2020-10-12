@@ -25,11 +25,13 @@ var MAX_EDGES = 600;
 var MAX_TIMEOUT = 30; //seconds
 // var MAX_TIMEOUT = 0;
 
-async function waitAnimateNetwork(that,startIndex, endIndex, animations){
+async function waitAnimateNetwork(that,startIndex, endIndex, animations,func){
   if(animations !== null) await that.setState({currentAnimations: animations});
   await that.setState({currentAnimationIndex: startIndex, animationIndex: endIndex, paused: false});
   console.log("start",startIndex,"end", endIndex,"animations", animations);
   if(that.state.group === "layout") that.animateNetwork();
+  if(that.state.group === "coloring") that.animateColoring();
+  if(that.state.group === "TSP") that.animateTSP(func)
   // if(that.state.group === "coloring") continue;
   // if(that.state.group === "TSP") continue;
 }
@@ -184,7 +186,7 @@ class NetworkVisualizer extends React.Component{
     const animations = prim(this.state.vertices, this.state.edges, 2,
       [this.app.state.settings.prim.red, this.app.state.settings.prim.green,
       this.app.state.settings.prim.blue]);
-    this.animateColoring(animations);
+    waitAnimateNetwork(this,0,animations.length,animations);
   }
 
   generate2Opt(){
@@ -197,7 +199,7 @@ class NetworkVisualizer extends React.Component{
 
   generateGreedyVertex(){
     const [vertices, animations] = GreedyColoring(this.state.vertices, this.state.edges, this.app.state.dimension, [255,255,0], [0,0,255])
-    this.animateColoring(animations)
+    waitAnimateNetwork(this,0,animations.length,animations);
   }
 
   runAlgorithm(){
@@ -261,31 +263,36 @@ class NetworkVisualizer extends React.Component{
     this.setState({maxtimeouts: x});
   }
 
-  animateColoring(animations){
+  animateColoring(){
     let x = 0;
     this.app.setState({running:true});
+    console.log("animating");
+    const start = this.state.currentAnimationIndex;
+    const end = this.state.animationIndex;
 
-    for(let k =0; k < animations.length; k++){
+    for(let k =start; k < end; k++){
       x = setTimeout(() => {
         const vertices = this.state.vertices;
         const edges= this.state.edges;
-
+        const animations = this.state.currentAnimations;
         if(animations[k].vIndex !== undefined){
           vertices[animations[k].vIndex].color = animations[k].color;
           // vertices[animations[k].vIndex].size = animations[k].size;
         }
-        if(animations[k].eIndex !== undefined){
+        if(this.state.currentAnimations[k].eIndex !== undefined){
           edges[animations[k].eIndex].setColor(animations[k].color);
           edges[animations[k].eIndex].setAlpha(animations[k].alpha)
         }
 
-        this.setState({vertices: vertices, edges:edges});
+        this.setState({vertices: vertices, edges:edges, currentAnimationIndex: this.state.currentAnimationIndex + 1});
         // console.log("animating")
-        if(k === animations.length-1){
-          this.app.setState({running:false});
+        if(k === end-1){
+          console.log("pausing")
+          this.setState({paused: true,currentAnimationIndex: end});
+
           // console.log(final_vertices);
         }
-      }, k * this.app.state.animationSpeed)
+      }, (k-start) * this.app.state.animationSpeed)
     }
     this.setState({maxtimeouts: x});
   }
@@ -693,7 +700,7 @@ async function waitSetLayout(that,w,h){
 
 async function waitSetEdges(that, sorted_edges,animations){
   await that.setState({edges: sorted_edges});
-  that.animateColoring(animations)
+  waitAnimateNetwork(that, 0, animations.length,animations)
 }
 
 async function waitSetRandomizedType(that,v){
