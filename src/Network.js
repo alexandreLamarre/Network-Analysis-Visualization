@@ -676,6 +676,12 @@ class NetworkVisualizer extends React.Component{
                     <option value = "greedyvertex" > Greedy Coloring </option>
                   </optgroup>
                 </select>
+                <button className = "AlgoB"
+                title = "Algorithm Settings"
+                disabled = {this.app.state.running === true}
+                  style = {{height:Math.min(this.state.width/10,100),
+                    width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
+                    </button>
               </div>
 
 
@@ -691,7 +697,19 @@ class NetworkVisualizer extends React.Component{
                   <option  value = "cycle"> Random Hamiltonian Cycle </option>
                   <option value = "randomclustering" disabled = {true}> Random Clustering </option>
                 </select>
-                <button className = "b" disabled = {this.app.state.running} onClick = {() => this.resetNetwork()}> Reset Network</button>
+                <button className = "resetB"
+                onClick = {() => this.resetNetwork()}
+                title = "New random network"
+                disabled = {this.app.state.running === true}
+                  style = {{height:Math.min(this.state.width/10,100),
+                    width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
+                    </button>
+                <button className = "generalB"
+                title = "Network Settings"
+                disabled = {this.app.state.running === true}
+                  style = {{height:Math.min(this.state.width/10,100),
+                    width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
+                    </button>
               </div>
 
 
