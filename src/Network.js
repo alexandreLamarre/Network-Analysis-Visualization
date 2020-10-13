@@ -542,7 +542,7 @@ class NetworkVisualizer extends React.Component{
 
   skipForward(){
     this.clearAnimations();
-    const animations_index = Math.min(this.state.currentAnimations.length-2,
+    const animations_index = Math.min(this.state.currentAnimations.length-1,
         this.state.currentAnimationIndex + Math.floor(1000/this.app.state.animationSpeed));
     const end_index = this.state.paused === true? animations_index+1:
                               this.state.currentAnimations.length;
