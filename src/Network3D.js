@@ -561,6 +561,13 @@ class NetworkVisualizer3D extends React.Component{
     }
   }
 
+  openNetworkSettings(){
+    waitOpenNetworkSettings(this);
+  }
+
+  openAlgorithmSettings(){
+    waitOpenAlgorithmSettings(this);
+  }
   render(){
     return <div>
               <canvas
@@ -607,7 +614,8 @@ class NetworkVisualizer3D extends React.Component{
                 <div className = "selectalgorow">
                 <select className = "selectalgo"
                 onChange = {(event) => this.setAlgoType(event.target.value)}
-                disabled = {this.app.state.running}>
+                disabled = {this.app.state.running}
+                style = {{width: (this.state.height*7)/10}}>
                   <optgroup label = "Force Directed Algorithms">
                   <option value = "spring"> Basic Spring Embedding </option>
                   <option value = "fruchtermanReingold"> Fruchterman-Reingold </option>
@@ -639,9 +647,18 @@ class NetworkVisualizer3D extends React.Component{
                     <option value = "greedyvertex"> Greedy Coloring </option>
                   </optgroup>
                 </select>
+                <button className = "AlgoB"
+                title = "Algorithm Settings"
+                onClick = {() => this.openAlgorithmSettings()}
+                disabled = {this.app.state.running === true}
+                  style = {{height:Math.min(this.state.width/10,100),
+                    width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
+                </button>
                 </div>
                 <div className = "selectalgorow" value = {this.state.randomType}>
-                <select className = "selectalgo" disabled = {this.app.state.running === true}
+                <select className = "selectalgo"
+                style = {{width: (this.state.height*6)/10}}
+                disabled = {this.app.state.running === true}
                 onChange = {(event) => this.setRandomizedType(event.target.value)}
                 value = {this.state.randomType}>
                   <option value = "random" disabled = {this.state.TSP === true}> Random </option>
@@ -649,10 +666,20 @@ class NetworkVisualizer3D extends React.Component{
                   <option value = "cycle"> Random Hamiltonian Cycle </option>
                   <option value = "randomclustering" disabled = {true}> Random Clustering </option>
                 </select>
-                <button className = "b"
-                disabled = {this.app.state.running === true }
-                onClick = {() => this.resetNetwork()}> Reset Network
-                </button>
+                <button className = "resetB"
+                onClick = {() => this.resetNetwork()}
+                title = "New random network"
+                disabled = {this.app.state.running === true}
+                  style = {{height:Math.min(this.state.width/10,100),
+                    width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
+                    </button>
+                <button className = "generalB"
+                title = "Network Settings"
+                onClick = {() => this.openNetworkSettings()}
+                disabled = {this.app.state.running === true}
+                  style = {{height:Math.min(this.state.width/10,100),
+                    width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
+                    </button>
                 </div>
 
               </div>
@@ -761,4 +788,14 @@ function assign_color(degree, max_degree, gradient){
   var selection = gradient[Math.floor((degree/max_degree) * (gradient.length-1))]
 
   return rgb_to_str(selection)
+}
+
+async function waitOpenNetworkSettings(that){
+  await that.app.navbar.current.openSettings();
+  that.app.navbar.current.settings.current.generalsettings.current.setOpen(true);
+}
+
+async function waitOpenAlgorithmSettings(that){
+  await that.app.navbar.current.openSettings();
+  that.app.navbar.current.settings.current.algorithmsettings.current.setOpen(true);
 }

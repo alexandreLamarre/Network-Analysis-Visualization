@@ -643,7 +643,9 @@ class NetworkVisualizer extends React.Component{
             <div className = "selectContainer">
               <div className = "selectalgorow">
 
-                <select className = "selectalgo" onChange = {(event) => this.setAlgoType(event.target.value)}>
+                <select className = "selectalgo"
+                onChange = {(event) => this.setAlgoType(event.target.value)}
+                style = {{width: (this.state.width*7)/10}}>
                   <optgroup label = "Force Directed Algorithms">
                   <option value = "spring"> Basic Spring Embedding </option>
                   <option value = "fruchtermanReingold"> Fruchterman-Reingold </option>
@@ -687,11 +689,15 @@ class NetworkVisualizer extends React.Component{
 
 
               <div className = "selectalgorow">
-                <select className = "selectalgo" onChange = {(event) => this.setLayoutType(event.target.value)} disabled = {this.app.state.running}>
+                <select className = "selectalgo"
+                 onChange = {(event) => this.setLayoutType(event.target.value)}
+                 style = {{width: (this.state.width*2)/10}}
+                disabled = {this.app.state.running}>
                   <option value = "0"> Square </option>
                   <option value = "1"> Stretch to Fit </option>
                 </select>
                 <select value = {this.state.randomType}
+                style = {{width: (this.state.width*4)/10}}
                 disabled = {this.app.state.running === true }className = "selectalgo" onChange = {(event) => this.setRandomizedType(event.target.value)}>
                   <option value = "random" disabled = {this.state.group === "TSP"}> Random </option>
                   <option value = "randomcircle" disabled = {this.state.group === "TSP"}> Random Circle </option>

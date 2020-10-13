@@ -391,3 +391,111 @@
   border: 1px solid black;
   outline: none;
 }
+
+.AlgoB:disabled:hover{
+  background: linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/AlgorithmSettings.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.AlgoB:disabled{
+  background: linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/AlgorithmSettings.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.AlgoB{
+  background:url("../src/images/AlgorithmSettings.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.AlgoB:hover{
+  background:linear-gradient(rgba(0,255,0,0.7), rgba(0,100,0,0.7)),url("../src/images/AlgorithmSettings.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.generalB:disabled:hover{
+  background: linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/GeneralSettings.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.generalB:disabled{
+  background: linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/GeneralSettings.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.generalB{
+  background:url("../src/images/GeneralSettings.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.generalB:hover{
+  background:linear-gradient(rgba(0,255,0,0.7), rgba(0,100,0,0.7)),url("../src/images/GeneralSettings.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.resetB:disabled:hover{
+  background: linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/ResetButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.resetB:disabled{
+  background: linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.5)), url("../src/images/ResetButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.resetB{
+  background:url("../src/images/ResetButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
+
+.resetB:hover{
+  background:linear-gradient(rgba(0,255,0,0.7), rgba(0,100,0,0.7)),url("../src/images/ResetButton.png");
+  background-size: 50px 50px;
+  height: 50px;
+  width: 50px;
+  border: 1px solid black;
+  outline: none;
+}
