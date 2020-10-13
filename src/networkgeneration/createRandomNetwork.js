@@ -87,7 +87,9 @@ export default function createRandomNetwork(maxWidth, maxHeight, numV, numE, con
     //seed = cycle
     var [path,root] = initial_random_cycle(vertices);
     for(let i = 0; i < path.length-1; i++){
-      edges.push(new Edge(path[i], path[i+1]));
+      const e = new Edge(path[i], path[i+1])
+      e.setAlpha(0.2);
+      edges.push(e);
     }
     for(let i = 0; i < vertices.length; i ++){
       vertices[i].degree = 2;

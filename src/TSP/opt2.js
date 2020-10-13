@@ -1,5 +1,5 @@
 import Edge from "../datatypes/Edge";
-const MAX_SIMULATIONS = 1000;
+const MAX_SIMULATIONS = 150;
 var I = -1;
 var K = -1;
 
@@ -50,12 +50,19 @@ export function opt2(vertices, edges, dimension, color){
   if(better_solution === false) new_path = path;
   var new_edges = [];
   for(let i = 0; i < path.length-1; i++){
-    new_edges.push(new Edge(new_path[i], new_path[i+1]))
-    if(dimension === 3) new_edges[i].setColor("rgb(211,211,211)");
+    const e = edges[i].copy_edge();
+    e.start = new_path[i];
+    e.end = new_path[i+1];
+    new_edges.push(e);
     if(i === I || i === K) {
       new_edges[i].setColor(selected_color);
-      new_edges[i].setAlpha(0.4);
-    };
+      new_edges[i].setAlpha(0.7);
+    }
+    else{
+      if(dimension === 2) new_edges[i].setColor("rgb(0,0,0)");
+      if(dimension === 3) new_edges[i].setColor("rgb(211,211,211)");
+      new_edges[i].setAlpha(0.2);
+    }
   }
   return [new_edges, better_solution];
 

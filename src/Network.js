@@ -31,7 +31,7 @@ async function waitAnimateNetwork(that,startIndex, endIndex, animations,func){
   console.log("start",startIndex,"end", endIndex,"animations", animations);
   if(that.state.group === "layout") that.animateNetwork();
   if(that.state.group === "coloring") that.animateColoring();
-  if(that.state.group === "TSP") that.animateTSP(func)
+  if(that.state.group === "TSP") that.animateTSP()
   // if(that.state.group === "coloring") continue;
   // if(that.state.group === "TSP") continue;
 }
@@ -118,7 +118,7 @@ class NetworkVisualizer extends React.Component{
       ctx.stroke();
       ctx.closePath();
     }
-      ctx.translate(-this.state.mouseX, this.state.mouseY);
+
   }
   componentWillUnmount(){
       this.cancelAnimation();
@@ -195,11 +195,34 @@ class NetworkVisualizer extends React.Component{
   }
 
   generate2Opt(){
-    this.animateTSP(opt2);
+    const animations = [];
+    this.app.setState({running:true});
+    const selected_color = [this.app.state.settings.opt2.red, this.app.state.settings.opt2.green,
+                      this.app.state.settings.opt2.blue];
+    var edges = this.state.edges;
+    var better_solution = false;
+    for(let i = 0; i < (this.app.state.settings.opt2.timeout*1000)/this.app.state.animationSpeed; i++){
+      [edges, better_solution]= opt2(this.state.vertices,
+        edges, this.app.state.dimension, selected_color);
+      animations.push(edges);
+    }
+    waitAnimateNetwork(this, 0, animations.length, animations);
+
   }
 
   generate3Opt(){
-    this.animateTSP(opt3);
+    const animations = [];
+    this.app.setState({running:true});
+    const selected_color = [this.app.state.settings.opt3.red, this.app.state.settings.opt3.green,
+                      this.app.state.settings.opt3.blue];
+    var edges = this.state.edges;
+    var better_solution = false;
+    for(let i = 0; i < (this.app.state.settings.opt3.timeout*1000)/this.app.state.animationSpeed; i++){
+      [edges, better_solution]= opt3(this.state.vertices,
+        edges, this.app.state.dimension, selected_color);
+      animations.push(edges);
+    }
+    waitAnimateNetwork(this, 0, animations.length, animations);
   }
 
   generateGreedyVertex(){
@@ -230,41 +253,27 @@ class NetworkVisualizer extends React.Component{
 
   animateTSP(func){
     let x = 0;
-    var STOP = 10;
-    var count = 0;
     this.app.setState({running:true});
     console.log(this.app.state.running)
-    var timeout;
-    var selected_color;
-    if(func === opt2) {
-      console.log(this.app.state.settings.opt2)
-      timeout = this.app.state.settings.opt2.timeout;
-      selected_color = [this.app.state.settings.opt2.red, this.app.state.settings.opt2.green,
-                        this.app.state.settings.opt2.blue];
-    }
-    if(func === opt3) {
-      timeout = this.app.state.settings.opt3.timeout;
-      selected_color = [this.app.state.settings.opt3.red, this.app.state.settings.opt3.green,
-                        this.app.state.settings.opt3.blue];
-    }
-    console.log("timeout", timeout);
-    for(let k =0; k < (timeout*1000)/this.app.state.animationSpeed; k++){
+    const start = this.state.currentAnimationIndex;
+    const end = this.state.animationIndex;
+    for(let k =start; k < end; k++){
       x = setTimeout(() => {
-        const [edges, better_solution]= func(this.state.vertices,
-          this.state.edges, this.app.state.dimension, selected_color);
-        const that = this;
-        animateEdges(that, edges);
-        //clear animation code;
-        // if(better_solution === true) count = 0;
-        // count ++;
-        // if(count >= STOP) break;
+        const vertices = this.state.vertices;
+        const edges= this.state.edges;
+        const animations = this.state.currentAnimations;
+
+        this.setState({edges: animations[k], currentAnimationIndex: this.state.currentAnimationIndex + 1});
         // console.log("animating")
-        if(k === ((timeout*1000)/this.app.state.animationSpeed) -1){
-          this.app.setState({running:false});
+        if(k === end-1){
+          console.log("pausing")
+          this.setState({paused: true,currentAnimationIndex: end});
+
           // console.log(final_vertices);
         }
-      }, k * this.app.state.animationSpeed)
+      }, (k-start) * this.app.state.animationSpeed)
     }
+
     this.setState({maxtimeouts: x});
   }
 
@@ -420,7 +429,9 @@ class NetworkVisualizer extends React.Component{
       }
       const new_edges = [];
       for(let j = 0; j < this.state.edges.length; j++){
-        new_edges.push(new Edge(this.state.edges[j].start, this.state.edges[j].end));
+        const e = new Edge(this.state.edges[j].start, this.state.edges[j].end)
+        if(this.state.group === "TSP") e.setAlpha(0.2);
+        new_edges.push(e);
       }
 
       this.setState({vertices: new_vertices, edges: new_edges});
@@ -433,7 +444,9 @@ class NetworkVisualizer extends React.Component{
       }
       const new_edges = [];
       for(let j = 0; j < this.state.edges.length; j++){
-        new_edges.push(new Edge(this.state.edges[j].start, this.state.edges[j].end));
+        const e = new Edge(this.state.edges[j].start, this.state.edges[j].end)
+        if(this.state.group === "TSP") e.setAlpha(0.2);
+        new_edges.push(e);
       }
       this.setState({vertices: new_vertices, edges: new_edges});
     }
@@ -503,7 +516,7 @@ class NetworkVisualizer extends React.Component{
   }
 
   resetCamera(){
-    this.setState({offsetX:0,offsetY:0, scaleFactor: 1})
+    this.setState({offsetX:0,offsetY:0, scaleFactor: 1, mouseX: this.state.wdith/2, mouseY:this.state.height/2})
   }
 
   zoomCamera(e){
@@ -530,10 +543,10 @@ class NetworkVisualizer extends React.Component{
 
   skipForward(){
     this.clearAnimations();
-    const animations_index = Math.min(this.state.currentAnimations.length-1,
+    const animations_index = Math.min(this.state.currentAnimations.length-2,
         this.state.currentAnimationIndex + Math.floor(1000/this.app.state.animationSpeed));
     const end_index = this.state.paused === true? animations_index+1:
-                              this.state.currentAnimations.length-1;
+                              this.state.currentAnimations.length;
     waitAnimateNetwork(this, animations_index, end_index, null);
   }
 

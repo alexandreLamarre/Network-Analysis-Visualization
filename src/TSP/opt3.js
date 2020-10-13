@@ -1,6 +1,6 @@
 import Edge from "../datatypes/Edge";
 
-var MAX_SIMULATIONS = 10000;
+var MAX_SIMULATIONS = 1000;
 
 export function opt3(vertices, edges, dimension, color){
   const selected_color = rgb_to_str(color)
@@ -41,11 +41,18 @@ export function opt3(vertices, edges, dimension, color){
   const new_edges = [];
 
   for(let i = 0; i < new_path.length-1; i++){
-    new_edges.push(new Edge(new_path[i], new_path[i+1]));
-    if(dimension === 3) new_edges[i].setColor("rgb(211,211,211)");
+    const e = edges[i].copy_edge();
+    e.start = new_path[i];
+    e.end = new_path[i+1];
+    new_edges.push(e);
     if(i === a || i === b || i === c){
       new_edges[i].setColor(selected_color);
-      new_edges[i].setAlpha(0.4);
+      new_edges[i].setAlpha(0.7);
+    }
+    else{
+      if(dimension === 2) new_edges[i].setColor("rgb(0,0,0)");
+      if(dimension === 3) new_edges[i].setColor("rgb(211,211,211)");
+      new_edges[i].setAlpha(0.2);
     }
   }
   // console.log(new_edges);
