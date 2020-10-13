@@ -53,8 +53,10 @@ class NetworkVisualizer extends React.Component{
       randomType: "random",
       layoutType: 0,
       TSP : false,
-      offsetX: 0,
-      offsetY: 0,
+      offsetX: -1,
+      offsetY: -1,
+      mouseX: 0,
+      mouseY: 0,
       dragging: false,
       previousMouseX: 0,
       previousMouseY: 0,
@@ -85,14 +87,16 @@ class NetworkVisualizer extends React.Component{
       vertices: vertices,
       edges: edges,}
     );
-    this.app.setState({numV: vertices.length, numE: edges.length});
+    this.app.setState({numV: vertices.length, numE: edges.length, mouseX: w/2, mouseY:h/2});
   }
 
   componentDidUpdate(){
     this.canvas.current.width = this.state.width;
     this.canvas.current.height = this.state.height;
     const ctx = this.canvas.current.getContext("2d");
+    ctx.translate(this.state.mouseX, this.state.mouseY);
     ctx.scale(this.state.scaleFactor,this.state.scaleFactor);
+    ctx.translate(-this.state.mouseX, - this.state.mouseY);
     for(let i =0; i < this.state.vertices.length; i++){
       ctx.beginPath();
       const c = this.state.vertices[i].color;
@@ -114,6 +118,7 @@ class NetworkVisualizer extends React.Component{
       ctx.stroke();
       ctx.closePath();
     }
+      ctx.translate(-this.state.mouseX, this.state.mouseY);
   }
   componentWillUnmount(){
       this.cancelAnimation();
@@ -501,10 +506,13 @@ class NetworkVisualizer extends React.Component{
     this.setState({offsetX:0,offsetY:0, scaleFactor: 1})
   }
 
-  zoomCamera(v){
-    const delta = -Math.sign(v);
-    const new_scale_factor = this.state.scaleFactor + delta*0.05;
-    this.setState({scaleFactor: new_scale_factor});
+  zoomCamera(e){
+    const delta = -Math.sign(e.deltaY);
+    const new_scale_factor = this.state.scaleFactor + delta*0.035;
+    console.log(e.clientX, e.clientY);
+    const rect = this.canvas.current.getBoundingClientRect();
+    this.setState({scaleFactor: new_scale_factor, mouseX: e.clientX-rect.left,
+                                                  mouseY: e.clientY-rect.top});
   }
 
   skipFrame(){
@@ -566,7 +574,7 @@ class NetworkVisualizer extends React.Component{
             onMouseDown = {(e) => this.setDrag(e,true)}
             onMouseUp = {(e) => this.setDrag(e,false)}
             onMouseMove = {(e) => this.updateCamera(e)}
-            onWheel = {(e) => this.zoomCamera(e.deltaY)}>
+            onWheel = {(e) => this.zoomCamera(e)}>
             </canvas>
             <br></br>
             <div className = "animationButtons">
