@@ -175,11 +175,11 @@ class NetworkVisualizer extends React.Component{
   }
 
   generateKruskal(){
-    const [animations, new_edges] = kruskal(this.state.vertices, this.state.edges, 2,
+    const [animations, sorted_edges] = kruskal(this.state.vertices, this.state.edges, 2,
       [this.app.state.settings.kruskal.red, this.app.state.settings.kruskal.green,
         this.app.state.settings.kruskal.blue]);
     const that = this;
-    waitSetEdges(that, new_edges, animations);
+    waitSetEdges(that, sorted_edges, animations);
   }
 
   generatePrim(){
@@ -275,16 +275,8 @@ class NetworkVisualizer extends React.Component{
         const vertices = this.state.vertices;
         const edges= this.state.edges;
         const animations = this.state.currentAnimations;
-        if(animations[k].vIndex !== undefined){
-          vertices[animations[k].vIndex].color = animations[k].color;
-          // vertices[animations[k].vIndex].size = animations[k].size;
-        }
-        if(this.state.currentAnimations[k].eIndex !== undefined){
-          edges[animations[k].eIndex].setColor(animations[k].color);
-          edges[animations[k].eIndex].setAlpha(animations[k].alpha)
-        }
 
-        this.setState({vertices: vertices, edges:edges, currentAnimationIndex: this.state.currentAnimationIndex + 1});
+        this.setState({vertices: animations[k].vertices, edges:animations[k].edges, currentAnimationIndex: this.state.currentAnimationIndex + 1});
         // console.log("animating")
         if(k === end-1){
           console.log("pausing")

@@ -1,5 +1,18 @@
-export function GreedyColoring(vertices, edges, dimension, initial_color, end_color){
+import Vertex from "../datatypes/Vertex"
 
+export function GreedyColoring(vertices, edges, dimension, initial_color, end_color){
+  //constants
+  const animations = [];
+
+  //copy inputs
+  const current_vertices = [];
+  for(let i = 0; i < vertices.length; i++){
+    const v = new Vertex(vertices[i].x, vertices[i].y, vertices[i].z);
+    v.setColor(vertices[i].color);
+    current_vertices.push(v);
+  }
+
+  //adjacency matrix
   var max_degree = -Infinity;
   const assigned_colors = [];
   for(let i = 0; i < vertices.length; i ++){
@@ -7,26 +20,18 @@ export function GreedyColoring(vertices, edges, dimension, initial_color, end_co
     max_degree = Math.max(max_degree, vertices[i].degree);
   }
   const adj = createAdjacencyMatrix(vertices, edges);
-  const animations = [];
   var num_colors = max_degree+1;
-  // console.log("number of colors", num_colors);
-  // console.log(initial_color, end_color);
-  // console.log(num_colors);
+
   var colors = createColorGradient(initial_color, end_color, num_colors);
-  // console.log("available colors", colors);
+
   for(let i = 0; i < vertices.length; i++){
-    // console.log("iteration");
     const neighbors = getNeighbors(vertices, i, adj);
-    // console.log(neighbors)
     const available_colors = getAvailableColors(assigned_colors, neighbors, colors);
-    // console.log("available_colors", available_colors);
     const new_color = convertColor(available_colors[0]);
-    // console.log(new_color)
-    // console.log(animations);
-    if(dimension === 2) animations.push({vIndex: i, color: new_color});
-    if(dimension === 3){
-      animations.push( {vIndex: i, color: construct3DacceptableRGB(new_color)});
-    }
+    if(dimension === 2)current_vertices[i].color = new_color
+    if(dimension === 3) current_vertices[i].color = construct3DacceptableRGB(new_color);
+    animations.push(createFrame(current_vertices, edges));
+
     assigned_colors[i] = new_color;
   }
 
@@ -160,4 +165,15 @@ function construct3DacceptableRGB(new_color){
   color_array[2] = parseInt(color_array[2]);
 
   return convertColor(color_array);
+}
+
+
+function createFrame(vertices, edges){
+  const new_vertices = [];
+  for(let i = 0; i < vertices.length; i ++){
+    const v = new Vertex(vertices[i].x, vertices[i].y, vertices[i].z);
+    v.setColor(vertices[i].color);
+    new_vertices.push(v);
+  }
+  return {vertices: new_vertices, edges: edges};
 }
