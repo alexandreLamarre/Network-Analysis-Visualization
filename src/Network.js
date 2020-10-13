@@ -607,8 +607,7 @@ class NetworkVisualizer extends React.Component{
                 width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
                 onClick = {() => this.rewindFrame()}></button>
             <button className = "StartB" hidden = {this.state.paused === false} title = "Run algorithm"
-            disabled = {(this.state.currentAnimationIndex === this.state.currentAnimations.length
-            || this.state.currentAnimationIndex === this.state.currentAnimations.length-1)
+            disabled = {(this.state.currentAnimationIndex === this.state.currentAnimations.length)
             && this.state.currentAnimations.length !== 0}
             onClick={() => this.runAlgorithm()}
               style = {{height:Math.min(this.state.width/10,100),
@@ -626,24 +625,21 @@ class NetworkVisualizer extends React.Component{
             <button className = "NextFrameB"
             title = "Next Frame"
             disabled = {this.app.state.running === false
-                        || this.state.currentAnimationIndex === this.state.currentAnimations.length
-                        || this.state.currentAnimationIndex === this.state.currentAnimations.length-1}
+                        || this.state.currentAnimationIndex === this.state.currentAnimations.length}
               style = {{height:Math.min(this.state.width/10,100),
                 width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
                 onClick = {() => this.skipFrame()}></button>
             <button className = "FastForwardB"
             title = "Skip forward 1 second"
             disabled = {this.app.state.running === false
-                        || this.state.currentAnimationIndex === this.state.currentAnimations.length
-                        || this.state.currentAnimationIndex === this.state.currentAnimations.length-1}
+                        || this.state.currentAnimationIndex === this.state.currentAnimations.length}
               style = {{height:Math.min(this.state.width/10,100),
                 width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
                 onClick = {() => this.skipForward()}></button>
             <button className = "LastFrameB"
             title = "Skip to algorithm termination"
             disabled = {this.app.state.running === false
-                        || this.state.currentAnimationIndex === this.state.currentAnimations.length
-                        || this.state.currentAnimationIndex === this.state.currentAnimations.length-1}
+                        || this.state.currentAnimationIndex === this.state.currentAnimations.length}
               style = {{height:Math.min(this.state.width/10,100),
                 width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
                 onClick = {() => this.skipToEnd()}></button>
