@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import NetworkVisualizer from "./Network";
-import NetworkNavBar from "./NetworkNavBar";
+import NetworkNavBar from "./Settings/NetworkNavBar";
 import NetworkVisualizer3D from "./Network3D";
 
 

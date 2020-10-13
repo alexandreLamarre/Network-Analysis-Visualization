@@ -1,0 +1,33 @@
+.Attributes{
+  margin-bottom: 5%;
+  background-color: #787878;
+}
+
+.searchbar{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+p{
+  color: white;
+  text-align: center;
+}
+
+.attributesearch{
+  margin-right: 1%;
+  color:white;
+  text-align: center;
+}
+
+label{
+  color:white;
+}
+
+.colorCanvas{
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  display:block;
+}

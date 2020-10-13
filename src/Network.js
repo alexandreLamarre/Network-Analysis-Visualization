@@ -1,6 +1,5 @@
 import React from "react";
 import HelpWindow from "./HelpWindow";
-import AlgorithmAttributes from "./AlgorithmAttributes";
 import Vertex from "./datatypes/Vertex";
 import Edge from "./datatypes/Edge";
 import createRandomNetwork from "./networkgeneration/createRandomNetwork";
