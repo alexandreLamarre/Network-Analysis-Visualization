@@ -41,12 +41,10 @@ class NetworkSideDrawer extends React.Component{
   }
 
   switchDimension(){
-    if(this.state.dimension == 2) {
-      this.setState({dimension: 3});
+    if(this.app.state.dimension === 2) {
       this.app.setState({dimension: 3, running: false});
     }
-    if(this.state.dimension == 3) {
-      this.setState({dimension: 2});
+    if(this.app.state.dimension == 3 || this.app.state.dimension === "Custom") {
       this.app.setState({dimension: 2, running: false});
     }
   }
@@ -66,7 +64,7 @@ class NetworkSideDrawer extends React.Component{
                 <br></br>
                 <a target = "_blank" href = "https://github.com/alexandreLamarre/Network-Algorithm-Visualization"> Tutorial </a>
                 <br></br>
-                <button onClick= {() => this.switchDimension()}> {this.state.dimension === 2? 3:2}D Networks </button>
+                <button onClick= {() => this.switchDimension()}> {this.app.state.dimension === 3 || this.app.state.dimension === "Custom"? 2:3}D Networks </button>
                 <br></br>
                 <button onClick = {() => this.generalsettings.current.setOpen(true)}> General Settings </button>
                 <br></br>
