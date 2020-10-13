@@ -24,7 +24,7 @@ class NetworkNavBar extends React.Component{
               <header className = "toolbar">
                 <nav className ="toolbar__navigation">
                   <div><DrawerToggleButton openSettings = {() => this.openSettings()}></DrawerToggleButton></div>
-                  <div className = "toolbar__logo"><a > Network Algorithm Visualizer {this.app.state.dimension ===3?3:2 }D </a></div>
+                  <div className = "toolbar__logo"><a > Network Algorithm Visualizer {this.app.state.dimension}{this.app.state.dimension === "Custom"?"":"D"} </a></div>
                   <div className ="toolbar__search">
                       <form>
                       <label> Search :

@@ -74,7 +74,7 @@ class NetworkSideDrawer extends React.Component{
                 <br></br>
                 <button onClick = {() => this.uploadwindow.current.setOpen(true)}> Upload Your Data</button>
                 <br></br>
-                <button> Create Custom Network </button>
+                <button onClick = {() => this.app.setState({dimension: "Custom"})}> Create Custom Network </button>
                 <br></br>
                 <a href = "https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization" target= "_blank" > Documentation & Code </a>
                 <br></br>

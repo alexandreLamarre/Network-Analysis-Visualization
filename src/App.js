@@ -3,7 +3,7 @@ import './App.css';
 import NetworkVisualizer from "./Network";
 import NetworkNavBar from "./Settings/NetworkNavBar";
 import NetworkVisualizer3D from "./Network3D";
-
+import NetworkCustomVisualizer from "./NetworkCustom";
 
 class App extends React.Component{
   constructor(props){
@@ -74,6 +74,7 @@ class App extends React.Component{
     }
     this.network = React.createRef();
     this.network3d = React.createRef();
+    this.customnetwork = React.createRef();
     this.navbar = React.createRef();
   }
 
@@ -83,8 +84,11 @@ class App extends React.Component{
     if(this.state.dimension === 2){
       network = <NetworkVisualizer ref = {this.network} app = {this}/>
     }
-    else{
+    else if(this.state.dimension === 3){
       network = <NetworkVisualizer3D ref = {this.network3d} app = {this}/>
+    }
+    else if(this.state.dimension === "Custom"){
+      network = <NetworkCustomVisualizer ref = {this.customnetwork} app = {this}></NetworkCustomVisualizer>
     }
 
     return (

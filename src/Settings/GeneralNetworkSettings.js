@@ -235,7 +235,7 @@ class GeneralNetworkSettings extends React.Component{
                 step = "1"
                 className = "slider"
                 name = "weight"
-                disabled = {this.app.state.running || this.network.state.randomType === "cycle"}
+                disabled = {this.app.state.running || (this.network === null || this.network.state.randomType === "cycle")}
                 onChange = {(event) => this.setEdges(event.target.value)}>
               </input>
               <label>
