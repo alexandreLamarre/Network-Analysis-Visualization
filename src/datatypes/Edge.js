@@ -19,6 +19,13 @@ class Edge{
   setAlpha(alpha){
     this.alpha = alpha;
   }
+
+  copy_edge(){
+    const e = new Edge(this.start, this.end);
+    e.setColor(this.color);
+    e.setAlpha(this.alpha);
+    return e;
+  }
 }
 
 export default Edge;

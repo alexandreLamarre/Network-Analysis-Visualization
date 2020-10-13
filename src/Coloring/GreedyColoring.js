@@ -5,13 +5,10 @@ export function GreedyColoring(vertices, edges, dimension, initial_color, end_co
   const animations = [];
 
   //copy inputs
-  const current_vertices = [];
-  for(let i = 0; i < vertices.length; i++){
-    const v = new Vertex(vertices[i].x, vertices[i].y, vertices[i].z);
-    v.setColor(vertices[i].color);
-    current_vertices.push(v);
-  }
-
+  const copy_input = createFrame(vertices, edges);
+  const current_vertices = copy_input.vertices;
+  const current_edges = copy_input.edges;
+  animations.push(createFrame(current_vertices, current_edges));
   //adjacency matrix
   var max_degree = -Infinity;
   const assigned_colors = [];
@@ -171,9 +168,7 @@ function construct3DacceptableRGB(new_color){
 function createFrame(vertices, edges){
   const new_vertices = [];
   for(let i = 0; i < vertices.length; i ++){
-    const v = new Vertex(vertices[i].x, vertices[i].y, vertices[i].z);
-    v.setColor(vertices[i].color);
-    new_vertices.push(v);
+    new_vertices.push(vertices[i].copy_vertex());
   }
   return {vertices: new_vertices, edges: edges};
 }

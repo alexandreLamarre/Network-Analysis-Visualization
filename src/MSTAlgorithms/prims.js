@@ -8,20 +8,12 @@ export function prim(vertices, edges, dimension, color){
   const color_animations = [];
 
   //make copies of input
-  const current_vertices = [];
-  const current_edges = [];
-  for(let i = 0; i < vertices.length; i++){
-    const v = new Vertex(vertices[i].x, vertices[i].y, vertices[i].z);
-    v.setColor(vertices[i].color);
-    current_vertices.push(v);
-  }
-  for(let j = 0; j < edges.length; j++){
-    const e = new Edge(edges[j].start, edges[j].end);
-    e.setColor(edges[j].color);
-    e.setAlpha(edges[j].alpha);
-    current_edges.push(e);
-  }
-  color_animations.push(createFrame(current_vertices, current_edges)); //initial state
+  const copy_input = createFrame(vertices, edges);
+  const current_vertices = copy_input.vertices;
+  const current_edges = copy_input.edges;
+  //current_vertices/edges will be modified in place so we need to recreate an initial frame
+  const inital_frame = createFrame(current_vertices, current_edges);
+  color_animations.push(inital_frame); 
 
   //construct adjacency matrix
   const adj = [];
@@ -102,16 +94,11 @@ function rgb_to_str(color){
 function createFrame(vertices, edges){
   const new_vertices = [];
   for(let i = 0; i < vertices.length; i ++){
-    const v = new Vertex(vertices[i].x, vertices[i].y, vertices[i].z);
-    v.setColor(vertices[i].color);
-    new_vertices.push(v);
+    new_vertices.push(vertices[i].copy_vertex());
   }
   const new_edges = [];
   for(let j = 0; j < edges.length; j++){
-    const e = new Edge(edges[j].start, edges[j].end);
-    e.setColor(edges[j].color);
-    e.setAlpha(edges[j].alpha);
-    new_edges.push(e);
+    new_edges.push(edges[j].copy_edge());
   }
   return {vertices: new_vertices, edges: new_edges};
 }

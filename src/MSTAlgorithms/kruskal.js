@@ -11,31 +11,19 @@ export function kruskal(vertices, edges, dimension, color){
   const coloring = rgb_to_str(color);
   const color_animations = [];
 
-  //make copies of  initial input
-  const current_vertices = [];
-  const current_edges = [];
-  for(let i = 0; i < vertices.length; i++){
-    const v = new Vertex(vertices[i].x, vertices[i].y, vertices[i].z);
-    v.setColor(vertices[i].color);
-    current_vertices.push(v);
-  }
-  for(let j = 0; j < edges.length; j++){
-    const e = new Edge(edges[j].start, edges[j].end);
-    e.setColor(edges[j].color);
-    e.setAlpha(edges[j].alpha);
-    current_edges.push(e);
-  }
-  color_animations.push(createFrame(current_vertices, current_edges));
-
   const make_set = [];
   for(let i = 0; i < vertices.length; i++){
     make_set.push(i);
   }
-
+  //first need to sort edges by increasing weight
   var sorted_edges = edges.sort(function(e1,e2){
     return distance(VERTICES[e1.start],VERTICES[e1.end],dimension) - distance(VERTICES[e2.start], VERTICES[e2.end],dimension);
   });
 
+  const copy_input = createFrame(vertices, sorted_edges);
+  const current_vertices = copy_input.vertices;
+  const current_edges = copy_input.edges
+  color_animations.push(createFrame(current_vertices, current_edges));
 
   const trees = [];
   const tree_indices = [];
@@ -62,12 +50,10 @@ export function kruskal(vertices, edges, dimension, color){
       }
       current_vertices[u].color = coloring;
       current_edges[e].color = coloring;
+      current_edges[e].alpha = 0.4;
       current_vertices[v].color = coloring;
 
       color_animations.push(createFrame(current_vertices, current_edges));
-      // color_animations.push({vIndex: u, color: coloring, size: 4});
-      // color_animations.push({eIndex: e, color: coloring, alpha:0.4});
-      // color_animations.push({vIndex: v, color: coloring, size:4});
     }
   }
   return [color_animations, sorted_edges];
@@ -87,16 +73,11 @@ function rgb_to_str(color){
 function createFrame(vertices, edges){
   const new_vertices = [];
   for(let i = 0; i < vertices.length; i ++){
-    const v = new Vertex(vertices[i].x, vertices[i].y, vertices[i].z);
-    v.setColor(vertices[i].color);
-    new_vertices.push(v);
+    new_vertices.push(vertices[i].copy_vertex());
   }
   const new_edges = [];
   for(let j = 0; j < edges.length; j++){
-    const e = new Edge(edges[j].start, edges[j].end);
-    e.setColor(edges[j].color);
-    e.setAlpha(edges[j].alpha);
-    new_edges.push(e);
+    new_edges.push(edges[j].copy_edge());
   }
   return {vertices: new_vertices, edges: new_edges};
 }

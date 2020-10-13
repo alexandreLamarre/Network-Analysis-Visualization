@@ -48,6 +48,14 @@ class Vertex {
       this.setZ(vector[2]);
     }
   }
+
+  copy_vertex(){
+    const v = new Vertex(this.x, this.y, this.z);
+    v.color = this.color;
+    v.degree = this.degree;
+    v.size = this.size;
+    return v;
+  }
 }
 
 export default Vertex;
