@@ -2,6 +2,7 @@ import React from "react";
 import Modal from "react-modal";
 import GeneralNetworkSettings from "./GeneralNetworkSettings";
 import NetworkAlgorithmSettings from "./NetworkAlgorithmSettings";
+import UploadWindow from "./Upload/UploadWindow";
 
 import "./NetworkSideDrawer.css";
 
@@ -26,6 +27,7 @@ class NetworkSideDrawer extends React.Component{
     this.tutorial = React.createRef();
     this.generalsettings = React.createRef();
     this.algorithmsettings = React.createRef();
+    this.uploadwindow = React.createRef();
     this.app = this.props.app;
 
   }
@@ -59,6 +61,7 @@ class NetworkSideDrawer extends React.Component{
             >
               <GeneralNetworkSettings ref = {this.generalsettings} app = {this.app}/>
               <NetworkAlgorithmSettings ref = {this.algorithmsettings} app = {this.app}/>
+              <UploadWindow ref = {this.uploadwindow}></UploadWindow>
               <div className = "settings">
                 <br></br>
                 <a target = "_blank" href = "https://github.com/alexandreLamarre/Network-Algorithm-Visualization"> Tutorial </a>
@@ -69,7 +72,9 @@ class NetworkSideDrawer extends React.Component{
                 <br></br>
                 <button onClick = {() => this.algorithmsettings.current.setOpen(true)}> Algorithm Settings </button>
                 <br></br>
-                <button> Upload Your Data</button>
+                <button onClick = {() => this.uploadwindow.current.setOpen(true)}> Upload Your Data</button>
+                <br></br>
+                <button> Create Custom Network </button>
                 <br></br>
                 <a href = "https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization" target= "_blank" > Documentation & Code </a>
                 <br></br>

@@ -1,0 +1,25 @@
+.upload{
+  position:absolute;
+  bottom:30%;
+  left:20%;
+  right: 20%;
+  top: 30%;
+  outline:none;
+  background-color: #787878;
+  border: 1px solid white;
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+.uploadoverlay{
+  position:fixed;
+  top:2rem;
+  left:0;
+  right:0;
+  bottom:0;
+}
+
+.formBlock{
+  margin: auto;
+  width: 50%;
+}
