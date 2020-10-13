@@ -550,6 +550,14 @@ class NetworkVisualizer extends React.Component{
     waitAnimateNetwork(this, animations_index, animations_index+1, null)
   }
 
+  openNetworkSettings(){
+    waitOpenNetworkSettings(this);
+  }
+
+  openAlgorithmSettings(){
+    waitOpenAlgorithmSettings(this);
+  }
+
   render(){
 
     return <div className = "network">
@@ -670,6 +678,7 @@ class NetworkVisualizer extends React.Component{
                 </select>
                 <button className = "AlgoB"
                 title = "Algorithm Settings"
+                onClick = {() => this.openAlgorithmSettings()}
                 disabled = {this.app.state.running === true}
                   style = {{height:Math.min(this.state.width/10,100),
                     width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
@@ -698,6 +707,7 @@ class NetworkVisualizer extends React.Component{
                     </button>
                 <button className = "generalB"
                 title = "Network Settings"
+                onClick = {() => this.openNetworkSettings()}
                 disabled = {this.app.state.running === true}
                   style = {{height:Math.min(this.state.width/10,100),
                     width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
@@ -822,4 +832,14 @@ function assign_color(degree, max_degree, gradient){
   var selection = gradient[Math.floor((degree/max_degree) * (gradient.length-1))]
 
   return rgb_to_str(selection)
+}
+
+async function waitOpenNetworkSettings(that){
+  await that.app.navbar.current.openSettings();
+  that.app.navbar.current.settings.current.generalsettings.current.setOpen(true);
+}
+
+async function waitOpenAlgorithmSettings(that){
+  await that.app.navbar.current.openSettings();
+  that.app.navbar.current.settings.current.algorithmsettings.current.setOpen(true);
 }
