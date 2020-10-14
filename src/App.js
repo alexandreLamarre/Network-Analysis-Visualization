@@ -42,6 +42,13 @@ class App extends React.Component{
           green: 0,
           blue: 0,
         },
+        opt2annealing:{
+          timeout: 30,
+          temperature: 100,
+          acceptance: 0.0001,
+          startColor: [255,0,0],
+          endColor: [0,0,255],
+        },
         opt3:{
           timeout: 30,
           red:255,

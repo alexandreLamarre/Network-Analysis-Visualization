@@ -14,6 +14,7 @@ import {spectralDrawing} from "./Spectral/spectralDrawing";
 import {kruskal} from "./MSTAlgorithms/kruskal";
 import {prim} from "./MSTAlgorithms/prims";
 import {opt2} from "./TSP/opt2";
+import {opt2Annealing} from "./TSP/opt2Annealing";
 import {opt3} from "./TSP/opt3";
 import {GreedyColoring} from "./Coloring/GreedyColoring";
 import getHelpInfo from "./helpInfoFunctions";
@@ -206,7 +207,32 @@ class NetworkVisualizer extends React.Component{
       animations.push(edges);
     }
     waitAnimateNetwork(this, 0, animations.length, animations);
+  }
 
+  generate2OptAnnealing(){
+    const animations = [];
+    this.app.setState({running:true});
+    var current_temperature = this.app.state.settings.opt2annealing.temperature;
+    const max_temperature = current_temperature;
+    var temp = current_temperature;
+    for(let i = 0; i < (this.app.state.settings.opt2annealing.timeout*1000)/this.app.state.animationSpeed; i++){
+      temp = 0.992*temp;
+    }
+    var min_temperature = temp;
+    console.log("max", max_temperature, "min", min_temperature);
+
+    var edges = this.state.edges;
+    var better_solution = false;
+    for(let i = 0; i < (this.app.state.settings.opt2annealing.timeout*1000)/this.app.state.animationSpeed; i++){
+      [edges, better_solution] = opt2Annealing(this.state.vertices,
+          edges, this.app.state.dimension, this.app.state.settings.opt2annealing.startColor,
+          this.app.state.settings.opt2annealing.endColor, current_temperature,
+          min_temperature, max_temperature,
+          this.app.state.settings.opt2annealing.acceptance);
+      animations.push(edges);
+      current_temperature = 0.992*current_temperature;
+    }
+    waitAnimateNetwork(this, 0, animations.length, animations);
   }
 
   generate3Opt(){
@@ -242,6 +268,7 @@ class NetworkVisualizer extends React.Component{
       if(this.state.algoType === "kruskal") this.generateKruskal();
       if(this.state.algoType === "prim") this.generatePrim();
       if(this.state.algoType === "2opt") this.generate2Opt();
+      if(this.state.algoType === "2optannealing") this.generate2OptAnnealing();
       if(this.state.algoType === "3opt") this.generate3Opt();
       if(this.state.algoType === "greedyvertex") this.generateGreedyVertex();
     }
@@ -684,7 +711,7 @@ class NetworkVisualizer extends React.Component{
                   <optgroup label = "TSP">
                     <option value = "2opt"> 2-Opt </option>
                     <option value = "3opt"> 3-Opt </option>
-                    <option value = "2optannealing" disabled = {true}> 2-Opt Simulated Annealing </option>
+                    <option value = "2optannealing"> 2-Opt Simulated Annealing </option>
                     <option value = "3optannealing" disabled = {true} hidden = {true}> 3-Opt Simulated Annealing </option>
                   </optgroup>
                   <optgroup label = "Edge Coloring Algorithms">
