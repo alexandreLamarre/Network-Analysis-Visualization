@@ -1,5 +1,4 @@
 import React from "react";
-import HelpWindow from "./HelpWindow";
 import Vertex from "./datatypes/Vertex";
 import Edge from "./datatypes/Edge";
 import createRandomNetwork from "./networkgeneration/createRandomNetwork";
@@ -18,7 +17,6 @@ import {opt2Annealing} from "./TSP/opt2Annealing";
 import {opt3} from "./TSP/opt3";
 import {GreedyColoring} from "./Coloring/GreedyColoring";
 import {misraGries} from "./Coloring/misraGries";
-import getHelpInfo from "./helpInfoFunctions";
 
 import "./Network.css";
 
@@ -379,18 +377,6 @@ class NetworkVisualizer extends React.Component{
     waitSetRandomizedType(that, v);
   }
 
-  setHelp(v){
-    var value = v;
-    if(v === "algoType"){
-      value = this.state.algoType;
-    }
-    // this.attribute.current.help.current.setOpen(false)
-    const [title, info, details, open] = getHelpInfo(value);
-    this.help.current.setTitle(title);
-    this.help.current.setInfo(info);
-    this.help.current.setDetails(details)
-    this.help.current.setOpen(open);
-  }
 
   setLayoutType(v){
     const value = parseInt(v);
@@ -772,7 +758,6 @@ class NetworkVisualizer extends React.Component{
 
 
             </div>
-            <HelpWindow ref = {this.help}></HelpWindow>
            </div>
   }
 }
