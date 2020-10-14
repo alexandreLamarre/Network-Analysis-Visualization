@@ -17,6 +17,7 @@ import {opt2} from "./TSP/opt2";
 import {opt2Annealing} from "./TSP/opt2Annealing";
 import {opt3} from "./TSP/opt3";
 import {GreedyColoring} from "./Coloring/GreedyColoring";
+import {misraGries} from "./Coloring/misraGries";
 import getHelpInfo from "./helpInfoFunctions";
 
 import "./Network.css";
@@ -255,6 +256,11 @@ class NetworkVisualizer extends React.Component{
     waitAnimateNetwork(this,0,animations.length,animations);
   }
 
+  generateMisraGries(){
+    const animations = misraGries(this.state.vertices, this.state.edges, [255,0,0], [0,255,0]);
+    waitAnimateNetwork(this, 0, animations.length, animations);
+  }
+
   runAlgorithm(){
     if(this.app.state.running === false){
       if(this.state.algoType === "spring") this.generateForceDirectedLayout();
@@ -271,6 +277,7 @@ class NetworkVisualizer extends React.Component{
       if(this.state.algoType === "2optannealing") this.generate2OptAnnealing();
       if(this.state.algoType === "3opt") this.generate3Opt();
       if(this.state.algoType === "greedyvertex") this.generateGreedyVertex();
+      if(this.state.algoType === "misra") this.generateMisraGries();
     }
     else{
       waitAnimateNetwork(this, this.state.currentAnimationIndex, this.state.currentAnimations.length-1, null);
@@ -715,7 +722,7 @@ class NetworkVisualizer extends React.Component{
                     <option value = "3optannealing" disabled = {true} hidden = {true}> 3-Opt Simulated Annealing </option>
                   </optgroup>
                   <optgroup label = "Edge Coloring Algorithms">
-                    <option value = "misra" disabled = {true}> Misra-Gries Algorithm (Fan Rotation)</option>
+                    <option value = "misra"> Misra-Gries Algorithm (Fan Rotation)</option>
                   </optgroup>
                   <optgroup label = "Vertex Coloring Algorithms">
                     <option value = "greedyvertex" > Greedy Coloring </option>
