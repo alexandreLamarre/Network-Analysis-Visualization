@@ -17,7 +17,7 @@ export function misraGries(vertices, edges, initial_color, end_color){
   const gradient = createColorGradient(initial_color, end_color, num_colors);
   console.log("gradient", gradient);
 
-
+  var i = 0;
   while(uncolored_edges.length > 0){
     const edge = uncolored_edges.pop();
     const u = edge.start;
@@ -31,7 +31,7 @@ export function misraGries(vertices, edges, initial_color, end_color){
 
 
     const u_free_color = pickColor(u_adjacent_colors, gradient);
-    fan_end_adjacent_colors.push(u_free_color);
+    // fan_end_adjacent_colors.push(u_free_color);
     const fan_end_free_color = pickColor(fan_end_adjacent_colors, gradient);
 
     invertPath(u_free_color, fan_end_free_color, u, incident_colors, incident_vertices, edge_colors);
@@ -47,18 +47,21 @@ export function misraGries(vertices, edges, initial_color, end_color){
       const vertex = sub_fan[i]
       const next_vertex = max_fan[max_fan.indexOf(sub_fan[i])+1];
       edge_colors[[u,vertex]] = edge_colors[[u,next_vertex]];
+      incident_colors[u][incident_colors.indexOf(edge_colors[[u,vertex]])] = edge_colors[[u,next_vertex]];
       edge_colors[[vertex, u]] = edge_colors[[next_vertex,u]];
+      incident_colors[vertex][incident_colors.indexOf(edge_colors[[u,vertex]])] = edge_colors[[u,next_vertex]];
     }
     edge_colors[[u,w]] = fan_end_free_color;
     edge_colors[[w,u]] = fan_end_free_color;
     incident_colors[u].push(fan_end_free_color);
     incident_colors[w].push(fan_end_free_color);
-    for(let i = 0; i < edges.length; i++){
+    console.log("new_iteration", i++);
+    for(let i = 0; i < current_edges.length; i++){
       var color = edge_colors[[current_edges[i].start, current_edges[i].end]];
-      if(color !== []) color = rgb_to_str(color);
-      else {color = current_edges[i].color}
-      current_edges[i].color = color;
-      current_edges[i].alpha = 0.4;
+      if(color.length !== 0){
+        current_edges[i].color = rgb_to_str(color);
+        current_edges[i].alpha = 0.7;
+      }
     }
     animations.push(createFrame(vertices, current_edges));
 
