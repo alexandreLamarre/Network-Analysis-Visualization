@@ -103,6 +103,7 @@ class NetworkCustomVisualizer extends React.Component{
     }
     if(this.state.box !== null){
       ctx.beginPath();
+      ctx.setLineDash([5, 15]);
       ctx.moveTo(this.state.box[0], this.state.box[1]);
       ctx.lineTo(this.state.box[2], this.state.box[1]);
       ctx.moveTo(this.state.box[2], this.state.box[1]);
@@ -220,6 +221,7 @@ class NetworkCustomVisualizer extends React.Component{
           Math.min(box[1], box[3])< y && y<Math.max(box[1], box[3])){
             const deltaX = x - previousX;
             const deltaY = y - previousY;
+            // this.updateVertices(box[0], box[1], box[2], box[3], deltaX, deltaY);
             this.setState({box: [box[0]+deltaX, box[1]+deltaY, box[2]+deltaX, box[3]+deltaY]});
           }
           else{
@@ -230,6 +232,17 @@ class NetworkCustomVisualizer extends React.Component{
     else{
       // console.log(startX, startY, x, y);
       this.setState({box: [startX, startY, x, y]});
+    }
+  }
+
+  updateVertices(x0,y0,x1,y1, deltaX, deltaY){
+    const gridToUpdate = this.getBiggerGrid(x0,y0,x1,y1);
+    const vertices = this.state.vertices;
+    for(let i = 0; i < gridToUpdate.length; i++){
+      for(let j = 0; j < gridToUpdate[i].length; j++){
+        vertices[gridToUpdate[i]][j].x += deltaX;
+        vertices[gridToUpdate[i]][j].x += deltaY;
+      }
     }
   }
 
@@ -260,6 +273,17 @@ class NetworkCustomVisualizer extends React.Component{
     return [new_x*gridX, new_y*gridY];
   }
 
+  getBiggerGrid(x0,y0,x1,y1){
+    const gridX = Math.round((this.state.width/this.state.gridConstant+Number.EPSILON)*100)/100;
+    const gridY = Math.round((this.state.height/this.state.gridConstant+Number.EPSILON)*100)/100;
+    const startGrid = this.getGrid(x0, y0);
+    const endGrid = this.getGrid(x1,y1);
+
+    const bigger_grid = [];
+
+    return bigger_grid;
+  }
+
   /*
   The following accpetable {types:details} pairs are
     {vertex : }
@@ -273,7 +297,7 @@ class NetworkCustomVisualizer extends React.Component{
 
 
   render(){
-    const num_b = 9;
+    const num_b = 10;
     return <div>
             <canvas
             onClick = {(e) => this.processClickOutcome(e)}
@@ -327,12 +351,19 @@ class NetworkCustomVisualizer extends React.Component{
             style = {{height:Math.min(this.state.width/num_b,100),
               width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
             </button>
+            <button className = "settingsB"
+            title = "Graphical settings"
+            style = {{height:Math.min(this.state.width/num_b,100),
+              width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
+            </button>
             <button className = "undoB"
+            disabled = {this.state.operationsBufferIndex === 0}
             title = "Undo"
             style = {{height:Math.min(this.state.width/num_b,100),
               width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
             </button>
             <button className = "redoB"
+            disabled = {this.state.opererationsBuffer.length === this.state.operationsBufferIndex}
             title = "Redo"
             style = {{height:Math.min(this.state.width/num_b,100),
             width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
@@ -354,7 +385,6 @@ class NetworkCustomVisualizer extends React.Component{
             </button>
             </div>
             <br></br>
-            <p> Operation Type: {this.state.operationType}</p>
            </div>
   }
 }

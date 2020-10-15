@@ -207,6 +207,38 @@
   max-width: 100px;
 }
 
+.settingsB{
+  background: url("../src/images/GeneralSettingsCustom.png");
+  border: 1px solid black;
+  outline: none;
+  max-height: 100px;
+  max-width: 100px;
+}
+
+.settingsB:hover{
+  background: linear-gradient(rgba(0,255,0,0.7), rgba(0,165,0,0.7)), url("../src/images/GeneralSettingsCustom.png");
+  border: 1px solid black;
+  outline: none;
+  max-height: 100px;
+  max-width: 100px;
+}
+
+.settingsB:disabled{
+  background: linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.7)), url("../src/images/GeneralSettingsCustom.png");
+  border: 1px solid black;
+  outline: none;
+  max-height: 100px;
+  max-width: 100px;
+}
+
+.settingsB:disabled:hover{
+  background: linear-gradient(rgba(211,211,211,0.7), rgba(211,211,211,0.7)), url("../src/images/GeneralSettingsCustom.png");
+  border: 1px solid black;
+  outline: none;
+  max-height: 100px;
+  max-width: 100px;
+}
+
 .undoB{
   background: url("../src/images/UndoButton.png");
   border: 1px solid black;
