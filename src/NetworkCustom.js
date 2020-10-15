@@ -18,7 +18,9 @@ class NetworkCustomVisualizer extends React.Component{
       mouseLeave: true,
       vertices: {},
       edges: {},
-      operationType: "newVertex"
+      operationType: "newVertex",
+      opererationsBuffer: [],
+      operationsBufferIndex: 0,
     }
     this.app = this.props.app;
     this.canvas = React.createRef();
@@ -60,6 +62,21 @@ class NetworkCustomVisualizer extends React.Component{
         }
       }
     }
+
+    for(var key in this.state.edges){
+      // console.log("edge", key);
+      const values = key.split(",");
+      const [startX, startY, endX, endY] = values;
+      // console.log(startX, startY, endX, endY)
+      ctx.beginPath();
+      ctx.fillStyle = "rgb(0,0,0)";
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(endX, endY);
+      ctx.globalAlpha = 0.3;
+      ctx.stroke();
+      ctx.closePath();
+    }
+
     if(this.state.operationType === "newVertex" && this.state.mouseLeave === false){
       ctx.beginPath();
       ctx.fillStyle = rgb_to_str(this.app.state.startRed,this.app.state.startGreen,
@@ -69,11 +86,36 @@ class NetworkCustomVisualizer extends React.Component{
       ctx.fill();
       ctx.closePath();
     }
+    if(this.state.operationType === "ConnectEdge" && this.state.dragging === true){
+      if(this.state.edgeStart[0] !== null && this.state.edgeStart[1] !== null){
+        ctx.beginPath();
+        ctx.globalAlpha = 0.2;
+        ctx.moveTo(this.state.edgeStart[0], this.state.edgeStart[1])
+        ctx.lineTo(this.state.mouseX, this.state.mouseY);
+        ctx.strokeStyle = "rgb(0,0,0)";
+        ctx.stroke();
+        ctx.closePath();
+      }
+    }
   }
 
   updateCursorPostion(e){
-    const rect = this.canvas.current.getBoundingClientRect();
-    this.setState({mouseX: e.clientX -rect.left, mouseY: e.clientY - rect.top, mouseLeave: false});
+    const x = this.state.mouseX;
+    const y = this.state.mouseY;
+    const vertices = this.state.vertices;
+    const startX = this.state.edgeStart[0];
+    const startY = this.state.edgeStart[1];
+    const rect = this.canvas.current.getBoundingClientRect(x,y);
+    // console.log(this.state.edgeStart);
+    if(this.state.operationType === "ConnectEdge" && this.state.dragging == true) {
+      this.tryConnectEdge(x,y,vertices,startX, startY);
+    }
+
+    const xPos =  e.clientX -rect.left;
+    const yPos =  e.clientY - rect.top;
+
+    this.setState({mouseX: xPos,mouseY:yPos, mouseLeave: false});
+
   }
 
   setOperationType(v){
@@ -89,9 +131,8 @@ class NetworkCustomVisualizer extends React.Component{
   }
 
   processDragOutcome(e){
-    if(this.state.operationType === "ConnectEdge") {
+    this.setState({dragging:true});
 
-    }
   }
 
   placeVertex(e){
@@ -99,13 +140,54 @@ class NetworkCustomVisualizer extends React.Component{
     const vertices = this.state.vertices;
     const [vertexX, vertexY] = this.getGrid(e.clientX -rect.left, e.clientY - rect.top)
     // console.log([vertexX, vertexY]);
+    /* TODO CHECK if another vertex is too closed*/
     vertices[[vertexX, vertexY]].push(new Vertex(e.clientX-rect.left, e.clientY - rect.top));
     this.setState({vertices:vertices});
   }
 
-  connectEdge(e){
-
+  tryConnectEdge(x,y,vertices, edge_startX, edge_startY){
+    // console.log("connecting");
+    // console.log("input", x, y, vertices, edge_start, edge_end);
+    if(edge_startX === null && edge_startY === null){
+      const [new_x,new_y] = this.getGrid(x,y);
+      // console.log(new_x, new_y);
+      for(let i = 0; i < vertices[[new_x,new_y]].length; i++){
+        const v = vertices[[new_x,new_y]][i];
+        if(distance(v.x,v.y,x, y) < (this.app.state.minsize+2)*(this.app.state.minsize+2)){
+          this.setState({edgeStart: [v.x,v.y]})
+          break;
+        }
+      }
+    }
+    else{
+      const [new_x,new_y] = this.getGrid(x,y);
+      // console.log(new_x, new_y);
+      for(let i = 0; i < vertices[[new_x,new_y]].length; i++){
+        const v = vertices[[new_x,new_y]][i];
+        if(distance(v.x,v.y,x, y) < (this.app.state.minsize+2)*(this.app.state.minsize+2)){
+          const edges = this.state.edges;
+          const new_edges = this.addEdge(edges, [edge_startX, edge_startY], [v.x, v.y])
+          this.setState({edgeStart: [v.x,v.y], edges: new_edges});
+          break;
+        }
+      }
+    }
   }
+
+  addEdge(edges, startVertex, endVertex){
+    // console.log("adding edge to ", edges);
+    // console.log("connecting ", startVertex, endVertex);
+    if(edges[[startVertex,endVertex]] === undefined && edges[[endVertex,startVertex]] === undefined &&
+      startVertex[0] !== endVertex[0] && startVertex[1] !== endVertex[1]){
+      console.log("successful connection")
+      const [x1,y1] = this.getGrid(startVertex[0], startVertex[1]);
+      const [x2,y2] = this.getGrid(endVertex[0], endVertex[1]);
+      edges[[startVertex, endVertex]] = {startGrid: [x1,y1], endGrid: [x2,y2]};
+      console.log(edges);
+    }
+    return edges;
+  }
+
 
   clearNetwork(){
     const gridX = Math.round((this.state.width/this.state.gridConstant+Number.EPSILON)*100)/100;
@@ -117,11 +199,11 @@ class NetworkCustomVisualizer extends React.Component{
         vertices[[gridX*i, gridY*j]] = [];
       }
     }
-    this.setState({vertices: vertices});
+    this.setState({vertices: vertices, edges: {}, edgeStart: [null,null]});
   }
 
   clearDragOutcome(){
-    this.setState({dragging:false});
+    this.setState({dragging:false, edgeStart: [null,null]});
   }
 
   tryCreateEdge(x0, y0, x1, y1){
@@ -137,12 +219,22 @@ class NetworkCustomVisualizer extends React.Component{
     return [new_x*gridX, new_y*gridY];
   }
 
+  /*
+  The following accpetable {types:details} pairs are
+    {vertex : }
+    {edge: }
+    {eraseVertex: }
+    {eraseEdge: }
+  */
+  addActionToBuffer(type, details){
+
+  }
   render(){
     return <div>
             <canvas
             onClick = {(e) => this.processClickOutcome(e)}
             onMouseMove = {(e) => this.updateCursorPostion(e)}
-            onMouseLeave = {() => this.setState({mouseLeave:true})}
+            onMouseLeave = {() => this.setState({mouseLeave:true, dragging:false})}
             onMouseDown = {(e) => this.processDragOutcome(e)}
             onMouseUp = {() => this.clearDragOutcome()}
             className = "networkCanvas"
@@ -188,7 +280,7 @@ class NetworkCustomVisualizer extends React.Component{
 }
 
 function distance(x1,x2,y1,y2){
-
+  return Math.pow(x1-y1,2) + Math.pow(x2-y2, 2);
 }
 
 function rgb_to_str(color){
