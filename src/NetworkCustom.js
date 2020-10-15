@@ -13,6 +13,8 @@ class NetworkCustomVisualizer extends React.Component{
       gridConstant: 20,
       mouseX: 0,
       mouseY: 0,
+      previousMouseX: 0,
+      previousMouseY: 0,
       dragging: false,
       edgeStart: [null,null],
       mouseLeave: true,
@@ -21,6 +23,7 @@ class NetworkCustomVisualizer extends React.Component{
       operationType: "newVertex",
       opererationsBuffer: [],
       operationsBufferIndex: 0,
+      box: null,
     }
     this.app = this.props.app;
     this.canvas = React.createRef();
@@ -49,6 +52,7 @@ class NetworkCustomVisualizer extends React.Component{
     this.canvas.current.height = this.state.height;
 
     const ctx = this.canvas.current.getContext("2d");
+    ctx.scale(this.state.scale, this.state.scale);
     ctx.clearRect(0,0,this.state.width, this.state.height);
     for(var key in this.state.vertices){
       if(this.state.vertices[key].length !== 0){
@@ -97,34 +101,51 @@ class NetworkCustomVisualizer extends React.Component{
         ctx.closePath();
       }
     }
+    if(this.state.box !== null){
+      ctx.beginPath();
+      ctx.moveTo(this.state.box[0], this.state.box[1]);
+      ctx.lineTo(this.state.box[2], this.state.box[1]);
+      ctx.moveTo(this.state.box[2], this.state.box[1]);
+      ctx.lineTo(this.state.box[2], this.state.box[3]);
+      ctx.moveTo(this.state.box[2], this.state.box[3]);
+      ctx.lineTo(this.state.box[0], this.state.box[3]);
+      ctx.moveTo(this.state.box[0], this.state.box[3]);
+      ctx.lineTo(this.state.box[0], this.state.box[1]);
+      // ctx.rect(this.state.box[0], this.state.box[1], this.state.box[2], this.state.box[3]);
+      ctx.stroke();
+      ctx.closePath();
+    }
   }
 
   updateCursorPostion(e){
     const x = this.state.mouseX;
     const y = this.state.mouseY;
+    const prevX = this.state.previousX;
+    const prevY = this.state.previousY;
     const vertices = this.state.vertices;
+    const edge = this.state.edges;
     const startX = this.state.edgeStart[0];
     const startY = this.state.edgeStart[1];
     const rect = this.canvas.current.getBoundingClientRect(x,y);
+    const box = this.state.box;
     // console.log(this.state.edgeStart);
-    if(this.state.operationType === "ConnectEdge" && this.state.dragging == true) {
+    if(this.state.operationType === "ConnectEdge" && this.state.dragging === true) {
       this.tryConnectEdge(x,y,vertices,startX, startY);
+    }
+    if(this.state.operationType === "SelectMove" && this.state.dragging === true){
+      this.createBox(x,y, startX, startY, box, prevX, prevY);
     }
 
     const xPos =  e.clientX -rect.left;
     const yPos =  e.clientY - rect.top;
 
-    this.setState({mouseX: xPos,mouseY:yPos, mouseLeave: false});
+    this.setState({mouseX: xPos,mouseY:yPos, previousX: x, previousY:y, mouseLeave: false});
 
   }
 
   setOperationType(v){
     console.log(v);
-    this.setState({operationType: v})
-  }
-
-  resetCamera(){
-
+    this.setState({operationType: v, box:null})
   }
 
   processClickOutcome(e){
@@ -189,6 +210,29 @@ class NetworkCustomVisualizer extends React.Component{
     return edges;
   }
 
+  createBox(x,y, startX,startY, box, previousX, previousY){
+    if(startX === null && startY === null){
+      if(box === null){
+      this.setState({edgeStart: [x,y]});
+      }
+      else{
+        if(Math.min(box[0], box[2]) < x && x < Math.max(box[0], box[2]) &&
+          Math.min(box[1], box[3])< y && y<Math.max(box[1], box[3])){
+            const deltaX = x - previousX;
+            const deltaY = y - previousY;
+            this.setState({box: [box[0]+deltaX, box[1]+deltaY, box[2]+deltaX, box[3]+deltaY]});
+          }
+          else{
+            this.setState({box:null});
+          }
+      }
+    }
+    else{
+      // console.log(startX, startY, x, y);
+      this.setState({box: [startX, startY, x, y]});
+    }
+  }
+
 
   clearNetwork(){
     const gridX = Math.round((this.state.width/this.state.gridConstant+Number.EPSILON)*100)/100;
@@ -200,15 +244,11 @@ class NetworkCustomVisualizer extends React.Component{
         vertices[[gridX*i, gridY*j]] = [];
       }
     }
-    this.setState({vertices: vertices, edges: {}, edgeStart: [null,null]});
+    this.setState({vertices: vertices, edges: {}, edgeStart: [null,null], box:null});
   }
 
   clearDragOutcome(){
     this.setState({dragging:false, edgeStart: [null,null]});
-  }
-
-  tryCreateEdge(x0, y0, x1, y1){
-
   }
 
   getGrid(x,y){
@@ -230,7 +270,10 @@ class NetworkCustomVisualizer extends React.Component{
   addActionToBuffer(type, details){
 
   }
+
+
   render(){
+    const num_b = 9;
     return <div>
             <canvas
             onClick = {(e) => this.processClickOutcome(e)}
@@ -247,66 +290,67 @@ class NetworkCustomVisualizer extends React.Component{
             disabled = {this.state.operationType === "newVertex"}
             title = "Place Vertices"
             onClick = {() => this.setOperationType("newVertex")}
-            style = {{height:Math.min(this.state.width/10,100),
-              width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
+            style = {{height:Math.min(this.state.width/num_b,100),
+              width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
              </button>
             <button className = "connectB"
             disabled = {this.state.operationType === "ConnectEdge"}
             title = "Connect Vertices"
             onClick = {() => this.setOperationType("ConnectEdge")}
-            style = {{height:Math.min(this.state.width/10,100),
-              width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
+            style = {{height:Math.min(this.state.width/num_b,100),
+              width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
              </button>
             <button className = "selectB"
             disabled = {this.state.operationType === "SelectMove"}
             title = "Select & Move Area"
             onClick = {() => this.setOperationType("SelectMove")}
-            style = {{height:Math.min(this.state.width/10,100),
-              width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
+            style = {{height:Math.min(this.state.width/num_b,100),
+              width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
              </button>
+             {/*
             <button className = "moveB"
             title = "Move Frame"
             disabled = {this.state.operationType === "moveCamera"}
             onClick = {() => this.setOperationType("moveCamera")}
-            style = {{height:Math.min(this.state.width/10,100),
-              width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
+            style = {{height:Math.min(this.state.width/num_b,100),
+              width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
             </button>
             <button className = "CameraB"
             title = "Reset Camera"
             onClick = {() => this.resetCamera()}
-            style = {{height:Math.min(this.state.width/10,100),
-            width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
-            </button>
+            style = {{height:Math.min(this.state.width/num_b,100),
+            width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
+            </button> */}
             <button className = "clearB"
             title = "Clear Frame"
             onClick = {() => this.clearNetwork()}
-            style = {{height:Math.min(this.state.width/10,100),
-              width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
+            style = {{height:Math.min(this.state.width/num_b,100),
+              width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
             </button>
             <button className = "undoB"
             title = "Undo"
-            style = {{height:Math.min(this.state.width/10,100),
-              width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
+            style = {{height:Math.min(this.state.width/num_b,100),
+              width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
             </button>
             <button className = "redoB"
             title = "Redo"
-            style = {{height:Math.min(this.state.width/10,100),
-            width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
+            style = {{height:Math.min(this.state.width/num_b,100),
+            width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
             </button>
             <button className = "saveB"
             title = "Save as"
-            style = {{height:Math.min(this.state.width/10,100),
-            width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
+            style = {{height:Math.min(this.state.width/num_b,100),
+            width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
             </button>
             <button className = "uploadB"
             title = "Upload"
-            style = {{height:Math.min(this.state.width/10,100),
-            width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
+            style = {{height:Math.min(this.state.width/num_b,100),
+            width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
             </button>
             <button className = "exportB"
             title = "Export to Network Viusalizer"
-            style = {{height:Math.min(this.state.width/10,100),
-            width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
+            style = {{height:Math.min(this.state.width/num_b,100),
+            width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
             </button>
             </div>
             <br></br>
