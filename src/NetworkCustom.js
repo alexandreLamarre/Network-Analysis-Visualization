@@ -119,6 +119,7 @@ class NetworkCustomVisualizer extends React.Component{
   }
 
   setOperationType(v){
+    console.log(v);
     this.setState({operationType: v})
   }
 
@@ -241,38 +242,73 @@ class NetworkCustomVisualizer extends React.Component{
             ref = {this.canvas}>
             </canvas>
             <br></br>
-            <button
-            onClick = {() => this.setOperationType("newVertex")}>
-             Place Vertex
+            <div className = "animationsButtons">
+            <button className = "placeB"
+            disabled = {this.state.operationType === "newVertex"}
+            title = "Place Vertices"
+            onClick = {() => this.setOperationType("newVertex")}
+            style = {{height:Math.min(this.state.width/10,100),
+              width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
              </button>
-            <button
-            onClick = {() => this.setOperationType("ConnectEdge")}>
-             Connect Edge
+            <button className = "connectB"
+            disabled = {this.state.operationType === "ConnectEdge"}
+            title = "Connect Vertices"
+            onClick = {() => this.setOperationType("ConnectEdge")}
+            style = {{height:Math.min(this.state.width/10,100),
+              width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
              </button>
-            <button
-            onClick = {() => this.setOperationType("SelectMove")}>
-             Select & move
+            <button className = "selectB"
+            disabled = {this.state.operationType === "SelectMove"}
+            title = "Select & Move Area"
+            onClick = {() => this.setOperationType("SelectMove")}
+            style = {{height:Math.min(this.state.width/10,100),
+              width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
              </button>
-            <button
-            onClick = {() => this.setOperationType("moveCamera")}>
-            move Camera
+            <button className = "moveB"
+            title = "Move Frame"
+            disabled = {this.state.operationType === "moveCamera"}
+            onClick = {() => this.setOperationType("moveCamera")}
+            style = {{height:Math.min(this.state.width/10,100),
+              width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
             </button>
-            <button onClick = {() => this.resetCamera()}> Reset Camera</button>
-            <button onClick = {() => this.clearNetwork()}>
-              Clear Network
+            <button className = "CameraB"
+            title = "Reset Camera"
+            onClick = {() => this.resetCamera()}
+            style = {{height:Math.min(this.state.width/10,100),
+            width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
             </button>
-            <button>
-              Undo
+            <button className = "clearB"
+            title = "Clear Frame"
+            onClick = {() => this.clearNetwork()}
+            style = {{height:Math.min(this.state.width/10,100),
+              width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
             </button>
-            <button>
-              Redo
+            <button className = "undoB"
+            title = "Undo"
+            style = {{height:Math.min(this.state.width/10,100),
+              width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
             </button>
-            <button>
-            Save as
+            <button className = "redoB"
+            title = "Redo"
+            style = {{height:Math.min(this.state.width/10,100),
+            width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
             </button>
-            <button>
-            Upload
+            <button className = "saveB"
+            title = "Save as"
+            style = {{height:Math.min(this.state.width/10,100),
+            width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
             </button>
+            <button className = "uploadB"
+            title = "Upload"
+            style = {{height:Math.min(this.state.width/10,100),
+            width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
+            </button>
+            <button className = "exportB"
+            title = "Export to Network Viusalizer"
+            style = {{height:Math.min(this.state.width/10,100),
+            width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
+            </button>
+            </div>
             <br></br>
             <p> Operation Type: {this.state.operationType}</p>
            </div>
