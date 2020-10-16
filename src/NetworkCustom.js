@@ -30,8 +30,8 @@ class NetworkCustomVisualizer extends React.Component{
       vertices: {},
       edges: {},
       operationType: "newVertex",
-      opererationsBuffer: [],
-      operationsBufferIndex: 0,
+      operationsBuffer: [],
+      operationsBufferIndex: -1,
       selected_vertices: null,
       box: null,
     }
@@ -73,22 +73,22 @@ class NetworkCustomVisualizer extends React.Component{
       ctx.closePath();
     }
 
-
+    //
     // draw grid
-    // for(let i = 1; i < this.state.gridConstant; i++){
-    //   ctx.beginPath();
-    //   ctx.moveTo(i*this.state.gridX, 0);
-    //   ctx.lineTo(i*this.state.gridX, this.state.height);
-    //   ctx.stroke();
-    //   ctx.closePath();
-    // }
-    // for(let i = 1; i < this.state.gridConstant; i++){
-    //   ctx.beginPath();
-    //   ctx.moveTo(0, this.state.gridY*i);
-    //   ctx.lineTo(this.state.width, this.state.gridY*i);
-    //   ctx.stroke();
-    //   ctx.closePath();
-    // }
+    for(let i = 1; i < this.state.gridConstant; i++){
+      ctx.beginPath();
+      ctx.moveTo(i*this.state.gridX, 0);
+      ctx.lineTo(i*this.state.gridX, this.state.height);
+      ctx.stroke();
+      ctx.closePath();
+    }
+    for(let i = 1; i < this.state.gridConstant; i++){
+      ctx.beginPath();
+      ctx.moveTo(0, this.state.gridY*i);
+      ctx.lineTo(this.state.width, this.state.gridY*i);
+      ctx.stroke();
+      ctx.closePath();
+    }
 
     for(let i = 0; i < this.state.edge_list.length; i++){
       // console.log("edge", key);
@@ -193,17 +193,32 @@ class NetworkCustomVisualizer extends React.Component{
     const rect = this.canvas.current.getBoundingClientRect();
     const vertices = this.state.vertices;
     const vertex_list = this.state.vertex_list;
-    const [vertexX, vertexY] = this.getGrid(e.clientX -rect.left, e.clientY - rect.top)
-    // console.log([vertexX, vertexY]);
-    /* TODO CHECK if another vertex is too closed*/
-    const v = new Vertex(e.clientX-rect.left, e.clientY - rect.top);
-    v.size = VERTEX_SIZE;
-    v.color = VERTEX_COLOR;
-    vertex_list.push(v)
-    // console.log(vertex_list.length-1);
-    vertices[[vertexX, vertexY]].push(vertex_list.length-1);
+    const x = e.clientX -rect.left;
+    const y = e.clientY - rect.top
+    const [vertexX, vertexY] = this.getGrid(x, y)
 
-    this.setState({vertices:vertices, vertex_list: vertex_list});
+    /* TODO CHECK if another vertex is too closed*/
+    var tooClose = false;
+    for(let i = 0; i < vertices[[vertexX,vertexY]].length; i++){
+      const v = this.state.vertex_list[vertices[[vertexX,vertexY]][i]];
+      if(distance(v.x,v.y,x, y) < (VERTEX_SIZE+VERTEX_SIZE)*(VERTEX_SIZE+VERTEX_SIZE)){
+        tooClose = true;
+      }
+    }
+    if(tooClose === false){
+      const v = new Vertex(x, y);
+      v.size = VERTEX_SIZE;
+      v.color = VERTEX_COLOR;
+      var details = {}
+      vertex_list.push(v)
+      vertices[[vertexX, vertexY]].push(vertex_list.length-1);
+      details.vertex = v;
+      details.vertexIndex = vertex_list.length-1;
+      details.grid = [vertexX, vertexY];
+      details.gridIndex = [vertices[[vertexX, vertexY]]].length-1;
+      this.addActionToBuffer("vertex", details);
+      this.setState({vertices:vertices, vertex_list: vertex_list});
+    }
   }
 
   tryConnectEdge(edge_startX, edge_startY, edgeStartIndex, x, y, vertices){
@@ -243,10 +258,7 @@ class NetworkCustomVisualizer extends React.Component{
   }
 
   addEdge(edges, edge_list, startVertexIndex, endVertexIndex){
-    // // console.log("adding edge to ", edges);
-    // // console.log("connecting ", startVertex, endVertex);
-    // console.log(edges[[startVertexIndex, endVertexIndex]]);
-    // console.log(edges[[endVertexIndex, startVertexIndex]]);
+
     if(edges[[startVertexIndex,endVertexIndex]] === undefined &&
       edges[[endVertexIndex, startVertexIndex]] === undefined &&
                     startVertexIndex !== endVertexIndex){
@@ -255,15 +267,6 @@ class NetworkCustomVisualizer extends React.Component{
       edge_list.push([startVertexIndex, endVertexIndex]);
     }
     return [edges, edge_list];
-    // if(edges[[startVertex,endVertex]] === undefined && edges[[endVertex,startVertex]] === undefined &&
-    //   startVertex[0] !== endVertex[0] && startVertex[1] !== endVertex[1]){
-    //   console.log("successful connection")
-    //   const [x1,y1] = this.getGrid(startVertex[0], startVertex[1]);
-    //   const [x2,y2] = this.getGrid(endVertex[0], endVertex[1]);
-    //   edges[[startVertex, endVertex]] = {startGrid: [x1,y1], endGrid: [x2,y2]};
-    //   console.log(edges);
-    // }
-    // return edges;
   }
 
   createBox(x,y, startX,startY, box, previousX, previousY){
@@ -339,7 +342,8 @@ class NetworkCustomVisualizer extends React.Component{
       }
     }
     this.setState({vertices: vertices, edges: {}, edgeStart: [null,null], box:null,
-    selected_vertices: null, vertex_list: [], edge_list: []});
+    selected_vertices: null, vertex_list: [], edge_list: [], operationsBuffer: [],
+      operationsBufferIndex:-1});
   }
 
   clearDragOutcome(){
@@ -424,13 +428,63 @@ class NetworkCustomVisualizer extends React.Component{
 
   /*
   The following accpetable {types:details} pairs are
-    {vertex : }
-    {edge: }
-    {eraseVertex: }
-    {eraseEdge: }
+    vertex :
+    edge :
+    box :
   */
   addActionToBuffer(type, details){
+    var buffer = this.state.operationsBuffer;
+    var bufferIndex = this.state.operationsBufferIndex;
+    if(bufferIndex === buffer.length-1){
+      buffer.push({type:type, details: details});
+      bufferIndex++;
+      // console.log("buffer", buffer);
+      // console.log("bufferIndex", bufferIndex);
+      this.setState({operationsBuffer: buffer, operationsBufferIndex: bufferIndex});
+    }
+    else{
+      console.log("Not at buffer end", buffer);
+      console.log(bufferIndex)
+      const new_buffer =[]
+      for(let i = 0; i < bufferIndex+1; i++){
+        new_buffer.push(buffer[i]);
+      }
+      console.log("spliced buffer", new_buffer)
+      console.log(new_buffer);
+      new_buffer.push({type: type, details: details});
+      console.log(new_buffer);
+      bufferIndex ++;
+      console.log("assert", bufferIndex === new_buffer.length-1);
+      this.setState({operationsBuffer: new_buffer, operationsBufferIndex: bufferIndex});
+    }
+  }
 
+  undoActionFromBuffer(){
+    var bufferIndex = this.state.operationsBufferIndex;
+    const buffer = this.state.operationsBuffer;
+    if(buffer[bufferIndex].type === "vertex"){
+      const vertex_list = this.state.vertex_list;
+      const vertices = this.state.vertices;
+      vertex_list.splice(buffer[bufferIndex].details.vertexIndex, 1);
+      vertices[buffer[bufferIndex].details.grid].splice(buffer[bufferIndex].gridIndex,1);
+      bufferIndex --;
+      this.setState({vertex_list: vertex_list, vertices: vertices, operationsBufferIndex: bufferIndex});
+
+    }
+
+  }
+
+  redoActionFromBuffer(){
+    var bufferIndex = this.state.operationsBufferIndex;
+    const buffer = this.state.operationsBuffer;
+    if(buffer[bufferIndex+1].type === "vertex"){
+      bufferIndex ++;
+      const vertex_list = this.state.vertex_list;
+      const vertices = this.state.vertices;
+      vertex_list.push(buffer[bufferIndex].details.vertex);
+      vertices[buffer[bufferIndex].details.grid].push(vertex_list.length-1);
+      this.setState({vertex_list: vertex_list, vertices: vertices, operationsBufferIndex: bufferIndex});
+    }
   }
 
 
@@ -495,13 +549,15 @@ class NetworkCustomVisualizer extends React.Component{
               width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
             </button>
             <button className = "undoB"
-            disabled = {this.state.operationsBufferIndex === 0}
+            onClick = {() => this.undoActionFromBuffer()}
+            disabled = {this.state.operationsBufferIndex === -1}
             title = "Undo"
             style = {{height:Math.min(this.state.width/num_b,100),
               width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
             </button>
             <button className = "redoB"
-            disabled = {this.state.opererationsBuffer.length === this.state.operationsBufferIndex}
+            onClick = {() => this.redoActionFromBuffer()}
+            disabled = {this.state.operationsBuffer.length-1 === this.state.operationsBufferIndex}
             title = "Redo"
             style = {{height:Math.min(this.state.width/num_b,100),
             width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
