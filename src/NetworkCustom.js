@@ -6,7 +6,7 @@ import "./NetworkCustom.css";
 
 const VERTEX_SIZE = 5;
 const VERTEX_COLOR = "rgb(0,255,255)";
-const SELECTED_COLOR = "rgb(0,255,0)";
+const SELECTED_COLOR = "rgb(255,0,255)";
 
 class NetworkCustomVisualizer extends React.Component{
   constructor(props){
@@ -74,21 +74,21 @@ class NetworkCustomVisualizer extends React.Component{
     }
 
 
-    //draw grid
-    for(let i = 1; i < this.state.gridConstant; i++){
-      ctx.beginPath();
-      ctx.moveTo(i*this.state.gridX, 0);
-      ctx.lineTo(i*this.state.gridX, this.state.height);
-      ctx.stroke();
-      ctx.closePath();
-    }
-    for(let i = 1; i < this.state.gridConstant; i++){
-      ctx.beginPath();
-      ctx.moveTo(0, this.state.gridY*i);
-      ctx.lineTo(this.state.width, this.state.gridY*i);
-      ctx.stroke();
-      ctx.closePath();
-    }
+    // draw grid
+    // for(let i = 1; i < this.state.gridConstant; i++){
+    //   ctx.beginPath();
+    //   ctx.moveTo(i*this.state.gridX, 0);
+    //   ctx.lineTo(i*this.state.gridX, this.state.height);
+    //   ctx.stroke();
+    //   ctx.closePath();
+    // }
+    // for(let i = 1; i < this.state.gridConstant; i++){
+    //   ctx.beginPath();
+    //   ctx.moveTo(0, this.state.gridY*i);
+    //   ctx.lineTo(this.state.width, this.state.gridY*i);
+    //   ctx.stroke();
+    //   ctx.closePath();
+    // }
 
     for(let i = 0; i < this.state.edge_list.length; i++){
       // console.log("edge", key);
@@ -305,13 +305,9 @@ class NetworkCustomVisualizer extends React.Component{
     for(let i = 0; i < selected_vertices.length; i++){
       selected_vertices[i].vertex.x += dx;
       selected_vertices[i].vertex.y += dy;
-      const new_grid = [selected_vertices[i].grid[0], selected_vertices[i].grid[1]];
-      // console.log("vertex x", selected_vertices[i].vertex.x)
-      // console.log("gridX", selected_vertices[i]);
-      if(selected_vertices[i].vertex.x > selected_vertices[i].grid[0]*this.state.gridX +this.state.gridX) new_grid[0]++;
-      if(selected_vertices[i].vertex.x < selected_vertices[i].grid[0]*this.state.gridX) new_grid[0]--;
-      if(selected_vertices[i].vertex.y > selected_vertices[i].grid[1]*this.state.gridY + this.state.gridY) new_grid[1]++;
-      if(selected_vertices[i].vertex.y < selected_vertices[i].grid[1]*this.state.gridY) new_grid[1]--;
+      const new_grid = this.getGrid(selected_vertices[i].vertex.x,
+                                    selected_vertices[i].vertex.y);
+
       if(new_grid[0] !== selected_vertices[i].grid[0] || new_grid[1]
         !== selected_vertices[i].grid[1]){
           new_vertices = this.updateVertexGrids(vertices,selected_vertices[i], new_grid);
@@ -329,7 +325,7 @@ class NetworkCustomVisualizer extends React.Component{
     // console.log("vertices[old+grid]",vertices[old_grid]);
     vertices[new_grid].push(selected_vertex.index);
     // console.log("vertices[new_grid]",vertices[new_grid]);
-    selected_vertex.grid = [new_grid];
+    selected_vertex.grid = new_grid;
 
     return vertices;
   }
@@ -419,7 +415,7 @@ class NetworkCustomVisualizer extends React.Component{
       var index_list = this.state.vertices[box_array[i]];
       for(let j = 0; j < index_list.length; j++){
         const v = this.state.vertex_list[index_list[j]]
-        if(v.x >= x0 && v.y >= y0 && v.x<= x1 && v.y <= y1)selected_vertices.push({vertex: v,
+        if(v.x >= x0 && v.y >= y0 && v.x <=x1 && v.y <= y1)selected_vertices.push({vertex: v,
                                       grid: box_array[i], index: index_list[j]});
       }
     }
