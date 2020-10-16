@@ -34,6 +34,7 @@ class NetworkCustomVisualizer extends React.Component{
       operationsBufferIndex: -1,
       selected_vertices: null,
       box: null,
+      startBoxVertices: null,
     }
     this.app = this.props.app;
     this.canvas = React.createRef();
@@ -73,22 +74,22 @@ class NetworkCustomVisualizer extends React.Component{
       ctx.closePath();
     }
 
-    //
-    // draw grid
-    for(let i = 1; i < this.state.gridConstant; i++){
-      ctx.beginPath();
-      ctx.moveTo(i*this.state.gridX, 0);
-      ctx.lineTo(i*this.state.gridX, this.state.height);
-      ctx.stroke();
-      ctx.closePath();
-    }
-    for(let i = 1; i < this.state.gridConstant; i++){
-      ctx.beginPath();
-      ctx.moveTo(0, this.state.gridY*i);
-      ctx.lineTo(this.state.width, this.state.gridY*i);
-      ctx.stroke();
-      ctx.closePath();
-    }
+
+    // DEBUGGING ONLY: draw grid
+    // for(let i = 1; i < this.state.gridConstant; i++){
+    //   ctx.beginPath();
+    //   ctx.moveTo(i*this.state.gridX, 0);
+    //   ctx.lineTo(i*this.state.gridX, this.state.height);
+    //   ctx.stroke();
+    //   ctx.closePath();
+    // }
+    // for(let i = 1; i < this.state.gridConstant; i++){
+    //   ctx.beginPath();
+    //   ctx.moveTo(0, this.state.gridY*i);
+    //   ctx.lineTo(this.state.width, this.state.gridY*i);
+    //   ctx.stroke();
+    //   ctx.closePath();
+    // }
 
     for(let i = 0; i < this.state.edge_list.length; i++){
       // console.log("edge", key);
@@ -237,7 +238,7 @@ class NetworkCustomVisualizer extends React.Component{
     }
     else{
       const [new_x,new_y] = this.getGrid(x,y);
-      console.log(vertices[[new_x, new_y]]);
+      // console.log(vertices[[new_x, new_y]]);
       // console.log(new_x, new_y);
       for(let i = 0; i < vertices[[new_x,new_y]].length; i++){
         const v = this.state.vertex_list[vertices[[new_x,new_y]][i]];
@@ -369,8 +370,24 @@ class NetworkCustomVisualizer extends React.Component{
         new_details.index = selected_vertices[i].index;
         selected_vertices_copy.push(new_details);
       }
-      if(selected_vertices_copy.length !== 0 )this.addActionToBuffer("box", selected_vertices_copy);
+      const box_select = {}
+      const startBox = this.state.startBoxVertices;
+      // console.log("assert", startBox !== null);
+      box_select.start = startBox;
+      box_select.end = selected_vertices_copy;
+      const is_different_box = this.isDifferentBox(startBox, selected_vertices_copy);
+      if(is_different_box === true) this.addActionToBuffer("box", box_select);
     }
+  }
+
+  isDifferentBox(start, end){
+    if(start === undefined || end === undefined ||
+        start === null || end === null) return false;
+    if(start.length === 0 || end.length === 0) return false;
+
+    if(start[0].vertex.x !== end[0].vertex.x ||
+              start[0].vertex.y !== end[0].vertex.y) return true;
+    return false;
   }
 
   getGrid(x,y){
@@ -423,7 +440,7 @@ class NetworkCustomVisualizer extends React.Component{
     const boxesToCheck = this.getListGrid(x0,y0,x1,y1);
     // console.log("boxes", boxesToCheck);
     const selected_vertices = this.unPackVertexFromGrid(boxesToCheck, x0, y0, x1,y1);
-    console.log("selected_vertices", selected_vertices);
+    // console.log("selected_vertices", selected_vertices);
     const selected_vertices_copy = [];
     for(let i = 0; i < selected_vertices.length; i++){
       const new_details = {}
@@ -435,8 +452,7 @@ class NetworkCustomVisualizer extends React.Component{
     for(let i = 0; i < selected_vertices.length; i++){
       selected_vertices[i].vertex.color = SELECTED_COLOR;
     }
-    if(selected_vertices_copy.length !== 0) this.addActionToBuffer("box", selected_vertices_copy);
-    this.setState({selected_vertices: selected_vertices});
+    this.setState({selected_vertices: selected_vertices, startBoxVertices: selected_vertices_copy});
   }
 
   unPackVertexFromGrid(box_array, x0, y0, x1, y1){
@@ -468,7 +484,7 @@ class NetworkCustomVisualizer extends React.Component{
       // console.log("buffer", buffer);
       // console.log("bufferIndex", bufferIndex);
       this.setState({operationsBuffer: buffer, operationsBufferIndex: bufferIndex});
-      console.log(buffer);
+      // console.log(buffer);
     }
     else{
       // console.log("Not at buffer end", buffer);
@@ -484,7 +500,7 @@ class NetworkCustomVisualizer extends React.Component{
       bufferIndex ++;
       // console.log("assert", bufferIndex === new_buffer.length-1);
       this.setState({operationsBuffer: new_buffer, operationsBufferIndex: bufferIndex});
-      console.log(new_buffer);
+      // console.log(new_buffer);
     }
   }
 
@@ -492,7 +508,7 @@ class NetworkCustomVisualizer extends React.Component{
     this.setOperationType("undo");
     var bufferIndex = this.state.operationsBufferIndex;
     const buffer = this.state.operationsBuffer;
-    console.log("buffer", buffer, "index", bufferIndex);
+    // console.log("buffer", buffer, "index", bufferIndex);
     if(buffer[bufferIndex].type === "vertex"){
       const vertex_list = this.state.vertex_list;
       const vertices = this.state.vertices;
@@ -510,27 +526,19 @@ class NetworkCustomVisualizer extends React.Component{
       this.setState({edge_list: edge_list, edges: edges, operationsBufferIndex: bufferIndex});
     }
     else if(buffer[bufferIndex].type === "box"){
-      if(buffer[bufferIndex-1] === undefined || buffer[bufferIndex-1].type !== "box"){
-        bufferIndex --;
-        this.setState({operationsBufferIndex: bufferIndex});
+      const startBox = buffer[bufferIndex].details.start;
+      const endBox = buffer[bufferIndex].details.end;
+      const vertices = this.state.vertices;
+      const vertex_list = this.state.vertex_list;
+
+      for(let i = 0; i < endBox.length; i++){
+        const index_value = vertices[endBox[i].grid].indexOf(endBox[i].index);
+        vertices[endBox[i].grid].splice(index_value,1);
+        vertices[startBox[i].grid].push(endBox[i].index);
+        vertex_list[endBox[i].index] = startBox[i].vertex;
       }
-      else if(buffer[bufferIndex-1].type === "box"){
-        console.log("undo box movement");
-        // DETAILS vertex: v,grid: box_array[i], index: index_list[j]
-        const vertices = this.state.vertices;
-        const vertex_list = this.state.vertex_list;
-        const old_details = buffer[bufferIndex -1].details;
-        const current_details = buffer[bufferIndex].details;
-        // console.log(current_details.length);
-        for(let i = 0; i < current_details.length; i++){
-          const index_value = vertices[current_details[i].grid].indexOf(current_details[i].index);
-          vertices[current_details[i].grid].splice(index_value,1);
-          vertices[old_details[i].grid].push(current_details[i].index);
-          vertex_list[current_details[i].index] = old_details[i].vertex;
-        }
-        bufferIndex --;
-        this.setState({vertices: vertices, vertex_list: vertex_list, operationsBufferIndex: bufferIndex});
-      }
+      bufferIndex --;
+      this.setState({vertices: vertices, vertex_list: vertex_list, operationsBufferIndex: bufferIndex});
     }
 
   }
@@ -539,7 +547,7 @@ class NetworkCustomVisualizer extends React.Component{
     this.setOperationType("redo")
     var bufferIndex = this.state.operationsBufferIndex;
     const buffer = this.state.operationsBuffer;
-    console.log("buffer", buffer, "index", bufferIndex);
+    // console.log("buffer", buffer, "index", bufferIndex);
     if(buffer[bufferIndex+1].type === "vertex"){
       bufferIndex ++;
       const vertex_list = this.state.vertex_list;
@@ -557,29 +565,25 @@ class NetworkCustomVisualizer extends React.Component{
       this.setState({edge_list: edge_list, edges: edges, operationsBufferIndex: bufferIndex});
     }
     else if(buffer[bufferIndex+1].type === "box"){
-      // DETAILS vertex: v,grid: box_array[i], index: index_list[j]
-      if(buffer[bufferIndex+2] !== undefined || buffer[bufferIndex+2] === "box"){
-        bufferIndex++;
-        this.setState({operationsBufferIndex: bufferIndex});
+      const startBox = buffer[bufferIndex+1].details.start;
+      const endBox = buffer[bufferIndex+1].details.end;
+      const vertices = this.state.vertices;
+      const vertex_list = this.state.vertex_list;
+      for(let i = 0; i < startBox.length; i++){
+        const index_value = vertices[startBox[i].grid].indexOf(startBox[i].index);
+        vertices[startBox[i].grid].splice(index_value, 1);
+        vertices[endBox[i].grid].push(startBox[i].index);
+        vertex_list[startBox[i].index]= endBox[i].vertex;
       }
-      else if(buffer[bufferIndex].type === "box"){
-        console.log("redo box movement");
-        const vertices = this.state.vertices;
-        const vertex_list = this.state.vertex_list;
-        const old_details = buffer[bufferIndex].details;
-        const current_details = buffer[bufferIndex+1].details;
-        for(let i = 0; i < current_details.length; i++){
-          const index_value = vertices[old_details[i].grid].indexOf(old_details[i].index);
-          vertices[old_details[i].grid].splice(index_value,1);
-          vertices[current_details[i].grid].push(old_details[i].index);
-          vertex_list[old_details[i].index] = current_details[i].vertex;
-        }
-        bufferIndex ++;
-        this.setState({vertices: vertices, vertex_list: vertex_list, operationsBufferIndex: bufferIndex});
-      }
+      bufferIndex++;
+      this.setState({vertices: vertices, vertex_list: vertex_list, operationsBufferIndex: bufferIndex});
     }
   }
 
+  processMouseLeave(){
+    this.setState({mouseLeave:true});
+    this.clearDragOutcome();
+  }
 
   render(){
     const num_b = 10;
@@ -587,7 +591,7 @@ class NetworkCustomVisualizer extends React.Component{
             <canvas
             onClick = {(e) => this.processClickOutcome(e)}
             onMouseMove = {(e) => this.updateCursorPostion(e)}
-            onMouseLeave = {() => this.setState({mouseLeave:true, dragging:false})}
+            onMouseLeave = {() => this.processMouseLeave()}
             onMouseDown = {(e) => this.processDragOutcome(e)}
             onMouseUp = {() => this.clearDragOutcome()}
             className = "networkCanvas"
