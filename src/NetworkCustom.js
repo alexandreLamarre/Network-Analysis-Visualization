@@ -191,6 +191,10 @@ class NetworkCustomVisualizer extends React.Component{
   }
 
   placeVertex(e){
+    if(this.state.vertex_list.length >= 200){
+      alert("Maximum number of vertices (200) exceeded");
+      return
+    }
     const rect = this.canvas.current.getBoundingClientRect();
     const vertices = this.state.vertices;
     const vertex_list = this.state.vertex_list;
@@ -264,6 +268,10 @@ class NetworkCustomVisualizer extends React.Component{
       edges[[endVertexIndex, startVertexIndex]] === undefined &&
                     startVertexIndex !== endVertexIndex){
       // console.log("successful connection");
+      if(edge_list.length > 199){
+        alert("Maximum number of edges(600) exceeded");
+        return [edges,edge_list];
+      }
       edges[[startVertexIndex, endVertexIndex]] = true;
       edge_list.push([startVertexIndex, endVertexIndex]);
       const details = {};
@@ -377,6 +385,7 @@ class NetworkCustomVisualizer extends React.Component{
       box_select.end = selected_vertices_copy;
       const is_different_box = this.isDifferentBox(startBox, selected_vertices_copy);
       if(is_different_box === true) this.addActionToBuffer("box", box_select);
+      this.setState({startBoxVertices: null});
     }
   }
 
