@@ -23,7 +23,8 @@ layouts.
 - [Vertex Coloring](#Vertex-Coloring)
 
 
-### Force Directed
+### Force Directed  
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 Force directed layout algorithms are a class of Algorithms that model a Network based on a <b> dynamical system </b>. Dynamical systems describe a set
 of forces acting on a set of Objects. In this case, the objects being acted upon by forces are the vertices of the network. Each Algorithm defines its own set of 
@@ -43,6 +44,7 @@ and many other properties of interest, despite a lack of theoretical knowledge.
 <b> Fields of Application:</b> Software Engineering, Telecommunications Traffic, Computational Biology, Social Network Analysis, Cartography, Linguistics
 
 #### Basic Spring Embedding
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 The Basic Spring Embedding algorithm, originally proposed by Eades, <b>models the set of forces between vertices as springs</b>; the edges are the springs that connect vertices and their tension/force is a function of the distance between vertices. Choosing a heuristic approach rather than a realisticspring model, Eades decides to scale the force of attraction of springs logarithmically. He also chooses to exert forces of repulsion between vertices that are not connected to each other.
 He suggests a constant 100 iterations for convergence to an aesthetically 'optimal' layout.
@@ -57,6 +59,7 @@ Cons:
 - It is in general not space filling
 
 #### Fruchterman Reingold
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 The Fruchterman-Reingold algorithm, like the Basic Spring Embedding algorithm, models the forces between vertices as springs. However, the forces of attraction are scaled to the square of their distance. Another important improvement is that vertices are modelled as atomic nuclei exerting a small, but often important, repulsive force on all other vertices scaling to the inverse of their distance. Additionally, Fruchterman and Reingold implement a technique whose foundations seem to be based on simulated annealing, where forces are assigned an intial temperature which allows them to jump out of local equilibrium minima.
 
@@ -72,6 +75,7 @@ Cons:
 
 
 #### Force Atlas 2
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 The Force Atlas 2 algorithm, is a non-theory/research based algorithm that attemps to utilize and optimize the best attributes and heuristics of other force directed algorithms.
 It borrows the spring model from Eades, but implements the scaling and temperature improvements of Fruchterman-Reingold. In order to improve the temperature of vertices during the algorithm, the temperature is a function of the "swing" and trajectory of a vertex as the algorithm is running. If the vertex "swings" excessively, increase its temperature
@@ -86,6 +90,7 @@ Cons:
 
 
 ### Force Atlas 2 (LinLog)
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 The only real difference between Force Atlas 2 and Force Atlas 2(linglog) is how the forces of attraction and repulsion are scaled. The forces of attraction are scaled logarithmically and the forces of repulsion are scaled linearly. Although the difference in implementation is simple, it targets different types of layouts. It clusters vertices that are related more strongly and will cluster nearby vertices that are not strongly related to anything to the nearest cluster.
 
@@ -96,6 +101,7 @@ Cons:
 - Uniform degree networks are more difficult to analyze due to a circle-like spacing.
 
 ### Spectral Layout
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 - [Hall's Algorithm](#halls-algorithm)
 - [Schwarz Based Method](#Schwarz-Based-Method)
@@ -106,13 +112,17 @@ Spectral Layout Algorithms use linear algebra relating to Spectral Theory to sol
 
 
 #### Hall's Algorithm
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 #### Schwarz Based Method
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 #### Generalized Eigenvector (Koren)
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 
 ### Minimum Spanning Tree
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 - [Kruskal](#Kruskal)
 - [Prim](#Prim)
@@ -121,14 +131,17 @@ A Minimum Spanning Tree is a tree that consists of all the vertices of the graph
 
 <b> Fields of Application :</b> Cluster Analysis, Computer Vision, Min-Max flow Network optimization, Convolutional Neural Networks, Circuit Designs
 #### Kruskal
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 Kruskal's algorithm is a greedy algorithm for finding a Minimum Spanning Tree. It constructs the tree from a forest of all vertices, where it selects the next edge that has minimal weight and is not already part of the forest and does not create a cycle within the forest. The algorithm terminates when the forest of vertices is completely connected.
 
 #### Prim
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 Prim's algorithm is a greedt algorithm for finding a Minimum Spanning Tree. It constructs a tree by starting at a random vertex and exploring the minimum weighed edge at each iteration, it adds this edge if it does not create a cycle in the already explored vertices.
 
 ### Travelling Salesperson
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 The Travelling Salesperson problem tries to find the minimum distance/weighed path that traverses all vertices exactly once. Such a path that ends at the start vertex is called a Hamiltonian Cycle. The travelling salesperson problem is an NP-hard problem.
 
@@ -139,6 +152,7 @@ The Travelling Salesperson problem tries to find the minimum distance/weighed pa
 - [2-Opt Simulated Annealing](#2-Opt-Simulated-Annealing)
 
 #### 2-Opt
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 The 2-Opt algorithm is a simple and somewhat effective algorithm for finding the minimal hamiltonian cycle. It randomly switches 2 edges and checks if that has decreased the cycle length. If it has, it keeps those two edges swapped otherwise it looks for another two random edges to swap. It continues until it times out. 
 
@@ -149,6 +163,7 @@ Cons:
 - Frequently poorly optimized solutions
 
 #### 3-Opt
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 The 3-Opt algorithm is another simple and somewhat effective algorithm for finding the minimal hamiltonian cycle. It randomly checks 3 edges, and swaps them as necessary if they reduce the cycle length. This algorithm prioritizes swapping only 2 edges at a time, but if swapping 2 edges doesnt result in an improvement it will try and swap all three.
 
@@ -159,6 +174,7 @@ Cons:
 - Frequently poorly optimizated solutions, many cases to check at iteration
 
 #### 2-Opt Simulated Annealing
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 A 2-Opt algorithm augmented with the use of simulated annealing. Simulated annealing uses an initial "temperature" which dictates the probability of accepting worse solutions when swapping 2 edges. This temperature decreases over time, according to some heuristic function, as the algorithm converges to the minima. In practice, simulated annealing and 2-opt produce the actual global minima for networks only for very small networks. 2-Opt and simulated annealing will often produce worse solutions than 2-opt on larger networks. Simulated annealing and 2 opt are better combined with the combined use of other heuristics and techniques.
 
@@ -169,12 +185,14 @@ Cons:
 - Typically worse solutions than 2-opt 
 
 ### Edge Coloring
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 Edge coloring describes the problem of assigning the minimum number of colors to vertices in the network such that no two edges that are incident to the same vertex share the same color. It is an NP-Hard problem in general.
 
 - [Misra-Gries](#misra-gries)
 
 #### Misra-Gries
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 The Misra-Gries Algorithm is a greedy edge coloring algorithm that uses at most n+1 colors, where `n = |max degree|` over all vertices in the network. 
 
@@ -186,6 +204,8 @@ Cons:
 - Suboptimal in the general case
 
 ### Vertex Coloring
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
+
 - [Greedy Coloring](#Greedy-Coloring)
 
 <b> Fields of Application :</b> Scheduling, Bandwidth Allocation, Register Allocation in compilers, Pattern Matching
@@ -193,6 +213,7 @@ Cons:
 Vertex Coloring describes the problem of assigning the minimum number of colors to vertices in the network such that no two adjacent(connected by an edge) vertices share the same color. It is an NP-hard problem in general. 
 
 #### Greedy Coloring
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 The greedy vertex coloring algorithm is a greedy algorithm for coloring the vertices of a graph. It uses at most n + 1 colors, where `n = |max degree|` over all vertices in the network.
 
@@ -203,6 +224,7 @@ Cons:
 - Suboptimal in general.
 
 ## Random Network Generation
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 - [Random](#Random)
 - [Random Circle](#Random-Circle)
@@ -211,15 +233,20 @@ Cons:
 - [Random Cluster](#Random-Cluster)
 
 #### Random
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 #### Random Circle/Sphere
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 #### Random Hamiltonian Cycle
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 #### Random Cluster
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 
 
 ## References 
+[Back To Top](https://github.com/alexandreLamarre/Network-Algorithm-Visualization#network-algorithm-visualization)
 The following references are ordered by date:
 - Hall, Kenneth M. "An r-dimensional quadratic placement algorithm." Management science 17.3 (1970): 219-229.
 - Eades, Peter. "A heuristic for graph drawing." Congressus numerantium 42 (1984): 149-160.
