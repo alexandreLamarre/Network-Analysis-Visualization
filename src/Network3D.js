@@ -11,12 +11,25 @@ import {forceAtlas23D} from "./NetworkAlgorithms/forceAtlas2-3D";
 import {kruskal} from "./MSTAlgorithms/kruskal";
 import {prim} from "./MSTAlgorithms/prims";
 import {opt2} from "./TSP/opt2";
+import {opt2Annealing} from "./TSP/opt2Annealing";
 import {opt3} from "./TSP/opt3";
 import {GreedyColoring} from "./Coloring/GreedyColoring";
+import {misraGries} from "./Coloring/misraGries";
 
 import "./Network3D.css";
 
 var MAX_TIMEOUT = 30; //seconds
+
+async function waitAnimateNetwork(that,startIndex, endIndex, animations,func){
+  if(animations !== null) await that.setState({currentAnimations: animations});
+  await that.setState({currentAnimationIndex: startIndex, animationIndex: endIndex, paused: false});
+  console.log("start",startIndex,"end", endIndex,"animations", animations);
+  if(that.state.group === "layout") that.animateNetwork();
+  if(that.state.group === "coloring") that.animateColoring();
+  if(that.state.group === "TSP") that.animateTSP()
+  // if(that.state.group === "coloring") continue;
+  // if(that.state.group === "TSP") continue;
+}
 
 class NetworkVisualizer3D extends React.Component{
   constructor(props){
@@ -43,6 +56,11 @@ class NetworkVisualizer3D extends React.Component{
       randomType: "random",
       TSP: false,
       cameraChanged: false,
+      currentAnimations: [],
+      currentAnimationIndex: 0,
+      animationIndex: 0,
+      paused: true,
+      group: "layout",
     }
     this.app = this.props.app;
     this.canvas = React.createRef();
@@ -165,7 +183,7 @@ class NetworkVisualizer3D extends React.Component{
     const final_vertices = values[0];
     const animations = values[1];
     // console.log(animations);
-    this.animateNetwork(animations, final_vertices);
+    waitAnimateNetwork(this, 0, animations.length, animations);
   }
 
   generateReingold(){
@@ -174,7 +192,7 @@ class NetworkVisualizer3D extends React.Component{
 
     const final_vertices = values[0];
     const animations = values[1];
-    this.animateNetwork(animations, final_vertices);
+    waitAnimateNetwork(this, 0, animations.length, animations);
   }
 
   generateKamadaKawai(){
@@ -184,7 +202,7 @@ class NetworkVisualizer3D extends React.Component{
   generateForceAtlas2(){
     const [final_vertices, animations] = forceAtlas23D(this.state.vertices, this.state.edges,
                 this.state.width, this.state.height, this.state.iterations, this.app.state.settings.forceatlas2)
-    this.animateNetwork(animations, final_vertices);
+    waitAnimateNetwork(this, 0, animations.length, animations);
   }
 
   generateForceAtlasLinLog(){
@@ -193,7 +211,7 @@ class NetworkVisualizer3D extends React.Component{
     const animations = values[1];
     // console.log(animations);
     const final_vertices = values[0];
-    this.animateNetwork(animations, final_vertices);
+    waitAnimateNetwork(this, 0, animations.length, animations);
   }
 
   generateHall(){
@@ -209,137 +227,180 @@ class NetworkVisualizer3D extends React.Component{
   }
 
   generateKruskal(){
-    const values = kruskal(this.state.vertices, this.state.edges, 3,
+    const [animations, sorted_edges] = kruskal(this.state.vertices, this.state.edges, 3,
       [this.app.state.settings.kruskal.red, this.app.state.settings.kruskal.green,
-      this.app.state.settings.kruskal.blue]);
-    const color_animations = values[0];
-    const sorted_edges = values[1];
-    // console.log(color_animations);
-    // waitSetSortedEdges
-    this.animateColoring(color_animations);
+        this.app.state.settings.kruskal.blue]);
+    const that = this;
+    waitSetEdges(that, sorted_edges, animations);
   }
 
   generatePrim(){
     const animations = prim(this.state.vertices, this.state.edges, 3,
-                [this.app.state.settings.prim.red, this.app.state.settings.prim.green,
-                this.app.state.settings.prim.blue]);
-    this.animateColoring(animations);
+      [this.app.state.settings.prim.red, this.app.state.settings.prim.green,
+      this.app.state.settings.prim.blue]);
+    waitAnimateNetwork(this,0,animations.length,animations);
   }
 
   generate2Opt(){
-    this.animateTSP(opt2);
+    const animations = [];
+    this.app.setState({running:true});
+    const selected_color = [this.app.state.settings.opt2.red, this.app.state.settings.opt2.green,
+                      this.app.state.settings.opt2.blue];
+    var edges = this.state.edges;
+    var better_solution = false;
+    for(let i = 0; i < (this.app.state.settings.opt2.timeout*1000)/this.app.state.animationSpeed; i++){
+      [edges, better_solution]= opt2(this.state.vertices,
+        edges, this.app.state.dimension, selected_color);
+      animations.push(edges);
+    }
+    waitAnimateNetwork(this, 0, animations.length, animations);
+  }
+
+  generate2OptAnnealing(){
+    const animations = [];
+    this.app.setState({running:true});
+    var current_temperature = this.app.state.settings.opt2annealing.temperature;
+    const max_temperature = current_temperature;
+    var temp = current_temperature;
+    for(let i = 0; i < (this.app.state.settings.opt2annealing.timeout*1000)/this.app.state.animationSpeed; i++){
+      temp = 0.992*temp;
+    }
+    var min_temperature = temp;
+    console.log("max", max_temperature, "min", min_temperature);
+
+    var edges = this.state.edges;
+    var better_solution = false;
+    for(let i = 0; i < (this.app.state.settings.opt2annealing.timeout*1000)/this.app.state.animationSpeed; i++){
+      [edges, better_solution] = opt2Annealing(this.state.vertices,
+          edges, this.app.state.dimension, this.app.state.settings.opt2annealing.startColor,
+          this.app.state.settings.opt2annealing.endColor, current_temperature,
+          min_temperature, max_temperature,
+          this.app.state.settings.opt2annealing.acceptance);
+      animations.push(edges);
+      current_temperature = 0.992*current_temperature;
+    }
+    waitAnimateNetwork(this, 0, animations.length, animations);
   }
 
   generate3Opt(){
-    this.animateTSP(opt3);
+    const animations = [];
+    this.app.setState({running:true});
+    const selected_color = [this.app.state.settings.opt3.red, this.app.state.settings.opt3.green,
+                      this.app.state.settings.opt3.blue];
+    var edges = this.state.edges;
+    var better_solution = false;
+    for(let i = 0; i < (this.app.state.settings.opt3.timeout*1000)/this.app.state.animationSpeed; i++){
+      [edges, better_solution]= opt3(this.state.vertices,
+        edges, this.app.state.dimension, selected_color);
+      animations.push(edges);
+    }
+    waitAnimateNetwork(this, 0, animations.length, animations);
   }
 
   generateGreedyVertex(){
-    const [vertices, animations] = GreedyColoring(this.state.vertices, this.state.edges, this.app.state.dimension, [255,0,0], [0,0,255]);
-    this.animateColoring(animations);
+    const [vertices, animations] = GreedyColoring(this.state.vertices, this.state.edges, this.app.state.dimension, [255,255,0], [0,0,255])
+    waitAnimateNetwork(this,0,animations.length,animations);
+  }
+
+  generateMisraGries(){
+    console.log("generate misra gries");
+    const animations = misraGries(this.state.vertices, this.state.edges, [255,0,0], [0,255,0]);
+    waitAnimateNetwork(this, 0, animations.length, animations);
   }
 
   runAlgorithm(){
-    if(this.state.algoType === "spring") this.generateForceDirectedLayout();
-    if(this.state.algoType === "fruchtermanReingold") this.generateReingold();
-    if(this.state.algoType === "kamadaKawai") this.generateKamadaKawai();
-    if(this.state.algoType === "forceAtlas2") this.generateForceAtlas2();
-    if(this.state.algoType === "forceAtlasLinLog") this.generateForceAtlasLinLog();
-    if(this.state.algoType === "hall") this.generateHall();
-    if(this.state.algoType === "spectralDrawing") this.generateSpectralDrawing();
-    if(this.state.algoType === "radialFlowDirected") this.generateRadialFlowDirected();
-    if(this.state.algoType === "kruskal") this.generateKruskal();
-    if(this.state.algoType === "prim") this.generatePrim();
-    if(this.state.algoType === "2opt") this.generate2Opt();
-    if(this.state.algoType === "3opt") this.generate3Opt();
-    if(this.state.algoType === "greedyvertex") this.generateGreedyVertex();
-
-  }
-
-  animateNetwork(animations, final_vertices){
-    let x = 0;
-    this.app.setState({running: true});
-    for(let k = 0; k < animations.length; k++){
-      x = setTimeout(() => {
-        const vertices = this.state.vertices;
-        for(let i = 0; i < vertices.length; i++){
-          vertices[i].setVector(animations[k][i]);
-        }
-        this.setState({vertices: vertices});
-        if(k === animations.length -1){
-          this.setState({vertices: final_vertices});
-          this.app.setState({running: false});
-        }
-      }, k*this.app.state.animationSpeed)
+    if(this.app.state.running === false){
+      if(this.state.algoType === "spring") this.generateForceDirectedLayout();
+      if(this.state.algoType === "fruchtermanReingold") this.generateReingold();
+      if(this.state.algoType === "kamadaKawai") this.generateKamadaKawai();
+      if(this.state.algoType === "forceAtlas2") this.generateForceAtlas2();
+      if(this.state.algoType === "forceatlaslinlog") this.generateForceAtlasLinLog();
+      if(this.state.algoType === "hall") this.generateHall();
+      if(this.state.algoType === "spectralDrawing") this.generateSpectralDrawing();
+      if(this.state.algoType === "radialFlowDirected") this.generateRadialFlowDirected();
+      if(this.state.algoType === "kruskal") this.generateKruskal();
+      if(this.state.algoType === "prim") this.generatePrim();
+      if(this.state.algoType === "2opt") this.generate2Opt();
+      if(this.state.algoType === "2optannealing") this.generate2OptAnnealing();
+      if(this.state.algoType === "3opt") this.generate3Opt();
+      if(this.state.algoType === "greedyvertex") this.generateGreedyVertex();
+      if(this.state.algoType === "misra") this.generateMisraGries();
     }
-    this.setState({maxtimeouts: x})
+    else{
+      waitAnimateNetwork(this, this.state.currentAnimationIndex, this.state.currentAnimations.length-1, null);
+    }
+
   }
 
-  animateColoring(animations){
+  animateNetwork(){
     let x = 0;
     this.app.setState({running:true});
+    const start = this.state.currentAnimationIndex;
+    const end = this.state.animationIndex;
+    for(let k = start; k < end; k++){
 
-    for(let k =0; k < animations.length; k++){
+      x = setTimeout(() => {
+        const vertices = this.state.vertices;
+        for(let i = 0; i <vertices.length; i++){
+          vertices[i].setVector(this.state.currentAnimations[k][i]);
+        }
+        this.setState({vertices: vertices, currentAnimationIndex: this.state.currentAnimationIndex+1});
+        if(k === end-1) this.setState({paused: true, currentAnimationIndex: end});
+        // console.log("animating")
+      }, (k-start) * this.app.state.animationSpeed)
+    }
+    this.setState({maxtimeouts: x});
+  }
+
+  animateColoring(){
+    let x = 0;
+    this.app.setState({running:true});
+    console.log("animating");
+    const start = this.state.currentAnimationIndex;
+    const end = this.state.animationIndex;
+
+    for(let k =start; k < end; k++){
       x = setTimeout(() => {
         const vertices = this.state.vertices;
         const edges= this.state.edges;
+        const animations = this.state.currentAnimations;
 
-        if(animations[k].vIndex !== undefined){
-          vertices[animations[k].vIndex].color = (animations[k].color);
-          vertices[animations[k].vIndex].size = animations[k].size;
-        }
-        if(animations[k].eIndex !== undefined){
-          edges[animations[k].eIndex].setColor(animations[k].color);
-          edges[animations[k].eIndex].setAlpha(animations[k].alpha)
-        }
-
-        this.setState({vertices: vertices, edges:edges});
+        this.setState({vertices: animations[k].vertices, edges:animations[k].edges, currentAnimationIndex: this.state.currentAnimationIndex + 1});
         // console.log("animating")
-        if(k === animations.length-1){
-          this.app.setState({running:false});
+        if(k === end-1){
+          console.log("pausing")
+          this.setState({paused: true,currentAnimationIndex: end});
+
           // console.log(final_vertices);
         }
-      }, k * this.app.state.animationSpeed)
+      }, (k-start) * this.app.state.animationSpeed)
     }
     this.setState({maxtimeouts: x});
   }
 
   animateTSP(func){
     let x = 0;
-    var STOP = 10;
-    var count = 0;
     this.app.setState({running:true});
     console.log(this.app.state.running)
-
-    var timeout;
-    var selected_color;
-    if(func === opt2){
-      timeout = this.app.state.settings.opt2.timeout;
-      selected_color = [this.app.state.settings.opt2.red, this.app.state.settings.opt2.green,
-                        this.app.state.settings.opt2.blue];
-    }
-    if(func === opt3){
-      timeout = this.app.state.settings.opt3.timeout;
-      selected_color = [this.app.state.settings.opt3.red, this.app.state.settings.opt3.green,
-                        this.app.state.settings.opt3.blue];
-    }
-
-    for(let k =0; k < (timeout*1000)/this.app.state.animationSpeed; k++){
+    const start = this.state.currentAnimationIndex;
+    const end = this.state.animationIndex;
+    for(let k =start; k < end; k++){
       x = setTimeout(() => {
-        const [edges, better_solution]= func(this.state.vertices, this.state.edges, this.app.state.dimension, selected_color);
-        const that = this;
-        animateEdges(that, edges);
-        //clear animation code;
-        // if(better_solution === true) count = 0;
-        // count ++;
-        // if(count >= STOP) break;
+        const vertices = this.state.vertices;
+        const edges= this.state.edges;
+        const animations = this.state.currentAnimations;
+
+        this.setState({edges: animations[k], currentAnimationIndex: this.state.currentAnimationIndex + 1});
         // console.log("animating")
-        if(k === ((timeout*1000)/this.app.state.animationSpeed) -1){
-          this.app.setState({running:false});
+        if(k === end-1){
+          console.log("pausing")
+          this.setState({paused: true,currentAnimationIndex: end});
+
           // console.log(final_vertices);
         }
-      }, k * this.app.state.animationSpeed)
+      }, (k-start) * this.app.state.animationSpeed)
     }
+
     this.setState({maxtimeouts: x});
   }
 
@@ -453,10 +514,17 @@ class NetworkVisualizer3D extends React.Component{
     this.setState({algoType: v});
     if(v === "2opt" || v === "3opt" ||
         v === "2optannealing" || v === "3optannealing"){
-          this.setState({TSP:true});
+          this.setState({group:"TSP"});
           if(this.state.randomType !== "cycle") this.setRandomizedType("cycle");
         }
-    else{ this.setState({TSP: false})}
+    else if(v === "spring" || v === "fruchterman" || v === "forceAtlas2"
+                      || v === "forceatlaslinlog"){
+        this.setState({group:"layout"});
+      }
+    else if(v === "kruskal" || v === "prim" || v === "greedyvertex" ||
+                                        v === "misra"){
+        this.setState({group:"coloring"});
+    }
   }
 
   setRandomizedType(v){
@@ -464,13 +532,24 @@ class NetworkVisualizer3D extends React.Component{
     waitSetRandomizedType(that, v);
   }
 
-  cancelAnimation(){
+  clearAnimations(){
     var id = this.state.maxtimeouts;
     while(id){
       clearInterval(id);
       id --;
     }
+  }
+
+  cancelAnimation(){
+    this.setState({currentAnimations: [], paused: true});
+    this.clearAnimations();
     this.app.setState({running: false});
+  }
+
+  pauseAnimation(){
+    this.setState({paused:true});
+    this.clearAnimations();
+    console.log(this.state.currentAnimationIndex);
   }
 
   resetColoring(){
@@ -561,6 +640,49 @@ class NetworkVisualizer3D extends React.Component{
     }
   }
 
+  skipFrame(){
+    this.clearAnimations();
+    const animations_index = Math.min(this.state.currentAnimationIndex + 1,
+                                      this.state.currentAnimations.length-1);
+    waitAnimateNetwork(this, animations_index, animations_index+1, null);
+  }
+
+  rewindFrame(){
+    this.clearAnimations();
+    const animations_index = Math.max(this.state.currentAnimationIndex -2, 0);
+    waitAnimateNetwork(this, animations_index, animations_index+1, null);
+  }
+
+  skipForward(){
+    this.clearAnimations();
+    const animations_index = Math.min(this.state.currentAnimations.length-1,
+        this.state.currentAnimationIndex + Math.floor(1000/this.app.state.animationSpeed));
+    const end_index = this.state.paused === true? animations_index+1:
+                              this.state.currentAnimations.length;
+    waitAnimateNetwork(this, animations_index, end_index, null);
+  }
+
+  skipBackward(){
+    this.clearAnimations();
+    const animations_index = Math.max(0,
+        this.state.currentAnimationIndex - Math.floor(1000/this.app.state.animationSpeed));
+    const end_index = this.state.paused === true? animations_index+1:
+                            this.state.currentAnimations.length-1;
+    waitAnimateNetwork(this, animations_index, end_index, null);
+  }
+
+  skipToBeginning(){
+    this.clearAnimations();
+    const animations_index = 0
+    this.setState({currentAnimationIndex:0})
+    waitAnimateNetwork(this, 0, 1,null);
+  }
+  skipToEnd(){
+    this.clearAnimations();
+    const animations_index = this.state.currentAnimations.length-1;
+    waitAnimateNetwork(this, animations_index, animations_index+1, null)
+  }
+
   openNetworkSettings(){
     waitOpenNetworkSettings(this);
   }
@@ -580,41 +702,76 @@ class NetworkVisualizer3D extends React.Component{
               </canvas>
               <br></br>
               <div className = "animationButtons">
-              <button className = "FirstFrameB" disabled = {this.app.state.running === false}
-              style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
-              <button className = "FastBackB" disabled = {this.app.state.running === false}
-                style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
-              <button className = "PreviousFrameB" disabled = {this.app.state.running === false}
-                style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
-              <button className = "StartB" hidden = {this.app.state.running === true}
+              <button className = "FirstFrameB" title = "Skip to algorithm start"
+              disabled = {this.app.state.running === false || this.state.currentAnimationIndex === 1}
+              style = {{height:Math.min(this.state.width/10,100),
+                width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
+                onClick = {() => this.skipToBeginning()}></button>
+              <button className = "FastBackB" title = "Rewind algorithm 1 second"
+              disabled = {this.app.state.running === false || this.state.currentAnimationIndex === 1}
+                style = {{height:Math.min(this.state.width/10,100),
+                  width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
+                  onClick = {() => this.skipBackward()}></button>
+              <button className = "PreviousFrameB" title = "Previous frame"
+              disabled = {this.app.state.running === false || this.state.currentAnimationIndex === 1}
+                style = {{height:Math.min(this.state.width/10,100),
+                  width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
+                  onClick = {() => this.rewindFrame()}></button>
+              <button className = "StartB" hidden = {this.state.paused === false} title = "Run algorithm"
+              disabled = {(this.state.currentAnimationIndex === this.state.currentAnimations.length)
+              && this.state.currentAnimations.length !== 0}
               onClick={() => this.runAlgorithm()}
-                style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
-              <button className = "PauseB" hidden = {this.app.state.running === false}
+                style = {{height:Math.min(this.state.width/10,100),
+                  width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+              <button className = "PauseB" hidden = {this.state.paused === true} title = "Pause Algorithm"
+              onClick = {() => this.pauseAnimation()}
+                style = {{height:Math.min(this.state.width/10,100),
+                   width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+              <button className = "StopB"
+              title = "Clear algorithm"
+              disabled = {this.app.state.running === false}
               onClick = {() => this.cancelAnimation()}
-                style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
-              <button className = "StopB" disabled = {this.app.state.running === false}
-              onClick = {() => this.cancelAnimation()}
-                style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
-              <button className = "NextFrameB" disabled = {this.app.state.running === false}
-                style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
-              <button className = "FastForwardB" disabled = {this.app.state.running === false}
-                style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
-              <button className = "LastFrameB" disabled = {this.app.state.running === false}
-                style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+                style = {{height:Math.min(this.state.width/10,100),
+                  width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+              <button className = "NextFrameB"
+              title = "Next Frame"
+              disabled = {this.app.state.running === false
+                          || this.state.currentAnimationIndex === this.state.currentAnimations.length}
+                style = {{height:Math.min(this.state.width/10,100),
+                  width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
+                  onClick = {() => this.skipFrame()}></button>
+              <button className = "FastForwardB"
+              title = "Skip forward 1 second"
+              disabled = {this.app.state.running === false
+                          || this.state.currentAnimationIndex === this.state.currentAnimations.length}
+                style = {{height:Math.min(this.state.width/10,100),
+                  width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
+                  onClick = {() => this.skipForward()}></button>
+              <button className = "LastFrameB"
+              title = "Skip to algorithm termination"
+              disabled = {this.app.state.running === false
+                          || this.state.currentAnimationIndex === this.state.currentAnimations.length}
+                style = {{height:Math.min(this.state.width/10,100),
+                  width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}
+                  onClick = {() => this.skipToEnd()}></button>
               <button className= "CameraB"
-              disabled = {this.state.cameraChanged === false}
+              title = "Reset camera"
+              disabled = {this.state.offsetX === 0 && this.state.offsetY === 0 && this.state.scaleFactor === 1}
               onClick = {() => this.resetCamera()}
-                style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
-              <button className = "ResetColoringB" disabled = {this.app.state.cameraChanged=== true}
+                style = {{height:Math.min(this.state.width/10,100),
+                  width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+              <button className = "ResetColoringB"
+              title = "Reset Coloring"
+              disabled = {this.app.state.running === true}
               onClick = {() => this.resetColoring()}
-                style = {{height:Math.min(this.state.width/10,100), width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
+                style = {{height:Math.min(this.state.width/10,100),
+                  width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}></button>
               </div>
               <br></br>
               <div className = "selectContainer">
                 <div className = "selectalgorow">
                 <select className = "selectalgo"
                 onChange = {(event) => this.setAlgoType(event.target.value)}
-                disabled = {this.app.state.running}
                 style = {{width: (this.state.height*7)/10}}>
                   <optgroup label = "Force Directed Algorithms">
                   <option value = "spring"> Basic Spring Embedding </option>
@@ -637,11 +794,11 @@ class NetworkVisualizer3D extends React.Component{
                   <optgroup label = "TSP">
                     <option value = "2opt"> 2-Opt </option>
                     <option value = "3opt"> 3-Opt </option>
-                    <option value = "2optannealing" disabled = {true}> 2-Opt Simulated Annealing </option>
+                    <option value = "2optannealing"> 2-Opt Simulated Annealing </option>
                     <option value = "3optannealing" disabled = {true} hidden = {true}> 3-Opt Simulated Annealing </option>
                   </optgroup>
                   <optgroup label = "Edge Coloring Algorithms">
-                    <option value = "" disabled = {true}> Misra-Gries Algorithm (Fan Rotation)</option>
+                    <option value = "misra"> Misra-Gries Algorithm (Fan Rotation)</option>
                   </optgroup>
                   <optgroup label = "Vertex Coloring Algorithms">
                     <option value = "greedyvertex"> Greedy Coloring </option>
@@ -788,6 +945,11 @@ function assign_color(degree, max_degree, gradient){
   var selection = gradient[Math.floor((degree/max_degree) * (gradient.length-1))]
 
   return rgb_to_str(selection)
+}
+
+async function waitSetEdges(that, sorted_edges,animations){
+  await that.setState({edges: sorted_edges});
+  waitAnimateNetwork(that, 0, animations.length,animations)
 }
 
 async function waitOpenNetworkSettings(that){
