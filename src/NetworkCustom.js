@@ -171,7 +171,7 @@ class NetworkCustomVisualizer extends React.Component{
   }
 
   setOperationType(v){
-    console.log(this.state.vertices);
+    // console.log(this.state.vertices);
     if(this.state.selected_vertices !== null){
       for(let i = 0; i < this.state.selected_vertices.length; i++){
         this.state.selected_vertices[i].vertex.color = VERTEX_COLOR;
@@ -212,7 +212,7 @@ class NetworkCustomVisualizer extends React.Component{
       var details = {}
       vertex_list.push(v)
       vertices[[vertexX, vertexY]].push(vertex_list.length-1);
-      details.vertex = v;
+      details.vertex = v.copy_vertex();
       details.vertexIndex = vertex_list.length-1;
       details.grid = [vertexX, vertexY];
       details.gridIndex = [vertices[[vertexX, vertexY]]].length-1;
@@ -358,6 +358,19 @@ class NetworkCustomVisualizer extends React.Component{
     if(box !== null &&  selected_vertices === null){
       this.selectVertices(box);
     }
+    else if(box !==null){
+      const selected_vertices = this.state.selected_vertices;
+      const selected_vertices_copy = [];
+      for(let i = 0; i < selected_vertices.length; i ++){
+        const new_details = {}
+        new_details.vertex = selected_vertices[i].vertex.copy_vertex();
+        new_details.vertex.color = VERTEX_COLOR;
+        new_details.grid = selected_vertices[i].grid;
+        new_details.index = selected_vertices[i].index;
+        selected_vertices_copy.push(new_details);
+      }
+      if(selected_vertices_copy.length !== 0 )this.addActionToBuffer("box", selected_vertices_copy);
+    }
   }
 
   getGrid(x,y){
@@ -411,9 +424,18 @@ class NetworkCustomVisualizer extends React.Component{
     // console.log("boxes", boxesToCheck);
     const selected_vertices = this.unPackVertexFromGrid(boxesToCheck, x0, y0, x1,y1);
     console.log("selected_vertices", selected_vertices);
+    const selected_vertices_copy = [];
+    for(let i = 0; i < selected_vertices.length; i++){
+      const new_details = {}
+      new_details.vertex = selected_vertices[i].vertex.copy_vertex();
+      new_details.grid = selected_vertices[i].grid;
+      new_details.index = selected_vertices[i].index;
+      selected_vertices_copy.push(new_details);
+    }
     for(let i = 0; i < selected_vertices.length; i++){
       selected_vertices[i].vertex.color = SELECTED_COLOR;
     }
+    if(selected_vertices_copy.length !== 0) this.addActionToBuffer("box", selected_vertices_copy);
     this.setState({selected_vertices: selected_vertices});
   }
 
@@ -446,27 +468,31 @@ class NetworkCustomVisualizer extends React.Component{
       // console.log("buffer", buffer);
       // console.log("bufferIndex", bufferIndex);
       this.setState({operationsBuffer: buffer, operationsBufferIndex: bufferIndex});
+      console.log(buffer);
     }
     else{
-      console.log("Not at buffer end", buffer);
-      console.log(bufferIndex)
+      // console.log("Not at buffer end", buffer);
+      // console.log(bufferIndex)
       const new_buffer =[]
       for(let i = 0; i < bufferIndex+1; i++){
         new_buffer.push(buffer[i]);
       }
-      console.log("spliced buffer", new_buffer)
-      console.log(new_buffer);
+      // console.log("spliced buffer", new_buffer)
+      // console.log(new_buffer);
       new_buffer.push({type: type, details: details});
-      console.log(new_buffer);
+      // console.log(new_buffer);
       bufferIndex ++;
-      console.log("assert", bufferIndex === new_buffer.length-1);
+      // console.log("assert", bufferIndex === new_buffer.length-1);
       this.setState({operationsBuffer: new_buffer, operationsBufferIndex: bufferIndex});
+      console.log(new_buffer);
     }
   }
 
   undoActionFromBuffer(){
+    this.setOperationType("undo");
     var bufferIndex = this.state.operationsBufferIndex;
     const buffer = this.state.operationsBuffer;
+    console.log("buffer", buffer, "index", bufferIndex);
     if(buffer[bufferIndex].type === "vertex"){
       const vertex_list = this.state.vertex_list;
       const vertices = this.state.vertices;
@@ -484,14 +510,36 @@ class NetworkCustomVisualizer extends React.Component{
       this.setState({edge_list: edge_list, edges: edges, operationsBufferIndex: bufferIndex});
     }
     else if(buffer[bufferIndex].type === "box"){
-
+      if(buffer[bufferIndex-1] === undefined || buffer[bufferIndex-1].type !== "box"){
+        bufferIndex --;
+        this.setState({operationsBufferIndex: bufferIndex});
+      }
+      else if(buffer[bufferIndex-1].type === "box"){
+        console.log("undo box movement");
+        // DETAILS vertex: v,grid: box_array[i], index: index_list[j]
+        const vertices = this.state.vertices;
+        const vertex_list = this.state.vertex_list;
+        const old_details = buffer[bufferIndex -1].details;
+        const current_details = buffer[bufferIndex].details;
+        // console.log(current_details.length);
+        for(let i = 0; i < current_details.length; i++){
+          const index_value = vertices[current_details[i].grid].indexOf(current_details[i].index);
+          vertices[current_details[i].grid].splice(index_value,1);
+          vertices[old_details[i].grid].push(current_details[i].index);
+          vertex_list[current_details[i].index] = old_details[i].vertex;
+        }
+        bufferIndex --;
+        this.setState({vertices: vertices, vertex_list: vertex_list, operationsBufferIndex: bufferIndex});
+      }
     }
 
   }
 
   redoActionFromBuffer(){
+    this.setOperationType("redo")
     var bufferIndex = this.state.operationsBufferIndex;
     const buffer = this.state.operationsBuffer;
+    console.log("buffer", buffer, "index", bufferIndex);
     if(buffer[bufferIndex+1].type === "vertex"){
       bufferIndex ++;
       const vertex_list = this.state.vertex_list;
@@ -507,6 +555,28 @@ class NetworkCustomVisualizer extends React.Component{
       edge_list.push(buffer[bufferIndex].details.edge);
       edges[buffer[bufferIndex].details.grid] = true;
       this.setState({edge_list: edge_list, edges: edges, operationsBufferIndex: bufferIndex});
+    }
+    else if(buffer[bufferIndex+1].type === "box"){
+      // DETAILS vertex: v,grid: box_array[i], index: index_list[j]
+      if(buffer[bufferIndex+2] !== undefined || buffer[bufferIndex+2] === "box"){
+        bufferIndex++;
+        this.setState({operationsBufferIndex: bufferIndex});
+      }
+      else if(buffer[bufferIndex].type === "box"){
+        console.log("redo box movement");
+        const vertices = this.state.vertices;
+        const vertex_list = this.state.vertex_list;
+        const old_details = buffer[bufferIndex].details;
+        const current_details = buffer[bufferIndex+1].details;
+        for(let i = 0; i < current_details.length; i++){
+          const index_value = vertices[old_details[i].grid].indexOf(old_details[i].index);
+          vertices[old_details[i].grid].splice(index_value,1);
+          vertices[current_details[i].grid].push(old_details[i].index);
+          vertex_list[old_details[i].index] = current_details[i].vertex;
+        }
+        bufferIndex ++;
+        this.setState({vertices: vertices, vertex_list: vertex_list, operationsBufferIndex: bufferIndex});
+      }
     }
   }
 
