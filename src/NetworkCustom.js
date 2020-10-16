@@ -265,6 +265,11 @@ class NetworkCustomVisualizer extends React.Component{
       // console.log("successful connection");
       edges[[startVertexIndex, endVertexIndex]] = true;
       edge_list.push([startVertexIndex, endVertexIndex]);
+      const details = {};
+      details.grid = [startVertexIndex, endVertexIndex];
+      details.edge = [startVertexIndex, endVertexIndex];
+      details.index = edge_list.length-1;
+      this.addActionToBuffer("edge", details);
     }
     return [edges, edge_list];
   }
@@ -469,6 +474,16 @@ class NetworkCustomVisualizer extends React.Component{
       vertices[buffer[bufferIndex].details.grid].splice(buffer[bufferIndex].gridIndex,1);
       bufferIndex --;
       this.setState({vertex_list: vertex_list, vertices: vertices, operationsBufferIndex: bufferIndex});
+    }
+    else if(buffer[bufferIndex].type === "edge"){
+      const edge_list = this.state.edge_list;
+      const edges = this.state.edges;
+      edge_list.splice(buffer[bufferIndex].details.index,1);
+      edges[buffer[bufferIndex].details.grid] = undefined;
+      bufferIndex --;
+      this.setState({edge_list: edge_list, edges: edges, operationsBufferIndex: bufferIndex});
+    }
+    else if(buffer[bufferIndex].type === "box"){
 
     }
 
@@ -484,6 +499,14 @@ class NetworkCustomVisualizer extends React.Component{
       vertex_list.push(buffer[bufferIndex].details.vertex);
       vertices[buffer[bufferIndex].details.grid].push(vertex_list.length-1);
       this.setState({vertex_list: vertex_list, vertices: vertices, operationsBufferIndex: bufferIndex});
+    }
+    else if(buffer[bufferIndex+1].type === "edge"){
+      bufferIndex ++;
+      const edge_list = this.state.edge_list;
+      const edges = this.state.edges;
+      edge_list.push(buffer[bufferIndex].details.edge);
+      edges[buffer[bufferIndex].details.grid] = true;
+      this.setState({edge_list: edge_list, edges: edges, operationsBufferIndex: bufferIndex});
     }
   }
 
