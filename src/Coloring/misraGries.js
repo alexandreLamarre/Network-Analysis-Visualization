@@ -13,9 +13,9 @@ export function misraGries(vertices, edges, initial_color, end_color){
   var colorsUsed = [];
 
   const num_colors = find_max_degree(vertices)+2;
-  console.log("num_colors", num_colors);
+  // console.log("num_colors", num_colors);
   const gradient = createColorGradient(initial_color, end_color, num_colors);
-  console.log("gradient", gradient);
+  // console.log("gradient", gradient);
 
   var i = 0;
   while(uncolored_edges.length > 0){
@@ -55,7 +55,7 @@ export function misraGries(vertices, edges, initial_color, end_color){
     edge_colors[[w,u]] = fan_end_free_color;
     incident_colors[u].push(fan_end_free_color);
     incident_colors[w].push(fan_end_free_color);
-    console.log("new_iteration", i++);
+    // console.log("new_iteration", i++);
     for(let i = 0; i < current_edges.length; i++){
       var color = edge_colors[[current_edges[i].start, current_edges[i].end]];
       if(color.length !== 0){
@@ -258,7 +258,7 @@ function createColorGradient(color1, color2, num_colors){
   const new_colors = [];
   for(let i = 0; i < num_colors; i++){
     const new_hue = hue + (uniform_factor*i)%360;
-    new_colors.push(convertHSLtoRGB(new_hue, saturation, lightness));
+    new_colors.push((convertHSLtoRGB(new_hue, saturation, lightness)));
     // new_colors.push([color2[0]+red*(i/num_colors-1), color2[1]+green*(i/num_colors-1), color2[2]+ blue*(i/num_colors-1)]);
   }
 
@@ -271,7 +271,7 @@ function convertHSLtoRGB(hue, saturation, lightness){
   const X = C * (1 - Math.abs(hue/60)%2 -1);
   const m = lightness - C/2;
   const [R_prime, G_prime, B_prime] = check_degrees(hue, C, X);
-  return [(R_prime+m)*255, (G_prime + m)* 255, (B_prime+m) * 255];
+  return [parseInt((R_prime+m)*255), parseInt((G_prime + m)* 255), parseInt((B_prime+m)*255)];
 }
 //
 function check_degrees(hue, C, X){
