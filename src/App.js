@@ -16,6 +16,8 @@ class App extends React.Component{
       connected: "True",
       maxE: 600,
       minE: 20,
+      height: 0,
+      width: 0,
       settings: {
         spring: {ka: 2, kr: 1, eps: 0.5,
                 delta: 0.1, areascaling: 0,
@@ -85,23 +87,33 @@ class App extends React.Component{
     this.navbar = React.createRef();
   }
 
+  componentDidMount(){
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    this.setState({height: h, width: w});
+  }
 
   render() {
     let network;
     if(this.state.dimension === 2){
-      network = <NetworkVisualizer ref = {this.network} app = {this}/>
+      network = <NetworkVisualizer height = {this.state.height}
+      ref = {this.network} app = {this}/>
     }
     else if(this.state.dimension === 3){
-      network = <NetworkVisualizer3D ref = {this.network3d} app = {this}/>
+      network = <NetworkVisualizer3D
+      height = {this.state.height}
+      ref = {this.network3d} app = {this}/>
     }
     else if(this.state.dimension === "Custom"){
-      network = <NetworkCustomVisualizer ref = {this.customnetwork} app = {this}></NetworkCustomVisualizer>
+      network = <NetworkCustomVisualizer height = {this.state.height}
+      ref = {this.customnetwork} app = {this}></NetworkCustomVisualizer>
     }
 
     return (
       <div className="App">
         <div className = "AppElements">
-          <NetworkNavBar ref = {this.navbar} app = {this}/>
+          <NetworkNavBar height = {this.state.height}
+          ref = {this.navbar} app = {this}/>
           {network}
         </div>
       </div>

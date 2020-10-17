@@ -54,8 +54,6 @@ class NetworkVisualizer extends React.Component{
       TSP : false,
       offsetX: 0,
       offsetY: 0,
-      mouseX: 0,
-      mouseY: 0,
       dragging: false,
       previousMouseX: 0,
       previousMouseY: 0,
@@ -93,9 +91,7 @@ class NetworkVisualizer extends React.Component{
     this.canvas.current.width = this.state.width;
     this.canvas.current.height = this.state.height;
     const ctx = this.canvas.current.getContext("2d");
-    ctx.translate(this.state.mouseX, this.state.mouseY);
     ctx.scale(this.state.scaleFactor,this.state.scaleFactor);
-    ctx.translate(-this.state.mouseX, - this.state.mouseY);
     for(let i =0; i < this.state.vertices.length; i++){
       ctx.beginPath();
       const c = this.state.vertices[i].color;
@@ -542,10 +538,7 @@ class NetworkVisualizer extends React.Component{
   zoomCamera(e){
     const delta = -Math.sign(e.deltaY);
     const new_scale_factor = this.state.scaleFactor + delta*0.035;
-    console.log(e.clientX, e.clientY);
-    const rect = this.canvas.current.getBoundingClientRect();
-    this.setState({scaleFactor: new_scale_factor, mouseX: e.clientX-rect.left,
-                                                  mouseY: e.clientY-rect.top});
+    this.setState({scaleFactor: new_scale_factor});
   }
 
   skipFrame(){
@@ -636,7 +629,7 @@ class NetworkVisualizer extends React.Component{
   render(){
 
     return <div className = "network">
-            <canvas
+            <canvas style = {{marginTop: this.props.height*1/20+this.props.height/40}}
             className = "networkCanvas" ref = {this.canvas}
             onMouseDown = {(e) => this.setDrag(e,true)}
             onMouseUp = {(e) => this.setDrag(e,false)}

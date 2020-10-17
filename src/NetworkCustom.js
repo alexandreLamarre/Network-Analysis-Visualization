@@ -638,7 +638,7 @@ class NetworkCustomVisualizer extends React.Component{
             parent={this}
             trigger ={clearNetwork}
             msg = {"Any unsaved changes will be lost."}/>
-            <canvas
+            <canvas style = {{marginTop: this.props.height*1/20+this.props.height/40}}
             onClick = {(e) => this.processClickOutcome(e)}
             onMouseMove = {(e) => this.updateCursorPostion(e)}
             onMouseLeave = {() => this.processMouseLeave()}

@@ -10,10 +10,8 @@ import "./NetworkSideDrawer.css";
 Modal.setAppElement("#root")
 
 export const DrawerToggleButton = props => (
-  <button onClick = {props.openSettings} className = "toggle_button">
-    <div className = "toggle_button-line"></div>
-    <div className = "toggle_button-line"></div>
-    <div className = "toggle_button-line"></div>
+  <button onClick = {props.openSettings} className = "toggle_button"
+  style = {{height: props.height/20, width: props.height/20, backgroundSize: 'cover'}}>
   </button>
 )
 
@@ -46,13 +44,13 @@ class NetworkSideDrawer extends React.Component{
 
 
   render(){
-
     return <div>
 
             <Modal isOpen = {this.state.open}
             onRequestClose = {() => this.setOpen(false)}
             className = "sidedrawer"
             overlayClassName = "sidedraweroverlay"
+            style = {{overlay:{top:this.props.height*1/20}}}
             >
               <ConfirmationWindow
               ref = {this.confirmDimensionWindow}

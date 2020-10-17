@@ -19,7 +19,6 @@
 .toolbar__logo a{
   color: white;
   text-decoration: none;
-  font-size: 1.5rem;
 }
 
 .toolbar_navigation-items a {
@@ -59,8 +58,7 @@
 .toolbar__search label{
   color:white;
   margin-right: 10px;
-  font-size: 1.4em;
-  vertical-align: middle;
+
 }
 
 .toolbar__search input{

@@ -20,12 +20,18 @@ class NetworkNavBar extends React.Component{
 
   render(){
     return <div className = "gonavbar">
-              <NetworkSideDrawer ref = {this.settings} app = {this.app}></NetworkSideDrawer>
-              <header className = "toolbar">
+              <NetworkSideDrawer height = {this.props.height}
+              ref = {this.settings} app = {this.app}></NetworkSideDrawer>
+              <header className = "toolbar" style = {{height: this.props.height*1/20}}>
                 <nav className ="toolbar__navigation">
-                  <div><DrawerToggleButton openSettings = {() => this.openSettings()}></DrawerToggleButton></div>
-                  <div className = "toolbar__logo"><a > Network Algorithm Visualizer {this.app.state.dimension}{this.app.state.dimension === "Custom"?"":"D"} </a></div>
-                  <div className ="toolbar__search">
+                  <div><DrawerToggleButton openSettings = {() => this.openSettings()}
+                  height = {this.props.height}></DrawerToggleButton></div>
+                  <div className = "toolbar__logo"
+                  style = {{fontSize: this.props.height/40, marginTop: this.props.height/240}} >
+                  <a > Network Analysis {this.app.state.dimension}{this.app.state.dimension === "Custom"?"":"D"}
+                  </a></div>
+                  <div className ="toolbar__search"
+                  style = {{fontSize: this.props.height/40, marginTop: this.props.height/240}}>
                       <form>
                       <label> Search :
                       </label>

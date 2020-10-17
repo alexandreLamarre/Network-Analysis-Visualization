@@ -728,7 +728,7 @@ class NetworkVisualizer3D extends React.Component{
 
   render(){
     return <div>
-              <canvas
+              <canvas style = {{marginTop: this.props.height*1/20+this.props.height/40}}
               className = "canvas3d"
               ref = {this.canvas}
               onWheel = {(e) => this.zoomCamera(e.deltaY)}
