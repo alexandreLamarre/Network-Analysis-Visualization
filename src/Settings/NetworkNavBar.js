@@ -13,7 +13,6 @@ class NetworkNavBar extends React.Component{
   }
 
   openSettings(){
-    console.log("clicked");
     const open = this.settings.current.state.open;
     this.settings.current.setOpen(!open);
   }

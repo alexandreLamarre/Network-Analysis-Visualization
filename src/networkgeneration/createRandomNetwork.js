@@ -4,11 +4,11 @@ import Edge from "../datatypes/Edge";
 export default function createRandomNetwork(maxWidth, maxHeight, numV, numE, conn, randomType, startColors, endColors, resize, minsize, maxsize){
   let connected = conn === undefined? "False": conn;
   let seed = randomType === undefined? "random": randomType;
-  console.log("startColors:", startColors);
-  console.log("endColors:", endColors);
-  console.log("resize", resize);
-  console.log("minsize", minsize);
-  console.log("maxsize", maxsize);
+  // console.log("startColors:", startColors);
+  // console.log("endColors:", endColors);
+  // console.log("resize", resize);
+  // console.log("minsize", minsize);
+  // console.log("maxsize", maxsize);
   const maxDegree = numV-1;
   let maxEdges = Math.floor((maxDegree*numV)/2)
   const maxEdgesValue = maxEdges;
@@ -98,12 +98,12 @@ export default function createRandomNetwork(maxWidth, maxHeight, numV, numE, con
 
 
   var max_degree = find_max_degree(vertices);
-  console.log("max_degree", max_degree);
+  // console.log("max_degree", max_degree);
   var shouldRecolor = !(sameColor(startColors, endColors));
-  console.log(shouldRecolor);
+  // console.log(shouldRecolor);
   var colorGradient;
   if(shouldRecolor === true) var colorGradient = createColorGradient(startColors, endColors, max_degree);
-  console.log(colorGradient);
+  // console.log(colorGradient);
   if(resize === true || shouldRecolor === true){
   for(let i = 0; i < vertices.length; i++){
       if(resize === true) vertices[i].size = assign_size(vertices[i].degree, max_degree, minsize, maxsize);

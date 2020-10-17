@@ -586,7 +586,6 @@ class NetworkCustomVisualizer extends React.Component{
   }
 
   saveAsCSV(){
-    console.log('csv');
     let csvContent = "data:text/csv;charset=utf-8,";
     const vertex_list = this.state.vertex_list;
     const edge_list = this.state.edge_list;

@@ -111,7 +111,7 @@ function checkColorIn(color, array){
     // console.log("COLOR", color);
     if(array[i][0] === (color[0]) && array[i][1] === color[1]
                                       && (array[i][2]) === (color[2])) {
-                                        console.log("accepted",array[i], color)
+                                        // console.log("accepted",array[i], color)
                                         return true
                                       };
   }

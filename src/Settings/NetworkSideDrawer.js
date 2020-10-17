@@ -95,13 +95,10 @@ class NetworkSideDrawer extends React.Component{
 export default NetworkSideDrawer;
 
 async function switchDimension(that){
-  console.log("current app  dimension", that.app.state.dimension)
   if(that.app.state.dimension === 2) {
-    console.log("switching to 3")
     await that.app.setState({dimension: 3, running: false});
   }
   else if(that.app.state.dimension == 3 || that.app.state.dimension === "Custom") {
-    console.log("switching to 2")
     await that.app.setState({dimension: 2, running: false});
   }
 }

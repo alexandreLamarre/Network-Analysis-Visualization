@@ -15,7 +15,7 @@ export function fruchtermanReingold(vertices,edges,graph_distancex, graph_distan
   K = C* Math.sqrt((W)*(L)/(vertices.length));
   const epsilon = settings.eps;
 
-  console.log(settings);
+  // console.log(settings);
 
 
   let t = 1;

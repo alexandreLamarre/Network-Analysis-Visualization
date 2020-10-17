@@ -216,7 +216,6 @@ class AlgorithmAttributes extends React.Component{
     if(e === "") {
       this.setState({filtering: false, filter: e});
       this.app.setState({filtering: false, filter: e});
-      console.log("default");
     }
     else{
       this.app.setState({filtering: true, filter: e});

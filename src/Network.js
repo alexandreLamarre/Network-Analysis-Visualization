@@ -27,7 +27,7 @@ var MAX_TIMEOUT = 30; //seconds
 async function waitAnimateNetwork(that,startIndex, endIndex, animations,func){
   if(animations !== null) await that.setState({currentAnimations: animations});
   await that.setState({currentAnimationIndex: startIndex, animationIndex: endIndex, paused: false});
-  console.log("start",startIndex,"end", endIndex,"animations", animations);
+  // console.log("start",startIndex,"end", endIndex,"animations", animations);
   if(that.state.group === "layout") that.animateNetwork();
   if(that.state.group === "coloring") that.animateColoring();
   if(that.state.group === "TSP") that.animateTSP()
@@ -168,7 +168,7 @@ class NetworkVisualizer extends React.Component{
 
   generateSpectralDrawing(){
     const eigenvectors = spectralDrawing(this.state.vertices, this.state.edges,this.state.width, this.state.height, this.app.state.dimension);
-      console.log(eigenvectors);
+      // console.log(eigenvectors);
   }
 
   generateRadialFlowDirected(){
@@ -215,7 +215,7 @@ class NetworkVisualizer extends React.Component{
       temp = 0.992*temp;
     }
     var min_temperature = temp;
-    console.log("max", max_temperature, "min", min_temperature);
+    // console.log("max", max_temperature, "min", min_temperature);
 
     var edges = this.state.edges;
     var better_solution = false;
@@ -282,7 +282,7 @@ class NetworkVisualizer extends React.Component{
   animateTSP(func){
     let x = 0;
     this.app.setState({running:true});
-    console.log(this.app.state.running)
+    // console.log(this.app.state.running)
     const start = this.state.currentAnimationIndex;
     const end = this.state.animationIndex;
     for(let k =start; k < end; k++){
@@ -294,7 +294,7 @@ class NetworkVisualizer extends React.Component{
         this.setState({edges: animations[k], currentAnimationIndex: this.state.currentAnimationIndex + 1});
         // console.log("animating")
         if(k === end-1){
-          console.log("pausing")
+          // console.log("pausing")
           this.setState({paused: true,currentAnimationIndex: end});
 
           // console.log(final_vertices);
@@ -308,7 +308,7 @@ class NetworkVisualizer extends React.Component{
   animateColoring(){
     let x = 0;
     this.app.setState({running:true});
-    console.log("animating");
+    // console.log("animating");
     const start = this.state.currentAnimationIndex;
     const end = this.state.animationIndex;
 
@@ -321,7 +321,7 @@ class NetworkVisualizer extends React.Component{
         this.setState({vertices: animations[k].vertices, edges:animations[k].edges, currentAnimationIndex: this.state.currentAnimationIndex + 1});
         // console.log("animating")
         if(k === end-1){
-          console.log("pausing")
+          // console.log("pausing")
           this.setState({paused: true,currentAnimationIndex: end});
 
           // console.log(final_vertices);
@@ -428,7 +428,7 @@ class NetworkVisualizer extends React.Component{
   pauseAnimation(){
     this.setState({paused:true});
     this.clearAnimations();
-    console.log(this.state.currentAnimationIndex);
+    // console.log(this.state.currentAnimationIndex);
   }
 
   resetColoring(){
@@ -593,7 +593,6 @@ class NetworkVisualizer extends React.Component{
   }
 
   saveAsCSV(){
-    console.log('csv');
     let csvContent = "data:text/csv;charset=utf-8,";
     const vertices = this.state.vertices;
     const edges = this.state.edges;
@@ -614,7 +613,6 @@ class NetworkVisualizer extends React.Component{
   }
 
   saveAs(extension){
-    console.log(extension);
     const canvas = this.canvas.current;
     const image = canvas.toDataURL("network/"+extension);
     var link = document.createElement('a');
@@ -720,7 +718,7 @@ class NetworkVisualizer extends React.Component{
                   <optgroup label = "Spectral Layout Algorithms">
                   <option value = "hall" disabled = {true}> Hall's algorithm </option>
                   <option value = "schwarz" disabled = {true}> Schwarz Based Method </option>
-                  <option value = "spectralDrawing"> Generalized Eigenvector (Koren)</option>
+                  <option value = "spectralDrawing" disabled = {true}> Generalized Eigenvector (Koren)</option>
                   </optgroup>
                   <optgroup label = "Custom Algorithms" hidden = {true}>
                     <option value = "radialFlowDirected" disabled = {true}>  Radial Flow Directed </option>

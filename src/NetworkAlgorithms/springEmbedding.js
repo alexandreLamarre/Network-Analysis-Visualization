@@ -21,7 +21,7 @@ export function springEmbedding(vertices,edges,graph_distancex, graph_distancey,
   CSPRING = settings.ka;
   const distType = settings.distanceType;
 
-  console.log(settings);
+  // console.log(settings);
 
   let t = 1;
   let animations = [];
