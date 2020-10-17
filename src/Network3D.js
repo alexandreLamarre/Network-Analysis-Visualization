@@ -15,6 +15,7 @@ import {opt2Annealing} from "./TSP/opt2Annealing";
 import {opt3} from "./TSP/opt3";
 import {GreedyColoring} from "./Coloring/GreedyColoring";
 import {misraGries} from "./Coloring/misraGries";
+import {spectralDrawing} from "./Spectral/spectralDrawing";
 
 import "./Network3D.css";
 
@@ -219,7 +220,9 @@ class NetworkVisualizer3D extends React.Component{
   }
 
   generateSpectralDrawing(){
-
+    const [eigenvectors, animations] = spectralDrawing(this.state.vertices,
+      this.state.edges,this.state.width, this.state.height, this.app.state.dimension);
+      waitAnimateNetwork(this, 0, animations.length, animations);
   }
 
   generateRadialFlowDirected(){
@@ -518,7 +521,8 @@ class NetworkVisualizer3D extends React.Component{
           if(this.state.randomType !== "cycle") this.setRandomizedType("cycle");
         }
     else if(v === "spring" || v === "fruchterman" || v === "forceAtlas2"
-                      || v === "forceatlaslinlog"){
+                      || v === "forceatlaslinlog" || v === "spectralDrawing"
+                    || v === "hall" || v === "schwarz"){
         this.setState({group:"layout"});
       }
     else if(v === "kruskal" || v === "prim" || v === "greedyvertex" ||
@@ -813,8 +817,9 @@ class NetworkVisualizer3D extends React.Component{
                   <option value = "forceAtlasLinLog"> Force Atlas 2 (LinLog) </option>
                   </optgroup>
                   <optgroup label = "Spectral Layout Algorithms">
-                  <option value = "hall" disabled = {true}> Hall's algorithm </option>
-                  <option value = "spectralDrawing" disabled = {true}> Generalized Eigenvector (Koren)</option>
+                  <option value = "hall"> Hall's algorithm </option>
+                  <option value = "schwarz" disabled = {true}> Schwarz Based Method</option>
+                  <option value = "spectralDrawing"> Generalized Eigenvector (Koren)</option>
                   </optgroup>
                   <optgroup label = "Custom Algorithms" hidden = {true}>
                     <option value = "radialFlowDirected" disabled = {true}>  Radial Flow Directed </option>
