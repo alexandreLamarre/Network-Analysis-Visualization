@@ -1,7 +1,7 @@
 import React from "react";
 import Vertex from "./datatypes/Vertex";
 import Edge from "./datatypes/Edge";
-
+import ConfirmationWindow from "./ConfirmationWindow";
 
 import "./NetworkCustom.css";
 
@@ -39,6 +39,7 @@ class NetworkCustomVisualizer extends React.Component{
     }
     this.app = this.props.app;
     this.canvas = React.createRef();
+    this.confirmClear = React.createRef();
   }
 
   componentDidMount(){
@@ -348,18 +349,6 @@ class NetworkCustomVisualizer extends React.Component{
     return vertices;
   }
 
-  clearNetwork(){
-    const vertices = {};
-    const c = this.state.gridConstant;
-    for(let i = 0; i < c; i++){
-      for(let j = 0; j < c; j++){
-        vertices[[i,j]] = [];
-      }
-    }
-    this.setState({vertices: vertices, edges: {}, edgeStart: [null,null], box:null,
-    selected_vertices: null, vertex_list: [], edge_list: [], operationsBuffer: [],
-      operationsBufferIndex:-1});
-  }
 
   clearDragOutcome(){
     this.setState({dragging:false, edgeStart: [null,null], edgeStartIndex: null});
@@ -644,6 +633,11 @@ class NetworkCustomVisualizer extends React.Component{
   render(){
     const num_b = 10;
     return <div>
+            <ConfirmationWindow
+            ref = {this.confirmClear}
+            parent={this}
+            trigger ={clearNetwork}
+            msg = {"Any unsaved changes will be lost."}/>
             <canvas
             onClick = {(e) => this.processClickOutcome(e)}
             onMouseMove = {(e) => this.updateCursorPostion(e)}
@@ -692,7 +686,7 @@ class NetworkCustomVisualizer extends React.Component{
             </button> */}
             <button className = "clearB"
             title = "Clear Frame"
-            onClick = {() => this.clearNetwork()}
+            onClick = {() => this.confirmClear.current.setOpen(true)}
             style = {{height:Math.min(this.state.width/num_b,100),
               width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
             </button>
@@ -742,6 +736,19 @@ class NetworkCustomVisualizer extends React.Component{
             <br></br>
            </div>
   }
+}
+
+function clearNetwork(that){
+  const vertices = {};
+  const c = that.state.gridConstant;
+  for(let i = 0; i < c; i++){
+    for(let j = 0; j < c; j++){
+      vertices[[i,j]] = [];
+    }
+  }
+  that.setState({vertices: vertices, edges: {}, edgeStart: [null,null], box:null,
+  selected_vertices: null, vertex_list: [], edge_list: [], operationsBuffer: [],
+    operationsBufferIndex:-1});
 }
 
 function distance(x1,x2,y1,y2){
