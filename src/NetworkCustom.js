@@ -1,5 +1,6 @@
 import React from "react";
 import Vertex from "./datatypes/Vertex";
+import Edge from "./datatypes/Edge";
 
 
 import "./NetworkCustom.css";
@@ -597,10 +598,36 @@ class NetworkCustomVisualizer extends React.Component{
 
   saveAsCSV(){
     console.log('csv');
+    let csvContent = "data:text/csv;charset=utf-8,";
+    const vertex_list = this.state.vertex_list;
+    const edge_list = this.state.edge_list;
+    //update degrees appropriately
+    for(let i = 0 ; i < vertex_list.length; i ++){
+      vertex_list[i].degree = 0;
+    }
+    for(let i = 0; i < edge_list.length; i++){
+      vertex_list[edge_list[i][0]].degree ++;
+      vertex_list[edge_list[i][1]].degree ++;
+    }
+
+    for(let i = 0; i < vertex_list.length; i ++){
+      csvContent += vertex_list[i].toCSV();
+    }
+    for(let i = 0; i < edge_list.length; i++){
+      const edge = new Edge(edge_list[i], "rgb(0,0,0)", 1)
+      edge.alpha = 0.1;
+      csvContent += (edge.toCSV());
+    }
+    var link = document.createElement('a');
+    link.href = csvContent;
+    link.download = 'Network.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
   }
 
   saveAs(extension){
-    console.log("png");
     const canvas = this.canvas.current;
     const image = canvas.toDataURL("network/"+extension);
     var link = document.createElement('a');

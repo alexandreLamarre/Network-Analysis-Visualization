@@ -52,8 +52,8 @@ class NetworkVisualizer extends React.Component{
       randomType: "random",
       layoutType: 0,
       TSP : false,
-      offsetX: -1,
-      offsetY: -1,
+      offsetX: 0,
+      offsetY: 0,
       mouseX: 0,
       mouseY: 0,
       dragging: false,
@@ -171,7 +171,8 @@ class NetworkVisualizer extends React.Component{
   }
 
   generateSpectralDrawing(){
-
+    const eigenvectors = spectralDrawing(this.state.vertices, this.state.edges,this.state.width, this.state.height, this.app.state.dimension);
+      console.log(eigenvectors);
   }
 
   generateRadialFlowDirected(){
@@ -598,6 +599,40 @@ class NetworkVisualizer extends React.Component{
     waitOpenAlgorithmSettings(this);
   }
 
+  saveAsCSV(){
+    console.log('csv');
+    let csvContent = "data:text/csv;charset=utf-8,";
+    const vertices = this.state.vertices;
+    const edges = this.state.edges;
+
+    for(let i = 0; i < vertices.length; i ++){
+      csvContent += vertices[i].toCSV();
+    }
+    for(let i = 0; i < edges.length; i++){
+      csvContent += (edges[i].toCSV());
+    }
+    var link = document.createElement('a');
+    link.href = csvContent;
+    link.download = 'Network.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+  }
+
+  saveAs(extension){
+    console.log(extension);
+    const canvas = this.canvas.current;
+    const image = canvas.toDataURL("network/"+extension);
+    var link = document.createElement('a');
+    link.href = image;
+    link.download = 'Network.'+extension;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+
   render(){
 
     return <div className = "network">
@@ -681,7 +716,7 @@ class NetworkVisualizer extends React.Component{
 
                 <select className = "selectalgo"
                 onChange = {(event) => this.setAlgoType(event.target.value)}
-                style = {{width: (this.state.width*7)/10}}>
+                style = {{width: (this.state.width*8)/10}}>
                   <optgroup label = "Force Directed Algorithms">
                   <option value = "spring"> Basic Spring Embedding </option>
                   <option value = "fruchtermanReingold"> Fruchterman-Reingold </option>
@@ -692,7 +727,7 @@ class NetworkVisualizer extends React.Component{
                   <optgroup label = "Spectral Layout Algorithms">
                   <option value = "hall" disabled = {true}> Hall's algorithm </option>
                   <option value = "schwarz" disabled = {true}> Schwarz Based Method </option>
-                  <option value = "spectralDrawing" disabled = {true}> Generalized Eigenvector (Koren)</option>
+                  <option value = "spectralDrawing"> Generalized Eigenvector (Koren)</option>
                   </optgroup>
                   <optgroup label = "Custom Algorithms" hidden = {true}>
                     <option value = "radialFlowDirected" disabled = {true}>  Radial Flow Directed </option>
@@ -714,6 +749,18 @@ class NetworkVisualizer extends React.Component{
                     <option value = "greedyvertex" > Greedy Coloring </option>
                   </optgroup>
                 </select>
+                <div className = "dropdown">
+                  <button className = "saveB"
+                  title = "Save as"
+                  style = {{height:Math.min(this.state.width/10,100),
+                  width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
+                  </button>
+                  <div className = "dropdown-content">
+                    <a className = "aFile" onClick = {() => this.saveAsCSV()}>.csv</a>
+                    <a className = "aFile" onClick = {() => this.saveAs("png")}>.png</a>
+                    <a className = "aFile" onClick = {() => this.saveAs("jpg")}>.jpg</a>
+                  </div>
+                </div>
                 <button className = "AlgoB"
                 title = "Algorithm Settings"
                 onClick = {() => this.openAlgorithmSettings()}
@@ -723,7 +770,7 @@ class NetworkVisualizer extends React.Component{
                     </button>
               </div>
 
-
+              <br></br>
               <div className = "selectalgorow">
                 <select className = "selectalgo"
                  onChange = {(event) => this.setLayoutType(event.target.value)}
@@ -733,7 +780,7 @@ class NetworkVisualizer extends React.Component{
                   <option value = "1"> Stretch to Fit </option>
                 </select>
                 <select value = {this.state.randomType}
-                style = {{width: (this.state.width*4)/10}}
+                style = {{width: (this.state.width*6)/10}}
                 disabled = {this.app.state.running === true }className = "selectalgo" onChange = {(event) => this.setRandomizedType(event.target.value)}>
                   <option value = "random" disabled = {this.state.group === "TSP"}> Random </option>
                   <option value = "randomcircle" disabled = {this.state.group === "TSP"}> Random Circle </option>

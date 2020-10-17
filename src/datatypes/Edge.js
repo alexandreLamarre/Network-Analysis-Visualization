@@ -2,7 +2,7 @@ class Edge{
   /*
   Colors are in rgba format
   */
-  constructor(start, end, weight, color){
+  constructor(start, end, color, weight){
     this.start = start;
     this.end = end;
     this.weight = weight;
@@ -25,6 +25,16 @@ class Edge{
     e.setColor(this.color);
     e.setAlpha(this.alpha);
     return e;
+  }
+
+  toCSV(){
+    var row = "edge,";
+    row += this.start.toString() +",";
+    row += this.end.toString() + ",";
+    row += this.color + ",";
+    row += this.weight.toString() +",";
+    row += this.alpha.toString() + "\n";
+    return row;
   }
 }
 

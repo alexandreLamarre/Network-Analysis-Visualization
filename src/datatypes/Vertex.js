@@ -56,6 +56,18 @@ class Vertex {
     v.size = this.size;
     return v;
   }
+
+  toCSV(){
+    var row = "vertex,";
+    row += this.x.toString()+",";
+    row += this.y.toString()+",";
+    if(this.z === null) row += " ,";
+    else{ row += this.z.toString()+","};
+    row += this.degree.toString() + ",";
+    row+= this.size.toString() + ",";
+    row += this.color + "\n";
+    return row;
+  }
 }
 
 export default Vertex;
