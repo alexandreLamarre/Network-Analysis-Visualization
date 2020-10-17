@@ -405,7 +405,8 @@ class NetworkCustomVisualizer extends React.Component{
 
     const new_x = Math.floor(x/gridX);
     const new_y = Math.floor(y/gridY);
-    return [new_x, new_y];
+    return [Math.min(Math.max(0,new_x), this.state.gridConstant-1),
+      Math.min(Math.max(new_y,0),this.state.gridConstant-1)];
   }
 
   getListGrid(x0, y0, x1, y1){
