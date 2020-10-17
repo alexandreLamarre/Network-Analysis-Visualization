@@ -742,6 +742,7 @@ class NetworkVisualizer extends React.Component{
                 </select>
                 <div className = "dropdown">
                   <button className = "saveB"
+                  disabled = {this.app.state.running === true && this.state.paused === false}
                   title = "Save as"
                   style = {{height:Math.min(this.state.width/10,100),
                   width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
