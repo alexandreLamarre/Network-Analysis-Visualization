@@ -595,6 +595,25 @@ class NetworkCustomVisualizer extends React.Component{
     this.clearDragOutcome();
   }
 
+  saveAsCSV(){
+    console.log('csv');
+  }
+
+  saveAs(extension){
+    console.log("png");
+    const canvas = this.canvas.current;
+    const image = canvas.toDataURL("network/"+extension);
+    var link = document.createElement('a');
+    link.href = image;
+    link.download = 'Network.'+extension;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+
+  }
+
+
   render(){
     const num_b = 10;
     return <div>
@@ -669,12 +688,20 @@ class NetworkCustomVisualizer extends React.Component{
             style = {{height:Math.min(this.state.width/num_b,100),
             width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
             </button>
-            <button className = "saveB"
-            title = "Save as"
-            style = {{height:Math.min(this.state.width/num_b,100),
-            width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
-            </button>
+            <div className = "dropdown">
+              <button className = "saveB"
+              title = "Save as"
+              style = {{height:Math.min(this.state.width/num_b,100),
+              width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
+              </button>
+              <div className = "dropdown-content">
+                <a className = "aFile" onClick = {() => this.saveAsCSV()}>.csv</a>
+                <a className = "aFile" onClick = {() => this.saveAs("png")}>.png</a>
+                <a className = "aFile" onClick = {() => this.saveAs("jpg")}>.jpg</a>
+              </div>
+            </div>
             <button className = "uploadB"
+            disabled = {true}
             title = "Upload"
             style = {{height:Math.min(this.state.width/num_b,100),
             width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
