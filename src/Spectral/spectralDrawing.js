@@ -61,7 +61,7 @@ export function spectralDrawing(vertices, edges, W, H, dimension){
     }
   }
   var C = new SquareMatrix(intermediate_mat);
-  console.log("C", C);
+  // console.log("C", C);
 
 
   // instantiate known eigenvalues/eigenvectors
@@ -93,7 +93,7 @@ export function spectralDrawing(vertices, edges, W, H, dimension){
     var iterations = 0;
     // const theta = Math.acos(dotProduct(new_vi, new_vi_vector))
     while(dotProduct(new_vi_vector, new_vi) < 1- epsilon){
-      console.log("iterating");
+      // console.log("iterating");
       new_vi = C.lMultiply(new_vi_vector);
       normalize(new_vi);
       iterations ++;
