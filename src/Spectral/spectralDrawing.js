@@ -162,7 +162,7 @@ export function spectralDrawing(vertices, edges, W, H, dimension){
         if(j <= i) animations_iter.push([
           (eigenvectors[1][j] -minX)*(W-5)/(-minX+maxX),
           (eigenvectors[2][j] -minY)*(H-5)/(-minY+maxY),
-          (eigenvectors[3][j] -minY)*(H-5)/(-minY+maxY)
+          (eigenvectors[3][j] -minZ)*(H-5)/(-minZ+maxZ)
         ]);
         else{animations_iter.push([
           (eigenvectors[1][j] -minX)*(W-5)/(-minX+maxX),
