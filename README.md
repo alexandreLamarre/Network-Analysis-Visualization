@@ -46,6 +46,8 @@ and many other properties of interest, despite a lack of theoretical knowledge.
 #### Basic Spring Embedding
 [Back To Top](#network-algorithm-visualization)
 
+![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/SpringEmbeddingStart.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/SpringEmbeddingResult.png)
+
 The Basic Spring Embedding algorithm, originally proposed by Eades, <b>models the set of forces between vertices as springs</b>; the edges are the springs that connect vertices and their tension/force is a function of the distance between vertices. Choosing a heuristic approach rather than a realisticspring model, Eades decides to scale the force of attraction of springs logarithmically. He also chooses to exert forces of repulsion between vertices that are not connected to each other.
 He suggests a constant 100 iterations for convergence to an aesthetically 'optimal' layout.
 
@@ -60,6 +62,8 @@ Cons:
 
 #### Fruchterman Reingold
 [Back To Top](#network-algorithm-visualization)
+
+![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/FruchtermanReingoldStart.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/FruchtermanReingoldResult.png)
 
 The Fruchterman-Reingold algorithm, like the Basic Spring Embedding algorithm, models the forces between vertices as springs. However, the forces of attraction are scaled to the square of their distance. Another important improvement is that vertices are modelled as atomic nuclei exerting a small, but often important, repulsive force on all other vertices scaling to the inverse of their distance. Additionally, Fruchterman and Reingold implement a technique whose foundations seem to be based on simulated annealing, where forces are assigned an intial temperature which allows them to jump out of local equilibrium minima.
 
@@ -77,6 +81,8 @@ Cons:
 #### Force Atlas 2
 [Back To Top](#network-algorithm-visualization)
 
+![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/ForceAtlas2Start.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/ForceAtlas2Result.png)
+
 The Force Atlas 2 algorithm, is a non-theory/research based algorithm that attemps to utilize and optimize the best attributes and heuristics of other force directed algorithms.
 It borrows the spring model from Eades, but implements the scaling and temperature improvements of Fruchterman-Reingold. In order to improve the temperature of vertices during the algorithm, the temperature is a function of the "swing" and trajectory of a vertex as the algorithm is running. If the vertex "swings" excessively, increase its temperature
 to get out of the oscillating state it is in. If the vertex remains on the same trajectory, increase its temperature to allow it to escape the forces acting on it. If the vertexc trajectory oscillates back and forth - decrease the temperature because it might be near a local minima. Force Atlas 2 also includes heuristics that implement forces of gravity, all vertices will attract to the center of the frame (Can cause weird visual effects with dynamic network resizing which is what we implement in our visualizer). Force Atlas 2 also allows to scale forces of attraction to the size of the vertices so that they do not overlap. 
@@ -89,8 +95,10 @@ Cons:
 - Networks of very polarizing degrees are sometimes difficult to analyze 
 
 
-### Force Atlas 2 (LinLog)
+#### Force Atlas 2 (LinLog)
 [Back To Top](#network-algorithm-visualization)
+
+![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/FotceAtlas2LinLogStart.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/ForceAtlas2LinLogResult.png)
 
 The only real difference between Force Atlas 2 and Force Atlas 2(linglog) is how the forces of attraction and repulsion are scaled. The forces of attraction are scaled logarithmically and the forces of repulsion are scaled linearly. Although the difference in implementation is simple, it targets different types of layouts. It clusters vertices that are related more strongly and will cluster nearby vertices that are not strongly related to anything to the nearest cluster.
 
@@ -110,16 +118,21 @@ Cons:
 
 Spectral Layout Algorithms use linear algebra relating to Spectral Theory to solve the problem of Network Layouts. In general, they use specific eigenvectors and eigenvalues derived from different matrix representations of the networks.
 
-
+<!--
 #### Hall's Algorithm
 [Back To Top](#network-algorithm-visualization)
+-->
 
-#### Schwarz Based Method
-[Back To Top](#network-algorithm-visualization)
 
 #### Generalized Eigenvector (Koren)
 [Back To Top](#network-algorithm-visualization)
 
+![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/KorenStart.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/KorenEnd.png)
+
+#### Schwarz Based Method
+[Back To Top](#network-algorithm-visualization)
+
+**In process of being implemented.**
 
 ### Minimum Spanning Tree
 [Back To Top](#network-algorithm-visualization)
@@ -133,10 +146,14 @@ A Minimum Spanning Tree is a tree that consists of all the vertices of the graph
 #### Kruskal
 [Back To Top](#network-algorithm-visualization)
 
+![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/KruskalStart.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/KruskalEnd.png)
+
 Kruskal's algorithm is a greedy algorithm for finding a Minimum Spanning Tree. It constructs the tree from a forest of all vertices, where it selects the next edge that has minimal weight and is not already part of the forest and does not create a cycle within the forest. The algorithm terminates when the forest of vertices is completely connected.
 
 #### Prim
 [Back To Top](#network-algorithm-visualization)
+
+![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/PrimStart.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/PrimResult.png)
 
 Prim's algorithm is a greedt algorithm for finding a Minimum Spanning Tree. It constructs a tree by starting at a random vertex and exploring the minimum weighed edge at each iteration, it adds this edge if it does not create a cycle in the already explored vertices.
 
@@ -154,6 +171,8 @@ The Travelling Salesperson problem tries to find the minimum distance/weighed pa
 #### 2-Opt
 [Back To Top](#network-algorithm-visualization)
 
+![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/2OptStart.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/2OptResult.png)
+
 The 2-Opt algorithm is a simple and somewhat effective algorithm for finding the minimal hamiltonian cycle. It randomly switches 2 edges and checks if that has decreased the cycle length. If it has, it keeps those two edges swapped otherwise it looks for another two random edges to swap. It continues until it times out. 
 
 Pros: 
@@ -165,6 +184,8 @@ Cons:
 #### 3-Opt
 [Back To Top](#network-algorithm-visualization)
 
+![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/3OptStart.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/3OptResult.png)
+
 The 3-Opt algorithm is another simple and somewhat effective algorithm for finding the minimal hamiltonian cycle. It randomly checks 3 edges, and swaps them as necessary if they reduce the cycle length. This algorithm prioritizes swapping only 2 edges at a time, but if swapping 2 edges doesnt result in an improvement it will try and swap all three.
 
 Pros: 
@@ -175,6 +196,8 @@ Cons:
 
 #### 2-Opt Simulated Annealing
 [Back To Top](#network-algorithm-visualization)
+
+![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/SimulatedAnnealingStart.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/SimulatedAnnealingEnd.png)
 
 A 2-Opt algorithm augmented with the use of simulated annealing. Simulated annealing uses an initial "temperature" which dictates the probability of accepting worse solutions when swapping 2 edges. This temperature decreases over time, according to some heuristic function, as the algorithm converges to the minima. In practice, simulated annealing and 2-opt produce the actual global minima for networks only for very small networks. 2-Opt and simulated annealing will often produce worse solutions than 2-opt on larger networks. Simulated annealing and 2 opt are better combined with the combined use of other heuristics and techniques.
 
@@ -191,8 +214,12 @@ Edge coloring describes the problem of assigning the minimum number of colors to
 
 - [Misra-Gries](#misra-gries)
 
+
+
 #### Misra-Gries
 [Back To Top](#network-algorithm-visualization)
+
+![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/MisraGriesStart.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/MisraGriesResult.png)
 
 The Misra-Gries Algorithm is a greedy edge coloring algorithm that uses at most n+1 colors, where `n = |max degree|` over all vertices in the network. 
 
@@ -214,6 +241,8 @@ Vertex Coloring describes the problem of assigning the minimum number of colors 
 
 #### Greedy Coloring
 [Back To Top](#network-algorithm-visualization)
+
+![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/GreedyColoringStart.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/GreedyColoringResult.png)
 
 The greedy vertex coloring algorithm is a greedy algorithm for coloring the vertices of a graph. It uses at most n + 1 colors, where `n = |max degree|` over all vertices in the network.
 
