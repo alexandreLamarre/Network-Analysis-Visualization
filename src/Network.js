@@ -515,6 +515,7 @@ class NetworkVisualizer extends React.Component{
   }
 
   setDrag(e,v){
+    e.preventDefault();
     if(v === true) {
       this.state.previousMouseX = e.clientX;
       this.state.previousMouseY = e.clientY;
@@ -523,6 +524,7 @@ class NetworkVisualizer extends React.Component{
   }
 
   updateCamera(e){
+    e.preventDefault();
     if(this.state.dragging){
       const deltaX = e.clientX - this.state.previousMouseX;
       const deltaY = e.clientY - this.state.previousMouseY;
@@ -538,6 +540,7 @@ class NetworkVisualizer extends React.Component{
   }
 
   zoomCamera(e){
+    e.preventDefault();
     const delta = -Math.sign(e.deltaY);
     const new_scale_factor = this.state.scaleFactor + delta*0.035;
     this.setState({scaleFactor: new_scale_factor});
@@ -631,6 +634,7 @@ class NetworkVisualizer extends React.Component{
     return <div className = "network">
             <canvas style = {{marginTop: this.props.height*1/20+this.props.height/40}}
             className = "networkCanvas" ref = {this.canvas}
+            onMouseLeave = {(e) => this.setDrag(e,false)}
             onMouseDown = {(e) => this.setDrag(e,true)}
             onMouseUp = {(e) => this.setDrag(e,false)}
             onMouseMove = {(e) => this.updateCamera(e)}

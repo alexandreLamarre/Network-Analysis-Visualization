@@ -47,6 +47,7 @@
   display: flex;
   flex-direction: column;
   align-items: baseline;
+  padding-right: 10px;
 }
 
 .settings a{

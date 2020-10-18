@@ -602,7 +602,7 @@ class NetworkCustomVisualizer extends React.Component{
       csvContent += vertex_list[i].toCSV();
     }
     for(let i = 0; i < edge_list.length; i++){
-      const edge = new Edge(edge_list[i], "rgb(0,0,0)", 1)
+      const edge = new Edge(edge_list[i], 1, "rgb(0,0,0)")
       edge.alpha = 0.1;
       csvContent += (edge.toCSV());
     }

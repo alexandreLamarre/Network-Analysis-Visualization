@@ -474,8 +474,9 @@ class NetworkVisualizer3D extends React.Component{
     this.app.setState({numV: vertices.length, numE: edges.length});
   }
 
-  zoomCamera(v){
-    const delta = Math.sign(v);
+  zoomCamera(e){
+    e.preventDefault();
+    const delta = Math.sign(e.deltaY);
     this.state.camera.position.z += 10*delta;
     this.state.renderer.render(this.state.scene, this.state.camera);
     if(this.state.cameraChanged === false) this.setState({cameraChanged: true})
@@ -490,12 +491,14 @@ class NetworkVisualizer3D extends React.Component{
   }
 
   startDrag(e){
+    e.preventDefault();
     this.state.previousMouseX = e.clientX;
     this.state.previousMouseY = e.clientY;
     this.state.dragging = true;
   }
 
-  endDrag(){
+  endDrag(e){
+    e.preventDefault();
     this.state.dragging = false;
   }
 
@@ -731,9 +734,10 @@ class NetworkVisualizer3D extends React.Component{
               <canvas style = {{marginTop: this.props.height*1/20+this.props.height/40}}
               className = "canvas3d"
               ref = {this.canvas}
-              onWheel = {(e) => this.zoomCamera(e.deltaY)}
+              onMouseLeave = {(e) => this.endDrag(e)}
+              onWheel = {(e) => this.zoomCamera(e)}
               onMouseDown = {(e) => this.startDrag(e)}
-              onMouseUp = {() => this.endDrag()}
+              onMouseUp = {(e) => this.endDrag(e)}
               onMouseMove = {(e) => this.rotateCamera(e)}>
               </canvas>
               <br></br>

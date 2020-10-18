@@ -65,7 +65,7 @@ class NetworkSideDrawer extends React.Component{
               />
               <GeneralNetworkSettings ref = {this.generalsettings} app = {this.app}/>
               <NetworkAlgorithmSettings ref = {this.algorithmsettings} app = {this.app}/>
-              <UploadWindow ref = {this.uploadwindow}></UploadWindow>
+              <UploadWindow app = {this.app} ref = {this.uploadwindow}></UploadWindow>
               <div className = "settings">
                 <br></br>
                 <a target = "_blank" href = "https://github.com/alexandreLamarre/Network-Algorithm-Visualization"> Tutorial </a>
