@@ -9,7 +9,7 @@ layouts.
 
 - [Algorithms](#Algorithms)
 - [Random Network Generation](#Random-Network-Generation)
-- [General Settings](#General-Settings)
+- [Uploading Data](#Uploading-Data)
 - [References](#References)
 
 
@@ -48,8 +48,12 @@ and many other properties of interest, despite a lack of theoretical knowledge.
 
 ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/SpringEmbeddingStart.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/SpringEmbeddingResult.png)
 
+**Time Complexity**: `O(|V^2|)` for each iteration, 100 iterations recommended.
+**Space Complexity**: `O(1)`
+
 The Basic Spring Embedding algorithm, originally proposed by Eades, <b>models the set of forces between vertices as springs</b>; the edges are the springs that connect vertices and their tension/force is a function of the distance between vertices. Choosing a heuristic approach rather than a realisticspring model, Eades decides to scale the force of attraction of springs logarithmically. He also chooses to exert forces of repulsion between vertices that are not connected to each other.
 He suggests a constant 100 iterations for convergence to an aesthetically 'optimal' layout.
+
 
 Pros:
 - Simple to implement and scale forces
@@ -60,10 +64,22 @@ Cons:
 - The optimal number of iterations has to be found through trial and error
 - It is in general not space filling
 
+
+**Settings**:
+- Force of Attraction: Scales how much connected vertices are attracted to each other at each iteration
+- Force of Repulsion: Scales how much disconnected vertices are repulsed by one another at each iteration
+- Converge Bound: Dictates the minimum maximum displacement bound at which the algorithm should terminate
+- Rate of Convergence: Scales both forces
+- Force to Area Scaling: Scales the lay to fill space, useful only when scaling to graph theoretic distance
+- Distance: Scales the forces of attraction based on continuous distance in the frame or graph theoretic distance
+
 #### Fruchterman Reingold
 [Back To Top](#network-algorithm-visualization)
 
 ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/FruchtermanReingoldStart.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/FruchtermanReingoldResult.png)
+
+**Time Complexity**: `O(|V^2|)` for each iteration, `O(|V|)` iterations recommended.
+**Space Complexity**: `O(1)`
 
 The Fruchterman-Reingold algorithm, like the Basic Spring Embedding algorithm, models the forces between vertices as springs. However, the forces of attraction are scaled to the square of their distance. Another important improvement is that vertices are modelled as atomic nuclei exerting a small, but often important, repulsive force on all other vertices scaling to the inverse of their distance. Additionally, Fruchterman and Reingold implement a technique whose foundations seem to be based on simulated annealing, where forces are assigned an intial temperature which allows them to jump out of local equilibrium minima.
 
@@ -78,10 +94,22 @@ Cons:
 - Rapid convergence can sometimes lead to bad choices, depending on initial vertex temperature
 
 
+**Settings**:
+- Initial Temperature Scaling: Dictates how fast the particles should initially rearrange themselves. decreases at each iteration.
+- Temperature Cooling: 
+ - Logarithmic: decreases the temperature at an inversely linear rate, e.g. `temp = 0.9temp`.
+ - Linear: decreases the temperature at a linear rate: e.g. `temp = temp - 0.01*initialtemp`.
+ - Directional: decreases or increases the temperature based on the tendency of the particle. If it tends to go in the same direction, increase, otherwise decrease.
+- Converge Bound: Dictates the minimum maximum displacement bound at which the algorithm should terminate
+
+
 #### Force Atlas 2
 [Back To Top](#network-algorithm-visualization)
 
 ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/ForceAtlas2Start.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/ForceAtlas2Result.png)
+
+**Time Complexity**: `O(|V^2|)` for each iterations, `O(|V|)` iterations recommended
+**Space Complexity**: `O(1)`
 
 The Force Atlas 2 algorithm, is a non-theory/research based algorithm that attemps to utilize and optimize the best attributes and heuristics of other force directed algorithms.
 It borrows the spring model from Eades, but implements the scaling and temperature improvements of Fruchterman-Reingold. In order to improve the temperature of vertices during the algorithm, the temperature is a function of the "swing" and trajectory of a vertex as the algorithm is running. If the vertex "swings" excessively, increase its temperature
@@ -95,10 +123,20 @@ Cons:
 - Networks of very polarizing degrees are sometimes difficult to analyze 
 
 
+**Settings**:
+- Force of Repulsion: Scales how much vertices are repulsed by one another at each iteration
+- Gravity: Dictates whether or not the layout should be scaled to the center of the frame.
+- Gravity Strength: strength of the foce of gravity 
+- Tolerance: increases/decreases the speed of particles
+- Temperature Cap: The maximum bound for initial vertex displacement 
+
 #### Force Atlas 2 (LinLog)
 [Back To Top](#network-algorithm-visualization)
 
 ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/FotceAtlas2LinLogStart.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/ForceAtlas2LinLogResult.png)
+
+**Time Complexity**: `O(|V^2|)` for each iterations, `O(|V|)` iterations recommended
+**Space Complexity**: `O(1)`
 
 The only real difference between Force Atlas 2 and Force Atlas 2(linglog) is how the forces of attraction and repulsion are scaled. The forces of attraction are scaled logarithmically and the forces of repulsion are scaled linearly. Although the difference in implementation is simple, it targets different types of layouts. It clusters vertices that are related more strongly and will cluster nearby vertices that are not strongly related to anything to the nearest cluster.
 
@@ -107,6 +145,14 @@ Pros:
 
 Cons:
 - Uniform degree networks are more difficult to analyze due to a circle-like spacing.
+
+
+**Settings**:
+- Force of Repulsion: Scales how much vertices are repulsed by one another at each iteration
+- Gravity: Dictates whether or not the layout should be scaled to the center of the frame.
+- Gravity Strength: strength of the foce of gravity 
+- Tolerance: increases/decreases the speed of particles
+- Temperature Cap: The maximum bound for initial vertex displacement 
 
 ### Spectral Layout
 [Back To Top](#network-algorithm-visualization)
@@ -118,16 +164,15 @@ Cons:
 
 Spectral Layout Algorithms use linear algebra relating to Spectral Theory to solve the problem of Network Layouts. In general, they use specific eigenvectors and eigenvalues derived from different matrix representations of the networks.
 
-<!--
-#### Hall's Algorithm
-[Back To Top](#network-algorithm-visualization)
--->
-
 
 #### Generalized Eigenvector (Koren)
 [Back To Top](#network-algorithm-visualization)
 
 ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/KorenStart.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/KorenEnd.png)
+
+**Time Complexity**: `O(|V|*d*C)`, where d is the number of eigenvectors computed, and C is the number of iterations required to converge eigenvectors in the correct direction.
+**Space Complexity**: `O(|V|*d)`
+
 
 #### Schwarz Based Method
 [Back To Top](#network-algorithm-visualization)
@@ -148,14 +193,33 @@ A Minimum Spanning Tree is a tree that consists of all the vertices of the graph
 
 ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/KruskalStart.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/KruskalEnd.png)
 
+**Time Complexity**: `O(|E|log(|V|))`
+**Space Complexity**: `O(1)`
+
 Kruskal's algorithm is a greedy algorithm for finding a Minimum Spanning Tree. It constructs the tree from a forest of all vertices, where it selects the next edge that has minimal weight and is not already part of the forest and does not create a cycle within the forest. The algorithm terminates when the forest of vertices is completely connected.
+
+
+
+**Settings**:
+- Red: the amount of red color in the visualization of the minimum spanning tree
+- Green: the amount of green color in the visualization of the minimum spanning tree
+- Blue: the amount of blue color in the visualization of the minimum spanning tree
 
 #### Prim
 [Back To Top](#network-algorithm-visualization)
 
 ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/PrimStart.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/PrimResult.png)
 
+**Time Complexity**: `O((|V|+|E|)*log(|V|))`
+**Space Complexity**: `O(1)`
+
 Prim's algorithm is a greedt algorithm for finding a Minimum Spanning Tree. It constructs a tree by starting at a random vertex and exploring the minimum weighed edge at each iteration, it adds this edge if it does not create a cycle in the already explored vertices.
+
+
+**Settings**:
+- Red: the amount of red color in the visualization of the minimum spanning tree
+- Green: the amount of green color in the visualization of the minimum spanning tree
+- Blue: the amount of blue color in the visualization of the minimum spanning tree
 
 ### Travelling Salesperson
 [Back To Top](#network-algorithm-visualization)
@@ -173,6 +237,9 @@ The Travelling Salesperson problem tries to find the minimum distance/weighed pa
 
 ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/2OptStart.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/2OptResult.png)
 
+**Time Complexity**: `O(|V|^2)`
+**Space Complexity**: `O(|V|)`
+
 The 2-Opt algorithm is a simple and somewhat effective algorithm for finding the minimal hamiltonian cycle. It randomly switches 2 edges and checks if that has decreased the cycle length. If it has, it keeps those two edges swapped otherwise it looks for another two random edges to swap. It continues until it times out. 
 
 Pros: 
@@ -181,23 +248,43 @@ Pros:
 Cons: 
 - Frequently poorly optimized solutions
 
+
+**Settings**:
+- Timeout: the amount of time the algorithm should run before terminating
+- Red: the amount of red color in the visualization of swapped edges
+- Green: the amount of green color in the visualization of swapped edges
+- Blue: the amount of blue color in the visualization of swapped edges
+
 #### 3-Opt
 [Back To Top](#network-algorithm-visualization)
 
 ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/3OptStart.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/3OptResult.png)
 
-The 3-Opt algorithm is another simple and somewhat effective algorithm for finding the minimal hamiltonian cycle. It randomly checks 3 edges, and swaps them as necessary if they reduce the cycle length. This algorithm prioritizes swapping only 2 edges at a time, but if swapping 2 edges doesnt result in an improvement it will try and swap all three.
+**Time Complexity**: `O(|V|^2)`
+**Space Complexity**: `O(|V|)`
+
+The 3-Opt algorithm is another simple and somewhat effective algorithm for finding the minimal hamiltonian cycle. It randomly checks 3 edges, and swaps them as necessary if they reduce the cycle length. This algorithm prioritizes swapping 2 edges at a time, but if swapping 2 edges doesn't result in an improvement, the algorithm will try to swap all three.
 
 Pros: 
-- Still relatively simple, and better expected minima than 3-Opt
+- Still relatively simple, and better expected minima than 2-Opt
 
 Cons: 
 - Frequently poorly optimizated solutions, many cases to check at iteration
+
+
+**Settings**:
+- Timeout: the amount of time the algorithm should run before terminating
+- Red: the amount of red color in the visualization of swapped edges
+- Green: the amount of green color in the visualization of swapped edges
+- Blue: the amount of blue color in the visualization of swapped edges
 
 #### 2-Opt Simulated Annealing
 [Back To Top](#network-algorithm-visualization)
 
 ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/SimulatedAnnealingStart.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/SimulatedAnnealingEnd.png)
+
+**Time Complexity**: `O(|V|^2)`
+**Space Complexity**: `O(|V|)`
 
 A 2-Opt algorithm augmented with the use of simulated annealing. Simulated annealing uses an initial "temperature" which dictates the probability of accepting worse solutions when swapping 2 edges. This temperature decreases over time, according to some heuristic function, as the algorithm converges to the minima. In practice, simulated annealing and 2-opt produce the actual global minima for networks only for very small networks. 2-Opt and simulated annealing will often produce worse solutions than 2-opt on larger networks. Simulated annealing and 2 opt are better combined with the combined use of other heuristics and techniques.
 
@@ -206,6 +293,19 @@ Pros:
 
 Cons: 
 - Typically worse solutions than 2-opt 
+
+**Settings**:
+- Timeout: the amount of time the algorithm should run before terminating
+- Acceptance: probability of accpeting a worse solution at each inspection
+- Initial Temperature: scales the acceptance probability based on temperature, temperature decreases as the algorithm progresses
+- High Temperature Color:
+ - Red: the amount of red color in the visualization of swapped edges when the temperature is high
+ - Green: the amount of green color in the visualization of swapped edges when the temperature is high
+ - Blue: the amount of blue color in the visualization of swapped edges when the temperature is high
+- Lowe Temperature Color:
+ - Red: the amount of red color in the visualization of swapped edges when the temperature is low
+ - Green: the amount of green color in the visualization of swapped edges when the temperature is low
+ - Blue: the amount of blue color in the visualization of swapped edges when the temperature is low
 
 ### Edge Coloring
 [Back To Top](#network-algorithm-visualization)
@@ -223,12 +323,15 @@ Edge coloring describes the problem of assigning the minimum number of colors to
 
 The Misra-Gries Algorithm is a greedy edge coloring algorithm that uses at most n+1 colors, where `n = |max degree|` over all vertices in the network. 
 
+**Time Complexity**: `O(|V||E|)`
+**Space Complexity**: `O(1)`
 
 Pros: 
 - Fast(polynomial time), and good approximations
 
 Cons: 
 - Suboptimal in the general case
+
 
 ### Vertex Coloring
 [Back To Top](#network-algorithm-visualization)
@@ -244,6 +347,9 @@ Vertex Coloring describes the problem of assigning the minimum number of colors 
 
 ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/GreedyColoringStart.png) ![](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/images2D/GreedyColoringResult.png)
 
+**Time Complexity**: `O(|V|^2+|E|)`
+**Space Complexity**: `O(|V|)`
+
 The greedy vertex coloring algorithm is a greedy algorithm for coloring the vertices of a graph. It uses at most n + 1 colors, where `n = |max degree|` over all vertices in the network.
 
 Pros: 
@@ -251,6 +357,7 @@ Pros:
 
 Cons: 
 - Suboptimal in general.
+
 
 ## Random Network Generation
 [Back To Top](#network-algorithm-visualization)
@@ -264,14 +371,41 @@ Cons:
 #### Random
 [Back To Top](#network-algorithm-visualization)
 
+Generates `(x,y)/(x,y,z)` positions of vertices in 2 or 3 dimensions, following a uniform distribution. If **force-connectedness** setting is enabled, edges are constructed by first finding a tree connecting all vertices then assigning all remaining edges in a randomly, following a uniform distribution.
+
 #### Random Circle/Sphere
 [Back To Top](#network-algorithm-visualization)
+
+In two dimension generates `(radius, theta)` positions of vertices in 2 dimensions where radius is the radius of the desired circle (in practice `0.40*size of frame`) and theta is bounded by 0 and 2pi. If **force-connectedness** setting is enabled, edges are constructed by first finding a tree connecting all vertices then assigning all remaining edges in a randomly, following a uniform distribution.
+
+In 3 dimensions generates `(z, phi, psi)` positions of vertices where phi and psi are bounded by 0 and 2pi and z is bounded by -1 to 1. It is recommended for the best distribution only a sphere that a gaussian distribution is used, however we use a uniform distribution as that is what javascript provides by default. If **force-connectedness** setting is enabled, edges are constructed by first finding a tree connecting all vertices then assigning all remaining edges in a randomly, following a uniform distribution.
 
 #### Random Hamiltonian Cycle
 [Back To Top](#network-algorithm-visualization)
 
+Generates a random hamiltonian cycle. It first sets the number of edges to the number of vertices. Assigns a root, and non-deterministically constructs a path from the root to itself, following a uniform distribution without traversing a previously explored node (except the root, when all other nodes are explored).
+
 #### Random Cluster
 [Back To Top](#network-algorithm-visualization)
+
+**Feature in Development.** Idea: generate, according to a clustering coefficient, groups of 3-cycles and then uniformly connect them with the remaining number of edges.
+
+## Uploading Data
+[Back To Top](#network-algorithm-visualization)
+
+#### Format: .csv
+
+Vertices and edges are specified in rows. Vertices are defined row by row before edges are defined. Edges are also specified row by row.
+
+We specify a vertex in .csv format as follows:
+
+`<string:"vertex">, <float:x-position>, <float:y-position>, <float: z-position>, <int: degree>, <int: size>, <int: red-color>, <int: green-color>, <int: blue-color>`
+
+We specify an edge in .csv format as follows: 
+
+`<string:"edge">, <int: start-vertex index>, <int: end-vertex index>, <float: weight>, <float: alpha>, <int: red-color>, <int: green-color>, <int: blue-color>`
+
+We provide an example .csv file of a network [here](https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/NetworkExample.csv).
 
 
 ## References 
