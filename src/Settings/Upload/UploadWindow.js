@@ -151,8 +151,10 @@ function parseInput(text, dimension, depth){
     const edge_values = next_values[i].split(",")
     const start = parseInt(edge_values[1]);
     const end = parseInt(edge_values[2]);
-    const weight = parseInt(edge_values[3]);
+    const weight = parseFloat(edge_values[3]);
+    console.log(weight);
     const alpha = parseFloat(edge_values[4]);
+    console.log(alpha);
     var color = rgb_to_str(edge_values[5], edge_values[6],
                                             edge_values[7].replace("\n", ""));
     if(color === "rgb(0,0,0)" && dimension === 3) color = "rgb(211,211,211)";
