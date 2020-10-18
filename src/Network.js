@@ -718,9 +718,9 @@ class NetworkVisualizer extends React.Component{
                   <option value = "forceatlaslinlog" > Force Atlas 2 (LinLog) </option>
                   </optgroup>
                   <optgroup label = "Spectral Layout Algorithms">
-                  <option value = "hall"> Hall's algorithm </option>
-                  <option value = "schwarz" disabled = {true}> Schwarz Based Method </option>
                   <option value = "spectralDrawing"> Generalized Eigenvector (Koren)</option>
+                  <option value = "hall" hidden= {true}> Hall's algorithm </option>
+                  <option value = "schwarz" disabled = {true}> Schwarz Based Method </option>
                   </optgroup>
                   <optgroup label = "Custom Algorithms" hidden = {true}>
                     <option value = "radialFlowDirected" disabled = {true}>  Radial Flow Directed </option>

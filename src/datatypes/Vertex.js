@@ -65,7 +65,14 @@ class Vertex {
     else{ row += this.z.toString()+","};
     row += this.degree.toString() + ",";
     row+= this.size.toString() + ",";
-    row += this.color + "\n";
+    const color = this.color;
+    const colors = color.split(",")
+    colors[0] = colors[0].replace("rgb", "");
+    colors[0] = colors[0].replace("(", "");
+    colors[2] = colors[2].replace(")", "");
+    row += colors[0] +",";
+    row += colors[1] + ",";
+    row += colors[2] + "\n";
     return row;
   }
 }
