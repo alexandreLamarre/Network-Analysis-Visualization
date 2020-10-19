@@ -630,7 +630,7 @@ class NetworkCustomVisualizer extends React.Component{
 
 
   render(){
-    const num_b = 10;
+    const num_b = 7;
     return <div>
             <ConfirmationWindow
             ref = {this.confirmClear}
@@ -689,11 +689,13 @@ class NetworkCustomVisualizer extends React.Component{
             style = {{height:Math.min(this.state.width/num_b,100),
               width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
             </button>
+            {/*
             <button className = "settingsB"
             title = "Graphical settings"
             style = {{height:Math.min(this.state.width/num_b,100),
               width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
             </button>
+            */}
             <button className = "undoB"
             onClick = {() => this.undoActionFromBuffer()}
             disabled = {this.state.operationsBufferIndex === -1}
@@ -720,6 +722,7 @@ class NetworkCustomVisualizer extends React.Component{
                 <a className = "aFile" onClick = {() => this.saveAs("jpg")}>.jpg</a>
               </div>
             </div>
+            {/*
             <button className = "uploadB"
             disabled = {true}
             title = "Upload"
@@ -731,7 +734,9 @@ class NetworkCustomVisualizer extends React.Component{
             style = {{height:Math.min(this.state.width/num_b,100),
             width: Math.min(this.state.width/num_b,100), backgroundSize: 'cover'}}>
             </button>
+            */}
             </div>
+
             <br></br>
            </div>
   }

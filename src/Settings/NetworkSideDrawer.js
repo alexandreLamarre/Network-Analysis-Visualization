@@ -61,14 +61,16 @@ class NetworkSideDrawer extends React.Component{
               ref = {this.confirmCustomWindow}
               parent = {this}
               trigger = {setCustomNetwork}
-              msg = {"Any unsaved changes will be lost"}
+              msg = {"Any unsaved changes will be lost."}
               />
               <GeneralNetworkSettings ref = {this.generalsettings} app = {this.app}/>
               <NetworkAlgorithmSettings ref = {this.algorithmsettings} app = {this.app}/>
               <UploadWindow app = {this.app} ref = {this.uploadwindow}></UploadWindow>
               <div className = "settings">
                 <br></br>
-                <a target = "_blank" href = "https://github.com/alexandreLamarre/Network-Algorithm-Visualization"> Tutorial </a>
+                <a target = "_blank"
+                href = "https://github.com/alexandreLamarre/Network-Algorithm-Visualization/blob/master/src/Tutorial/Tutorial.md">
+                Tutorial </a>
                 <br></br>
                 <button onClick= {() => this.confirmDimensionWindow.current.setOpen(true)}>
                 {this.app.state.dimension === 3 || this.app.state.dimension === "Custom"? 2:3}D Networks

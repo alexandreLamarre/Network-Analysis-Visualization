@@ -540,7 +540,6 @@ class NetworkVisualizer extends React.Component{
   }
 
   zoomCamera(e){
-    e.preventDefault();
     const delta = -Math.sign(e.deltaY);
     const new_scale_factor = this.state.scaleFactor + delta*0.035;
     this.setState({scaleFactor: new_scale_factor});
@@ -770,15 +769,15 @@ class NetworkVisualizer extends React.Component{
 
               <br></br>
               <div className = "selectalgorow">
-                <select className = "selectalgo"
+                {/*<select className = "selectalgo"
                  onChange = {(event) => this.setLayoutType(event.target.value)}
                  style = {{width: (this.state.width*2)/10}}
                 disabled = {this.app.state.running}>
                   <option value = "0"> Square </option>
                   <option value = "1"> Stretch to Fit </option>
-                </select>
+                </select>*/}
                 <select value = {this.state.randomType}
-                style = {{width: (this.state.width*6)/10}}
+                style = {{width: (this.state.width*8)/10}}
                 disabled = {this.app.state.running === true }className = "selectalgo" onChange = {(event) => this.setRandomizedType(event.target.value)}>
                   <option value = "random" disabled = {this.state.group === "TSP"}> Random </option>
                   <option value = "randomcircle" disabled = {this.state.group === "TSP"}> Random Circle </option>

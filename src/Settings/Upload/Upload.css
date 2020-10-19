@@ -1,6 +1,6 @@
 .upload{
   position:absolute;
-  bottom:30%;
+  bottom:50%;
   left:20%;
   right: 20%;
   top: 30%;
@@ -20,6 +20,9 @@
 }
 
 .formBlock{
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
   margin: auto;
-  width: 50%;
 }

@@ -41,6 +41,7 @@ class AlgorithmAttributes extends React.Component{
       opt2green: this.props.app.state.settings.opt2.green,
       opt2blue: this.props.app.state.settings.opt2.blue,
       opt2annealingtimeout: this.props.app.state.settings.opt2annealing.timeout,
+      opt2annealingtemperature: this.props.app.state.settings.opt2annealing.temperature,
       opt2annealingacceptance: this.props.app.state.settings.opt2annealing.acceptance,
       opt2annealingred: this.props.app.state.settings.opt2annealing.startColor[0],
       opt2annealinggreen: this.props.app.state.settings.opt2annealing.startColor[1],
@@ -712,7 +713,7 @@ class AlgorithmAttributes extends React.Component{
          </div>
          </div>
          : <></>}
-
+         {/*
          {(this.state.filtering === true && "2-opt simulated annealing".indexOf(this.state.filter.toLowerCase()) !== -1 ) || (this.state.filtering === false)
         ?<div> <p> 2-Opt Simulated Annealing </p>
         <div className = "sliders">
@@ -721,10 +722,10 @@ class AlgorithmAttributes extends React.Component{
           min = "5"
           max = "60"
           step = "1"
-          value = {this.app.state.settings.opt2annealing.timeout}
+          value = {this.state.opt2annealingtimeout}
           disabled = {this.state.running}>
           </input>
-          <label> Timeout : {this.app.state.settings.opt2annealing.timeout}  </label>
+          <label> Timeout :  {this.state.opt2annealingtimeout} </label>
         </div>
         <div className = "sliders">
           <input className = "slider"
@@ -732,10 +733,10 @@ class AlgorithmAttributes extends React.Component{
           min = "1"
           max = "100"
           step = "1"
-          value = {this.app.state.settings.opt2annealing.temperature}
+          value = {this.state.opt2annealingtemperature}
           disabled = {this.state.running}>
           </input>
-          <label> Initial Temperature: {this.app.state.settings.opt2annealing.temperature}</label>
+          <label> Initial Temperature:{this.state.opt2annealingtemperature} </label>
         </div>
         <div className = "sliders">
           <input className = "slider"
@@ -743,15 +744,15 @@ class AlgorithmAttributes extends React.Component{
           min = "0.0001"
           max = "0.1"
           step = "0.0001"
-          value = {this.app.state.settings.opt2annealing.acceptance}
+          value = {this.state.opt2annealingacceptance}
           disabled = {this.state.running}>
           </input>
-          <label> Acceptance: {this.app.state.settings.opt2annealing.acceptance}</label>
+          <label> Acceptance: {this.state.opt2annealingacceptance}</label>
         </div>
         <canvas
         height = {this.state.height}
         width = {this.state.width}
-        style = {{backgroundColor: rgb_to_str([this.state.opt2annealingred, this.state.opt2annealinggreen,
+        style = {{backgroundColor: rgb_to_str([this.state.opt2annealingred, this.stateopt2annealinggreen,
                   this.state.opt2annealingblue])}}
         className = "colorCanvas"></canvas>
         <p style={{fontSize: 12}}> High Temperature Color </p>
@@ -761,10 +762,10 @@ class AlgorithmAttributes extends React.Component{
           min = "0"
           max = "255"
           step = "1"
-          value =  {this.app.state.settings.opt2annealing.startColor[0]}
+          value =  {this.state.opt2annealingred}
           disabled = {this.state.running}>
           </input>
-          <label> Red: {this.app.state.settings.opt2annealing.startColor[0]}</label>
+          <label> Red: {this.state.opt2annealingred}</label>
         </div>
         <div className = "sliders">
           <input className = "slider"
@@ -772,10 +773,10 @@ class AlgorithmAttributes extends React.Component{
           min = "0"
           max = "255"
           step = "1"
-          value =  {this.app.state.settings.opt2annealing.startColor[1]}
+          value =  {this.state.opt2annealinggreen}
           disabled = {this.state.running}>
           </input>
-          <label> Green: {this.app.state.settings.opt2annealing.startColor[1]}</label>
+          <label> Green: {this.state.opt2annealinggreen}</label>
         </div>
         <div className = "sliders">
           <input className = "slider"
@@ -783,15 +784,15 @@ class AlgorithmAttributes extends React.Component{
           min = "0"
           max = "255"
           step = "1"
-          value =  {this.app.state.settings.opt2annealing.startColor[2]}
+          value =  {this.app.state.settings.opt2annealingblue}
           disabled = {this.state.running}>
           </input>
-          <label> Blue: {this.app.state.settings.opt2annealing.startColor[2]}</label>
+          <label> Blue: {this.app.state.settings.opt2annealingblue}</label>
         </div>
         <canvas
         height = {this.state.height}
         width = {this.state.width}
-        style = {{backgroundColor: rgb_to_str([this.state.opt2annealingredEnd, this.state.opt2annealinggreenEnd,
+        style = {{backgroundColor: rgb_to_str([this.stateopt2annealingredEnd, this.state.opt2annealinggreenEnd,
                   this.state.opt2annealingblueEnd])}}
         className = "colorCanvas"></canvas>
         <p style={{fontSize: 12}}> Low Temperature Color</p>
@@ -801,10 +802,10 @@ class AlgorithmAttributes extends React.Component{
           min = "0"
           max = "255"
           step = "1"
-          value =  {this.app.state.settings.opt2annealing.endColor[0]}
+          value =  {this.stateopt2annealingredEnd}
           disabled = {this.state.running}>
           </input>
-          <label> Red: {this.app.state.settings.opt2annealing.endColor[0]}</label>
+          <label> Red: {this.state.opt2annealingredEnd}</label>
         </div>
         <div className = "sliders">
           <input className = "slider"
@@ -812,10 +813,10 @@ class AlgorithmAttributes extends React.Component{
           min = "0"
           max = "255"
           step = "1"
-          value =  {this.app.state.settings.opt2annealing.endColor[1]}
+          value =  {this.state.opt2annealinggreenEnd}
           disabled = {this.state.running}>
           </input>
-          <label> Green: {this.app.state.settings.opt2annealing.endColor[1]}</label>
+          <label> Green: {this.state.opt2annealinggreenEnd}</label>
         </div>
         <div className = "sliders">
           <input className = "slider"
@@ -823,13 +824,13 @@ class AlgorithmAttributes extends React.Component{
           min = "0"
           max = "255"
           step = "1"
-          value =  {this.app.state.settings.opt2annealing.endColor[2]}
+          value = {this.state.opt2annealingblueEnd}
           disabled = {this.state.running}>
           </input>
-          <label> Blue: {this.app.state.settings.opt2annealing.endColor[2]}</label>
+          <label> Blue: {this.state.opt2annealingblueEnd}</label>
         </div>
         </div>
-        : <></>}
+        : <></>} */}
 
 
 
@@ -954,6 +955,13 @@ async function waitSetSettings(app, that){
           red: that.state.opt2red,
           green: that.state.opt2green,
           blue: that.state.opt2blue},
+    opt2annealing:{
+            timeout: that.state.opt2annealingtimeout,
+            temperature: that.state.opt2annealingacceptance,
+            acceptance: that.state.opt2annealingacceptance,
+            startColor: [that.state.opt2annealingred,that.state.opt2annealinggreen,that.state.opt2annealingblue],
+            endColor: [that.state.opt2annealingredEnd,that.state.opt2annealinggreenEnd,that.state.opt2annealingblueEnd],
+          },
     opt3: {timeout: that.state.opt3timeout,
           red: that.state.opt3red,
           green: that.state.opt3green,

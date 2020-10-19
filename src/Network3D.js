@@ -475,7 +475,6 @@ class NetworkVisualizer3D extends React.Component{
   }
 
   zoomCamera(e){
-    e.preventDefault();
     const delta = Math.sign(e.deltaY);
     this.state.camera.position.z += 10*delta;
     this.state.renderer.render(this.state.scene, this.state.camera);
@@ -711,7 +710,7 @@ class NetworkVisualizer3D extends React.Component{
     }
     var link = document.createElement('a');
     link.href = csvContent;
-    link.download = 'Network.csv';
+    link.download = 'Network3d.csv';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -719,8 +718,8 @@ class NetworkVisualizer3D extends React.Component{
   }
 
   saveAs(extension){
-    const rendererElement = this.state.renderer.domElement;
-    const image = rendererElement.toDataURL("network/"+extension);
+    const canvas = this.canvas.current;
+    const image = canvas.toDataURL("network3d/"+extension);
     var link = document.createElement('a');
     link.href = image;
     link.download = 'Network.'+extension;
@@ -818,7 +817,7 @@ class NetworkVisualizer3D extends React.Component{
                   <option value = "fruchtermanReingold"> Fruchterman-Reingold </option>
                   <option value = "kamadaKawai" disabled = {true} hidden = {true}> Kamada-Kawai </option>
                   <option value = "forceAtlas2"> Force Atlas 2 </option>
-                  <option value = "forceAtlasLinLog"> Force Atlas 2 (LinLog) </option>
+                  <option value = "forceatlaslinlog"> Force Atlas 2 (LinLog) </option>
                   </optgroup>
                   <optgroup label = "Spectral Layout Algorithms">
                   <option value = "spectralDrawing"> Generalized Eigenvector (Koren)</option>
@@ -854,9 +853,11 @@ class NetworkVisualizer3D extends React.Component{
                   </button>
                   <div className = "dropdown-content">
                     <a className = "aFile" onClick = {() => this.saveAsCSV()}>.csv</a>
-                    {/* <a className = "aFile" onClick = {() => this.saveAs("png")} hidden ={true}>.png</a>
+                    {/*
+                    <a className = "aFile" onClick = {() => this.saveAs("png")} hidden ={true}>.png</a>
                     <a className = "aFile" onClick = {() => this.saveAs("jpg")} hidden = {true}>.jpg</a>
                     */}
+
                   </div>
                 </div>
                 <button className = "AlgoB"

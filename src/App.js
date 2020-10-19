@@ -85,6 +85,7 @@ class App extends React.Component{
     this.network3d = React.createRef();
     this.customnetwork = React.createRef();
     this.navbar = React.createRef();
+    
   }
 
   componentDidMount(){
