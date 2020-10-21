@@ -6,7 +6,7 @@
 - [Network Settings](#Network-Settings)
 - [Selecting & Running Algorithms](#Selecting-&-Running-Algorithms)
 - [Algorithm Settings](#Algorithm-Settings)
-- [Custom Networks & Uploading Data](#Custom-Networks-&-Uploading-Data)
+- [Custom Networks & Uploading Data](#custom-networks--uploading-data)
 
 
 ### Introduction
