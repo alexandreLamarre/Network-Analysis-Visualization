@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/Network-Algorithm-Visualization/static/css/main.fe261c11.chunk.css",
-    "main.js": "/Network-Algorithm-Visualization/static/js/main.6d99ac2a.chunk.js",
-    "main.js.map": "/Network-Algorithm-Visualization/static/js/main.6d99ac2a.chunk.js.map",
-    "runtime-main.js": "/Network-Algorithm-Visualization/static/js/runtime-main.3222e249.js",
-    "runtime-main.js.map": "/Network-Algorithm-Visualization/static/js/runtime-main.3222e249.js.map",
-    "static/js/2.87e747de.chunk.js": "/Network-Algorithm-Visualization/static/js/2.87e747de.chunk.js",
-    "static/js/2.87e747de.chunk.js.map": "/Network-Algorithm-Visualization/static/js/2.87e747de.chunk.js.map",
-    "index.html": "/Network-Algorithm-Visualization/index.html",
-    "precache-manifest.8c549f5a07b2fb532026f4d9c09b245d.js": "/Network-Algorithm-Visualization/precache-manifest.8c549f5a07b2fb532026f4d9c09b245d.js",
-    "service-worker.js": "/Network-Algorithm-Visualization/service-worker.js",
-    "static/css/main.fe261c11.chunk.css.map": "/Network-Algorithm-Visualization/static/css/main.fe261c11.chunk.css.map",
-    "static/js/2.87e747de.chunk.js.LICENSE.txt": "/Network-Algorithm-Visualization/static/js/2.87e747de.chunk.js.LICENSE.txt"
+    "main.css": "/Network-Analysis-Visualization/static/css/main.fe261c11.chunk.css",
+    "main.js": "/Network-Analysis-Visualization/static/js/main.db9e366e.chunk.js",
+    "main.js.map": "/Network-Analysis-Visualization/static/js/main.db9e366e.chunk.js.map",
+    "runtime-main.js": "/Network-Analysis-Visualization/static/js/runtime-main.e4bdde3e.js",
+    "runtime-main.js.map": "/Network-Analysis-Visualization/static/js/runtime-main.e4bdde3e.js.map",
+    "static/js/2.eea6236f.chunk.js": "/Network-Analysis-Visualization/static/js/2.eea6236f.chunk.js",
+    "static/js/2.eea6236f.chunk.js.map": "/Network-Analysis-Visualization/static/js/2.eea6236f.chunk.js.map",
+    "index.html": "/Network-Analysis-Visualization/index.html",
+    "precache-manifest.d70e6b73b28b31c4b3cf818e2610a1ec.js": "/Network-Analysis-Visualization/precache-manifest.d70e6b73b28b31c4b3cf818e2610a1ec.js",
+    "service-worker.js": "/Network-Analysis-Visualization/service-worker.js",
+    "static/css/main.fe261c11.chunk.css.map": "/Network-Analysis-Visualization/static/css/main.fe261c11.chunk.css.map",
+    "static/js/2.eea6236f.chunk.js.LICENSE.txt": "/Network-Analysis-Visualization/static/js/2.eea6236f.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.3222e249.js",
-    "static/js/2.87e747de.chunk.js",
+    "static/js/runtime-main.e4bdde3e.js",
+    "static/js/2.eea6236f.chunk.js",
     "static/css/main.fe261c11.chunk.css",
-    "static/js/main.6d99ac2a.chunk.js"
+    "static/js/main.db9e366e.chunk.js"
   ]
 }
