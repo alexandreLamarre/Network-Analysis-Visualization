@@ -4,7 +4,7 @@
 ## Table of Contents
 - [Introduction](#Introduction)
 - [Network Settings](#Network-Settings)
-- [Selecting & Running Algorithms](#Selecting-&-Running-Algorithms)
+- [Selecting & Running Algorithms](#selecting--running-algorithms)
 - [Algorithm Settings](#Algorithm-Settings)
 - [Custom Networks & Uploading Data](#custom-networks--uploading-data)
 
