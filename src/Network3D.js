@@ -32,6 +32,11 @@ async function waitAnimateNetwork(that,startIndex, endIndex, animations,func){
   // if(that.state.group === "TSP") continue;
 }
 
+/** Netork Visualizer Component which controls
+  - canvas rendering using THREE.js
+  - network animation controls
+  - calling the 3d network algorithms themselves
+**/
 class NetworkVisualizer3D extends React.Component{
   constructor(props){
     super(props);
@@ -66,7 +71,8 @@ class NetworkVisualizer3D extends React.Component{
     this.app = this.props.app;
     this.canvas = React.createRef();
   }
-
+  /** Sets initial inner width and inner height for the canvas
+  and sets up the 3d scene on the canvas using THREE.js**/
   componentDidMount(){
     const w = window.innerHeight*0.55;
     const h = window.innerHeight*0.55;
@@ -97,7 +103,6 @@ class NetworkVisualizer3D extends React.Component{
     //displaying initial_vertices
     for(let i = 0; i< vertices.length; i++){
       const color = vertices[i].color;
-
       //make a sphere
       var geometry = new THREE.SphereGeometry(vertices[i].size,8,8);
       var material = new THREE.MeshLambertMaterial(new THREE.Color(vertices[i].color));
@@ -119,16 +124,11 @@ class NetworkVisualizer3D extends React.Component{
         points.push(spheres[e.start].position);
         points.push(spheres[e.end].position);
         var geometry = new THREE.BufferGeometry().setFromPoints(points);
-
-
         var line = new THREE.Line(geometry, material);
         scene.add(line);
         lines.push(line);
     }
-
     renderer.render(scene, camera);
-
-
     this.setState({
       width: w,
       height: h,
@@ -143,6 +143,8 @@ class NetworkVisualizer3D extends React.Component{
     });
   }
 
+  /** Clears the setTimeouts set by algorithm animations when this component
+  is destroyed**/
   componentWillUnmount(){
       var id = this.state.maxtimeouts;
       while(id){
@@ -151,6 +153,7 @@ class NetworkVisualizer3D extends React.Component{
       }
   }
 
+  /** Updates the 3D scene on canvas based on the state's components**/
   componentDidUpdate(){
     for(let i = 0; i< this.state.vertices.length; i++){
       const v = this.state.vertices[i];
@@ -158,12 +161,9 @@ class NetworkVisualizer3D extends React.Component{
       // this.state.spheres[i].
       this.state.spheres[i].material.color = new THREE.Color(this.state.vertices[i].color)
     }
-
-
     for(let j = 0; j< this.state.edges.length; j++){
       const e = this.state.edges[j];
       const v = this.state.vertices;
-
       var pos = this.state.lines[j].geometry.attributes.position.array;
       pos[0] = v[e.start].x;
       pos[1] = v[e.start].y;
@@ -174,10 +174,10 @@ class NetworkVisualizer3D extends React.Component{
       this.state.lines[j].geometry.attributes.position.needsUpdate = true;
       this.state.lines[j].material.color = new THREE.Color(this.state.edges[j].color);
     }
-
     this.state.renderer.render(this.state.scene, this.state.camera);
   }
 
+  /** Calls the force directed layout algorithm and animates it**/
   generateForceDirectedLayout(){
     const values = springEmbedding3D(this.state.vertices, this.state.edges,
         this.state.width, this.state.height, this.state.iterations, this.app.state.settings.spring);
@@ -187,6 +187,7 @@ class NetworkVisualizer3D extends React.Component{
     waitAnimateNetwork(this, 0, animations.length, animations);
   }
 
+  /** Calls the Fruchterman-Reingold layout algorithm and animates it**/
   generateReingold(){
     const values = fruchtermanReingold3D(this.state.vertices, this.state.edges, this.state.width,
         this.state.height, this.state.iterations, this.app.state.settings.fruchterman);
@@ -195,17 +196,18 @@ class NetworkVisualizer3D extends React.Component{
     const animations = values[1];
     waitAnimateNetwork(this, 0, animations.length, animations);
   }
+  /**[INCOMPLETE] Calls the Kamada-Kawai differential equations layout
+  algorithm and animates it **/
+  generateKamadaKawai(){}
 
-  generateKamadaKawai(){
-
-  }
-
+  /** Calls the Force Atlas 2 layout algorithm and animates it**/
   generateForceAtlas2(){
     const [final_vertices, animations] = forceAtlas23D(this.state.vertices, this.state.edges,
                 this.state.width, this.state.height, this.state.iterations, this.app.state.settings.forceatlas2)
     waitAnimateNetwork(this, 0, animations.length, animations);
   }
 
+  /** Calls the Force Atlas2 algorithm with linear-logarithmic scaling changes**/
   generateForceAtlasLinLog(){
     const values = forceAtlasLinLog3D(this.state.vertices, this.state.edges,
                 this.state.width, this.state.height, this.state.iterations, this.app.state.settings.forceatlaslinlog);
@@ -215,20 +217,19 @@ class NetworkVisualizer3D extends React.Component{
     waitAnimateNetwork(this, 0, animations.length, animations);
   }
 
-  generateHall(){
+  /**[INCOMPLETE] Calls the Hall's quadratic form of graphs layout algorithm **/
+  generateHall(){}
 
-  }
-
+  /** Calls the generalized eigenvector layout algorithm and animates it**/
   generateSpectralDrawing(){
     const [eigenvectors, animations] = spectralDrawing(this.state.vertices,
       this.state.edges,this.state.width, this.state.height, this.app.state.dimension);
       waitAnimateNetwork(this, 0, animations.length, animations);
   }
+  /**[INCOMPLETE] Calls a custom radial layout algorithm **/
+  generateRadialFlowDirected(){}
 
-  generateRadialFlowDirected(){
-
-  }
-
+  /** Calls Kruskals MST Algorithm and animates it**/
   generateKruskal(){
     const [animations, sorted_edges] = kruskal(this.state.vertices, this.state.edges, 3,
       [this.app.state.settings.kruskal.red, this.app.state.settings.kruskal.green,
@@ -237,6 +238,7 @@ class NetworkVisualizer3D extends React.Component{
     waitSetEdges(that, sorted_edges, animations);
   }
 
+  /** Calls Prim's MST Algorithm and animates it**/
   generatePrim(){
     const animations = prim(this.state.vertices, this.state.edges, 3,
       [this.app.state.settings.prim.red, this.app.state.settings.prim.green,
@@ -244,6 +246,8 @@ class NetworkVisualizer3D extends React.Component{
     waitAnimateNetwork(this,0,animations.length,animations);
   }
 
+  /** Calls the 2-Opt Solution to the travelling salesperson problem and
+  animates it**/
   generate2Opt(){
     const animations = [];
     this.app.setState({running:true});
@@ -259,6 +263,8 @@ class NetworkVisualizer3D extends React.Component{
     waitAnimateNetwork(this, 0, animations.length, animations);
   }
 
+  /** Calls the 2-Opt Solution augmented with simulated annealing to the
+  travelling salesperson problem and animates it**/
   generate2OptAnnealing(){
     const animations = [];
     this.app.setState({running:true});
@@ -285,6 +291,8 @@ class NetworkVisualizer3D extends React.Component{
     waitAnimateNetwork(this, 0, animations.length, animations);
   }
 
+  /** Calls the 3-Opt Solution to the travelling salesperson problem and animates
+  it **/
   generate3Opt(){
     const animations = [];
     this.app.setState({running:true});
@@ -300,17 +308,21 @@ class NetworkVisualizer3D extends React.Component{
     waitAnimateNetwork(this, 0, animations.length, animations);
   }
 
+  /**Calls the Greedy Vertex Coloring Algorithm and animates it **/
   generateGreedyVertex(){
     const [vertices, animations] = GreedyColoring(this.state.vertices, this.state.edges, this.app.state.dimension, [255,255,0], [0,0,255])
     waitAnimateNetwork(this,0,animations.length,animations);
   }
 
+  /** Calls the Misra-Gries Fan Rotation Algorithm and animates it **/
   generateMisraGries(){
     // console.log("generate misra gries");
     const animations = misraGries(this.state.vertices, this.state.edges, [255,0,0], [0,255,0]);
     waitAnimateNetwork(this, 0, animations.length, animations);
   }
 
+  /** Checks which algorith to generate an animation for if no animation is running
+  Otherwise, starts/pauses the animation based on the current index **/
   runAlgorithm(){
     if(this.app.state.running === false){
       if(this.state.algoType === "spring") this.generateForceDirectedLayout();
@@ -332,16 +344,15 @@ class NetworkVisualizer3D extends React.Component{
     else{
       waitAnimateNetwork(this, this.state.currentAnimationIndex, this.state.currentAnimations.length-1, null);
     }
-
   }
 
+  /** Animates Layout Type algorithms**/
   animateNetwork(){
     let x = 0;
     this.app.setState({running:true});
     const start = this.state.currentAnimationIndex;
     const end = this.state.animationIndex;
     for(let k = start; k < end; k++){
-
       x = setTimeout(() => {
         const vertices = this.state.vertices;
         for(let i = 0; i <vertices.length; i++){
@@ -355,25 +366,23 @@ class NetworkVisualizer3D extends React.Component{
     this.setState({maxtimeouts: x});
   }
 
+  /** Animates Coloring Type algorithms**/
   animateColoring(){
     let x = 0;
     this.app.setState({running:true});
     // console.log("animating");
     const start = this.state.currentAnimationIndex;
     const end = this.state.animationIndex;
-
     for(let k =start; k < end; k++){
       x = setTimeout(() => {
         const vertices = this.state.vertices;
         const edges= this.state.edges;
         const animations = this.state.currentAnimations;
-
         this.setState({vertices: animations[k].vertices, edges:animations[k].edges, currentAnimationIndex: this.state.currentAnimationIndex + 1});
         // console.log("animating")
         if(k === end-1){
           // console.log("pausing")
           this.setState({paused: true,currentAnimationIndex: end});
-
           // console.log(final_vertices);
         }
       }, (k-start) * this.app.state.animationSpeed)
@@ -381,6 +390,7 @@ class NetworkVisualizer3D extends React.Component{
     this.setState({maxtimeouts: x});
   }
 
+  /** Animates Travelling Salesperson algorithms **/
   animateTSP(func){
     let x = 0;
     this.app.setState({running:true});
@@ -392,21 +402,20 @@ class NetworkVisualizer3D extends React.Component{
         const vertices = this.state.vertices;
         const edges= this.state.edges;
         const animations = this.state.currentAnimations;
-
         this.setState({edges: animations[k], currentAnimationIndex: this.state.currentAnimationIndex + 1});
         // console.log("animating")
         if(k === end-1){
           // console.log("pausing")
           this.setState({paused: true,currentAnimationIndex: end});
-
           // console.log(final_vertices);
         }
       }, (k-start) * this.app.state.animationSpeed)
     }
-
     this.setState({maxtimeouts: x});
   }
 
+  /** Re-generates a new random network based on component state
+  and recreates a THREE.js scene to render to**/
   resetNetwork(){
     var renderer = new THREE.WebGLRenderer({canvas: this.canvas.current, alpha:true});
     renderer.setSize(this.state.width, this.state.height);
@@ -441,7 +450,6 @@ class NetworkVisualizer3D extends React.Component{
       spheres.push(sphere);
       scene.add(sphere);
     }
-
     const lines = [];
     //displaying intial edges
     for(let j = 0; j < edges.length; j++){
@@ -460,7 +468,6 @@ class NetworkVisualizer3D extends React.Component{
         lines.push(line);
     }
     renderer.render(scene,camera);
-
     this.setState({
       vertices: vertices,
       edges: edges,
@@ -474,6 +481,7 @@ class NetworkVisualizer3D extends React.Component{
     this.app.setState({numV: vertices.length, numE: edges.length});
   }
 
+  /** Increases the zoom on the camera looking at the THREE.js scene **/
   zoomCamera(e){
     const delta = Math.sign(e.deltaY);
     this.state.camera.position.z += 10*delta;
@@ -481,6 +489,7 @@ class NetworkVisualizer3D extends React.Component{
     if(this.state.cameraChanged === false) this.setState({cameraChanged: true})
   }
 
+  /** Resets the camera to its original position in the THREE.js scene**/
   resetCamera(){
     this.state.camera.position.z = this.state.depth * 1.7;
     this.state.camera.position.x = this.state.width/2;
@@ -489,6 +498,7 @@ class NetworkVisualizer3D extends React.Component{
     this.setState({cameraChanged:false})
   }
 
+  /** handles the start of drag events**/
   startDrag(e){
     e.preventDefault();
     this.state.previousMouseX = e.clientX;
@@ -496,11 +506,14 @@ class NetworkVisualizer3D extends React.Component{
     this.state.dragging = true;
   }
 
+  /** handles the end of drag events**/
   endDrag(e){
     e.preventDefault();
     this.state.dragging = false;
   }
 
+  /**[MISNOMER] move this camera back and forth based on difference of onMouse
+  positions on drags **/
   rotateCamera(e){
     if(this.state.dragging){
       const deltaX = e.clientX - this.state.previousMouseX;
@@ -514,6 +527,7 @@ class NetworkVisualizer3D extends React.Component{
     }
   }
 
+  /** Sets the algorithm type to generate when run based on user input**/
   setAlgoType(v){
     // this.attribute.current.setLayout(v)
     this.setState({algoType: v});
@@ -533,11 +547,13 @@ class NetworkVisualizer3D extends React.Component{
     }
   }
 
+  /** Sets the random network generation type based on user input**/
   setRandomizedType(v){
     const that = this;
     waitSetRandomizedType(that, v);
   }
 
+  /** Clears the queued setTimeouts of animations**/
   clearAnimations(){
     var id = this.state.maxtimeouts;
     while(id){
@@ -546,18 +562,21 @@ class NetworkVisualizer3D extends React.Component{
     }
   }
 
+  /** Cancels the currently loaded animation**/
   cancelAnimation(){
     this.setState({currentAnimations: [], paused: true});
     this.clearAnimations();
     this.app.setState({running: false});
   }
 
+  /** pauses the animation**/
   pauseAnimation(){
     this.setState({paused:true});
     this.clearAnimations();
     // console.log(this.state.currentAnimationIndex);
   }
 
+  /** Resets Vertex and Edge colors based on component default colors state**/
   resetColoring(){
     const shouldRecolor = !(sameColor([this.app.state.startRed, this.app.state.startGreen, this.app.state.startBlue],
                               [this.app.state.endRed, this.app.state.endGreen, this.app.state.endBlue]));
@@ -595,6 +614,7 @@ class NetworkVisualizer3D extends React.Component{
     }
   }
 
+  /** updates Vertex Size based on which scale the user has selected**/
   updateVertexSize(){
     if(this.app.state.degreesize === false){
       const new_size = 5;
@@ -622,6 +642,7 @@ class NetworkVisualizer3D extends React.Component{
     }
   }
 
+  /** Updates coloring when user changes the default coloring settings**/
   updateColoring(){
     const shouldRecolor = !(sameColor([this.app.state.startRed, this.app.state.startGreen, this.app.state.startBlue],
                               [this.app.state.endRed, this.app.state.endGreen, this.app.state.endBlue]));
@@ -646,6 +667,7 @@ class NetworkVisualizer3D extends React.Component{
     }
   }
 
+  /** skips the loaded animation one frame forward, if possible**/
   skipFrame(){
     this.clearAnimations();
     const animations_index = Math.min(this.state.currentAnimationIndex + 1,
@@ -653,12 +675,15 @@ class NetworkVisualizer3D extends React.Component{
     waitAnimateNetwork(this, animations_index, animations_index+1, null);
   }
 
+  /**jumps the loaded animation one frame backward, if possible **/
   rewindFrame(){
     this.clearAnimations();
     const animations_index = Math.max(this.state.currentAnimationIndex -2, 0);
     waitAnimateNetwork(this, animations_index, animations_index+1, null);
   }
 
+  /** jumps 1 second worth of frames (based on component state) forward
+  on the loaded animation, as far as possible**/
   skipForward(){
     this.clearAnimations();
     const animations_index = Math.min(this.state.currentAnimations.length-1,
@@ -668,6 +693,8 @@ class NetworkVisualizer3D extends React.Component{
     waitAnimateNetwork(this, animations_index, end_index, null);
   }
 
+  /** jumps 1 second worth of frames (based on component state) backward
+  on the loaded animation, as far as possible**/
   skipBackward(){
     this.clearAnimations();
     const animations_index = Math.max(0,
@@ -677,26 +704,32 @@ class NetworkVisualizer3D extends React.Component{
     waitAnimateNetwork(this, animations_index, end_index, null);
   }
 
+  /** skips to the beginning of the loaded animation, if possible**/
   skipToBeginning(){
     this.clearAnimations();
     const animations_index = 0
     this.setState({currentAnimationIndex:0})
     waitAnimateNetwork(this, 0, 1,null);
   }
+
+  /** skips to the end of the loaded animation, if possible **/
   skipToEnd(){
     this.clearAnimations();
     const animations_index = this.state.currentAnimations.length-1;
     waitAnimateNetwork(this, animations_index, animations_index+1, null)
   }
 
+  /** Opens the network settings component (modal)**/
   openNetworkSettings(){
     waitOpenNetworkSettings(this);
   }
 
+  /**Opens the algorithm settings component (modal) **/
   openAlgorithmSettings(){
     waitOpenAlgorithmSettings(this);
   }
 
+  /** saves the network into a CSV file**/
   saveAsCSV(){
     let csvContent = "data:text/csv;charset=utf-8,";
     const vertices = this.state.vertices;
@@ -714,9 +747,10 @@ class NetworkVisualizer3D extends React.Component{
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-
   }
 
+  /** [INCOMPATIBLE WITH THREE.js] saves the network canvas into a given
+  extension file (jpeg, png),  **/
   saveAs(extension){
     const canvas = this.canvas.current;
     const image = canvas.toDataURL("network3d/"+extension);
@@ -857,7 +891,6 @@ class NetworkVisualizer3D extends React.Component{
                     <a className = "aFile" onClick = {() => this.saveAs("png")} hidden ={true}>.png</a>
                     <a className = "aFile" onClick = {() => this.saveAs("jpg")} hidden = {true}>.jpg</a>
                     */}
-
                   </div>
                 </div>
                 <button className = "AlgoB"
@@ -895,7 +928,6 @@ class NetworkVisualizer3D extends React.Component{
                     width: Math.min(this.state.width/10,100), backgroundSize: 'cover'}}>
                     </button>
                 </div>
-
               </div>
           </div>
   }
@@ -904,15 +936,21 @@ class NetworkVisualizer3D extends React.Component{
 
 export default NetworkVisualizer3D;
 
+/** HELPER FUNCTIONS AND ASYNCHRONOUS COMPONENT HANDLING**/
+
+/** Asynchronously-await set canvas layout size/type
+before resetting network**/
 async function waitSetRandomizedType(that,v){
   await that.setState({randomType: v});
   that.resetNetwork();
 }
 
+/** Asynchronously-await setting the edges to animate**/
 async function animateEdges(that, edges){
   await that.setState({edges: edges});
 }
 
+/** find the max degree of a vertex given a set of vertices**/
 function find_max_degree(vertices){
   var max_degree = -Infinity;
   for(let i = 0; i < vertices.length; i++){
@@ -921,20 +959,26 @@ function find_max_degree(vertices){
   return max_degree;
 }
 
+/** assign size to a vertex based on its degree and the minsize/maxsize
+for vertices within the network**/
 function assign_size(degree, max_degree, minsize, maxsize){
   //min degree is 1 or 0
   return minsize +(maxsize - minsize)*(degree/max_degree)
 }
 
+/** checks if two rgb tuple colors are the same**/
 function sameColor(startColor, endColor){
   if(startColor[0] === endColor[0] && startColor[1] === endColor[1] && startColor[2] === endColor[2]) return true;
   return false;
 }
 
+/** returns rgb tuples into css-compatible strings**/
 function rgb_to_str(color){
   return "rgb(" + parseInt(color[0]) + "," + parseInt(color[1]) + "," + parseInt(color[2]) +")";
 }
 
+/** Create a color gradient given a start and end color.
+Splits distinct colors based on the max degree of the network**/
 function createColorGradient(startColor, endColor, maxDegree){
   // console.log("inside color gradient", startColor, endColor, maxDegree);
   var [startHue, startSaturation, startLightness] = rgb_to_hsl(startColor);
@@ -987,6 +1031,8 @@ function calculate_hue(delta, Cmax, red, green, blue){
   if(Cmax === blue) return 60*((red- green)/delta + 4);
 }
 
+/** helper for hsl_to_rgb conversion, which checks the hue and assigns
+permutations based on its degree**/
 function check_degrees(hue, C, X){
   if((hue >= 0 && hue < 60) || hue == 360) return [C,X,0];
   if(hue >= 60 && hue < 120 ) return [X,C,0];
@@ -997,10 +1043,10 @@ function check_degrees(hue, C, X){
   return [0,0,0];
 }
 
+/** assign colors based on vertex degree and the corresponding network
+color gradient**/
 function assign_color(degree, max_degree, gradient){
-
   var selection = gradient[Math.floor((degree/max_degree) * (gradient.length-1))]
-
   return rgb_to_str(selection)
 }
 
@@ -1009,11 +1055,13 @@ async function waitSetEdges(that, sorted_edges,animations){
   waitAnimateNetwork(that, 0, animations.length,animations)
 }
 
+/** Asynchrnously-await opening the network settings component (modal)**/
 async function waitOpenNetworkSettings(that){
   await that.app.navbar.current.openSettings();
   that.app.navbar.current.settings.current.generalsettings.current.setOpen(true);
 }
 
+/** Asynchronously-await opening the algorithm settings component (modal)**/
 async function waitOpenAlgorithmSettings(that){
   await that.app.navbar.current.openSettings();
   that.app.navbar.current.settings.current.algorithmsettings.current.setOpen(true);
