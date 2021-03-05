@@ -42,8 +42,8 @@ class NetworkVisualizer extends React.Component{
                 this.state.network.createRandomNetwork()
             }
             this.drawNetwork(this.state.network)
+            window.requestAnimationFrame(() => this.animate())
         }
-        window.requestAnimationFrame(() => this.animate())
 
     }
 

@@ -2,9 +2,9 @@ import React from "react"
 import {IonItem, IonLabel, IonRange, IonCheckbox} from "@ionic/react";
 
 var MIN_VERTICES_NUM = 4
-var MAX_VERTICES_NUM = 600
+var MAX_VERTICES_NUM = 200
 var MIN_EDGES_NUM = 3
-var MAX_EDGES_NUM = 2000
+var MAX_EDGES_NUM = 600
 
 /**
  * Network Settings Component is the react component that represents & controls

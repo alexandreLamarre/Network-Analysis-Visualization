@@ -22,8 +22,8 @@ class NetworkSettings{
      */
     constructor(){
         //number of vertices and edges
-        this.numV = 200
-        this.numE = 400
+        this.numV = 60
+        this.numE = 200
         //scaling vertx size
         this.scaleVertices = false
         this.minSize = 1

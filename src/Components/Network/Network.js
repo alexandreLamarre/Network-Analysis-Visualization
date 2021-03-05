@@ -62,6 +62,9 @@ class Network{
                 const indexFrom = random2+1000*random1;
                 if(already_connected.get(indexTo) === undefined ){
                     edges.push(new Edge(random1, random2));
+                    if (this.isThreeDimensional){
+                        edges[edges.length-1].color = "rgb(68,34,136)"
+                    }
                     vertices[random1].increment_degree();
                     vertices[random2].increment_degree();
                     if(vertices[random1].degree > maxDegree) availableVertices.splice(random1, 1);
