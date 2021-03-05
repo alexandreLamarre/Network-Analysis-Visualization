@@ -1,4 +1,6 @@
 import React from "react";
+import * as THREE from "three";
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
 
 class NetworkVisualizer3D extends React.Component{
     constructor(props){
@@ -26,10 +28,11 @@ class NetworkVisualizer3D extends React.Component{
     resize(){
         const h = Math.max(window.innerHeight *this.heightConstant, this.minheight)
         const w = window.innerWidth  * this.widthConstant
-        this.network3D.current.width = w
-        this.network3D.current.height = h
+        if (this.network3D.current != null){
+            this.network3D.current.width = w
+            this.network3D.current.height = h
+        }
         this.setState({height: h, width: w})
-        console.log("resizing")
     }
 
     render() {

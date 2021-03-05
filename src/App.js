@@ -3,11 +3,12 @@ import React from 'react';
 import './App.css';
 
 //CUSTOM COMPONENT IMPORTS
-import {NetworkVisualizer, NetworkVisualizer3D, NetworkCustom} from "./Components/Network/index.js"
-import {Nav2D, Nav3D, NavCustom} from "./Components/NavBar"
-import Settings from "./Animations/Algorithms/Settings.js"
-import SettingObject from "./Animations/Algorithms/Setting.js"
 
+import {Nav2D, Nav3D, NavCustom} from "./Components/NavBar"
+import Settings from "./Animations/Algorithms/AlgorithmSettings.js"
+import SettingObject from "./Animations/Algorithms/AlgorithmSetting.js"
+import {NetworkVisualizer, NetworkVisualizer3D, NetworkCustom} from "./Components/Network";
+import NetworkSettings from "./Components/Network/NetworkSettings";
 
 //REACT ROUTER IMPORTS
 import {BrowserRouter as Router, Route, Link} from "react-router-dom";
@@ -31,44 +32,40 @@ import '@ionic/react/css/display.css';
 import { logoElectron, searchCircleOutline} from 'ionicons/icons';
 import {Redirect} from "react-router";
 
+
 class App extends React.Component{
   constructor(props){
     super(props)
     this.state = {
-      settingsHTML: null,
       running:false,
-      animationSpeed: 50,
-      numV: 120,
-      numE: 300,
-      connected: "True",
-      maxE: 600,
-      minE: 20,
       height: 0,
       width: 0,
       settingsObject : [],
+      settingsHTML: null,
+      networkSettingHTML : null,
     }
+    this.networkSettings = new NetworkSettings()
     
   }
 
   componentDidMount(){
-    let s = new Settings("Network ")
-    let s1 = SettingObject.newRangeSetting("vertices", 4, 200, 1, 4)
-    let s2 = SettingObject.newRangeSetting("edges", 0, 600, 1, 4)
-    let s3 = SettingObject.newCheckBoxSetting("force connectedness", false)
-    let s4 = SettingObject.newOptionSetting("random generation", ["random", "random-circle"], "random")
-    s.push(s1)
-    s.push(s2)
-    s.push(s3)
-    s.push(s4)
 
+    const networkSettingsHTML = this.networkSettings.toHTML()
     const w = window.innerWidth;
     const h = window.innerHeight;
     window.addEventListener("resize", () => {this.resize()})
-    this.setState({height: h, width: w, settingsHTML: s.toHTML(), settingsObject: s});
+    this.setState({
+      height: h,
+      width: w,
+      settingsHTML: <div> Loading ...</div>,
+      settingsObject: null,
+      networkSettingsHTML : networkSettingsHTML,
+    });
   }
 
   checkImplementation(){
     console.log(this.state.settingsObject)
+    console.log(this.networkSettings)
   }
 
   resize(){
@@ -120,9 +117,11 @@ class App extends React.Component{
               <IonRow size = "11" style = {{overflow: "auto"}} id = "appcontent">
                 <IonCol size = {numnetwork}>
 
-                  <Route path = "/Network-Analysis-Visualization/2d" render = {() => <NetworkVisualizer />}/>
-                  <Route path = "/Network-Analysis-Visualization/3d" render = {() => <NetworkVisualizer3D />}/>
-                  <Route path = "/Network-Analysis-Visualization/custom" render = {() => <NetworkCustom />}/>
+                  <Route path = "/Network-Analysis-Visualization/2d" render = {() => <NetworkVisualizer
+                      settings = {this.networkSettings} />}/>
+                  <Route path = "/Network-Analysis-Visualization/3d" render = {() => <NetworkVisualizer3D
+                      settings = {this.networkSettings} />}/>
+                  <Route path = "/Network-Analysis-Visualization/custom" render = {() => <NetworkCustom/>}/>
 
                 </IonCol>
                 <IonCol size = {numsettings}  id = "settings">
@@ -132,7 +131,7 @@ class App extends React.Component{
                     <IonInput placeholder = "filter" style = {{textAlign: "center"}}>
                     </IonInput>
                   </IonItem>
-                    {this.state.settingsHTML}
+                    {this.state.networkSettingsHTML}
                     <IonButton onClick = {() => this.checkImplementation()}> Log </IonButton>
                   </IonContent>
 

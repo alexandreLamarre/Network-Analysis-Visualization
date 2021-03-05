@@ -12,32 +12,28 @@ import Edge from "../../datatypes/Edge";
 class Network{
     constructor(settings, isThreeDimensional){
         this.isThreeDimensional = isThreeDimensional
-        this.networkSettings = settings
+        this.settings = settings
+        this.createRandomNetwork()
+    }
 
-        // TODO assign these values based on parsing network settings
-        this.numV = 200
-        this.numE = 400
-        this.randomType = "random"
-        this.networkProperties = {}
-        this.networkProperties.cycle = false
-        this.networkProperties.connected = false
-        const [vertices, edges] = this.createRandomNetwork()
-
-        this.vertices = vertices
-        this.edges = edges
+    /**
+     * @returns whether or not a new random network should be assigned
+     */
+    shouldReset(){
+        return this.settings.shouldReset
     }
 
     /**
      * Creates a random network with 2/3 dimensional vertices and edges with position values between 0 and 1
      */
     createRandomNetwork(){
-        const maxDegree = this.numV - 1
-        var maxEdges = Math.floor(maxDegree*this.numV/2)
+        const maxDegree = this.settings.numV - 1
+        var maxEdges = Math.floor(maxDegree*this.settings.numV/2)
         const vertices = []
         let availableVertices = [] //used for determining edge assignment
         //create random points from 0 to 1
-        for(let i = 0; i < this.numV; i++){
-            if (this.randomType === "random"){
+        for(let i = 0; i < this.settings.numV; i++){
+            if (this.settings.properties.General){
                 if (this.isThreeDimensional){
                     vertices.push(new Vertex(Math.random(), Math.random(), Math.random()))
                 } else{
@@ -47,11 +43,11 @@ class Network{
             availableVertices.push(i)
         }
         const edges = []
-        if (!this.networkProperties.cycle){
+        if (!this.settings.properties.cycle){
             let already_connected = new Map();
-            let remainingEdges = this.numE;
+            let remainingEdges = this.settings.numE;
 
-            if (this.networkProperties.connected){
+            if (this.settings.properties.connected){
                 //connect the network before assigning remaining edges
             }
 
@@ -77,7 +73,9 @@ class Network{
                 }
             }
         }
-        return [vertices, edges];
+        this.settings.shouldReset = false
+        this.vertices = vertices
+        this.edges = edges
     }
 }
 

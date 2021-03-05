@@ -15,13 +15,13 @@ class SettingsComponent extends React.Component{
         let settings = this.props.settings
         return (
             <div>
-            <IonItem color = "rgb(200, 200, 200)"
-                     style = {{outline: "1px solid black"}}>
-                <IonLabel style = {{textAlign: "center"}}>
-                    <b>{this.props.name}</b>
-                </IonLabel>
+                <IonItem color = "rgb(200, 200, 200)"
+                         style = {{outline: "1px solid black"}}>
+                    <IonLabel style = {{textAlign: "center"}}>
+                        <b>{this.props.name}</b>
+                    </IonLabel>
 
-            </IonItem >
+                </IonItem >
                     {settings.map((s, index) => (
                         s
                     ))}
