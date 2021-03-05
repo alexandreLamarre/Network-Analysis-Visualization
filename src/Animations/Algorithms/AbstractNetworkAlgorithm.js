@@ -1,4 +1,4 @@
-import Settings from "./Settings"
+import Settings from "./AlgorithmSettings"
 /**
  * Abstract Super Class that dictates what methods each Network Algorithm Should have
  * **/

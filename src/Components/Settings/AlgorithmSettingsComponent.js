@@ -1,7 +1,7 @@
 import React from "react"
 import {IonItem, IonLabel} from "@ionic/react"
 
-class SettingsComponent extends React.Component{
+class AlgorithmSettingsComponent extends React.Component{
     constructor(props){
         super(props)
         this.state = {
@@ -32,4 +32,4 @@ class SettingsComponent extends React.Component{
     }
 }
 
-export default SettingsComponent
+export default AlgorithmSettingsComponent

@@ -1,10 +1,10 @@
 import React from "react"
 import {IonItem, IonLabel} from "@ionic/react"
-import SettingsComponent from "../../Components/Settings/SettingsComponent";
+import AlgorithmSettingsComponent from "../../Components/Settings/AlgorithmSettingsComponent";
 /**
  * Settings class handles a container of Setting class
  */
-class Settings{
+class AlgorithmSettings{
     constructor(name){
         this.name = name + " Settings"
         this.settings = []
@@ -32,7 +32,7 @@ class Settings{
         }
         console.log("settings to HTML", settingsHTML)
         return (
-            <SettingsComponent
+            <AlgorithmSettingsComponent
                 name = {this.name}
                 settings = {settingsHTML}
             />
@@ -40,4 +40,4 @@ class Settings{
     }
 }
 
-export default Settings
+export default AlgorithmSettings

@@ -6,7 +6,7 @@ import SettingCheckbox from "../../Components/Settings/SettingCheckbox";
 /**
  * Setting represents a setting on an algorithm
  */
-class SettingObject{
+class AlgorithmSettingObject{
     constructor(obj){
         this.obj = obj
     }
@@ -31,7 +31,7 @@ class SettingObject{
             value = min
         }
         var s = {type: "range", name: name, min: min, max: max, step:step, value: value}
-        return new SettingObject(s)
+        return new AlgorithmSettingObject(s)
     }
 
     /**
@@ -53,7 +53,7 @@ class SettingObject{
         }
 
         var s = {type: "option", name: name, options: options, value: value}
-        return new SettingObject(s)
+        return new AlgorithmSettingObject(s)
     }
 
     /**
@@ -69,7 +69,7 @@ class SettingObject{
         if (!validParameter(value)) value = false
 
         var s = {type: "checkbox", name: name, value: value}
-        return new SettingObject(s)
+        return new AlgorithmSettingObject(s)
     }
 
     /**
@@ -104,7 +104,7 @@ class SettingObject{
     }
 }
 
-export default SettingObject
+export default AlgorithmSettingObject
 
 /**
  * Checks if a provided parameter is non null. not undefined and not NaN
