@@ -63,23 +63,26 @@ class NetworkSettingsComponent extends React.Component{
             const maxE= Math.min(Math.floor(numV*(numV-1)/2), MAX_EDGES_NUM)
             const edges = numE > maxE? maxE: numE < minE? minE: numE
             this.settings.numE = edges
+            this.settings.numV = numV
             this.setState({numV: numV, numE: edges, minE: minE, maxE: maxE})
         }
         if (activeProperty === "Cycle"){
             if (updateV){
                 const edges = numV - 1
                 this.settings.numE = numV - 1
+                this.settings.numV = numV
                 this.setState({numV: numV, numE: edges, minE: MIN_EDGES_NUM, maxE: MAX_VERTICES_NUM-1})
             } else{
                 const vertices = numE + 1
                 this.settings.numV = vertices
+                this.settings.numE = numE
                 this.setState({numV: vertices, numE: numE, minE: MIN_EDGES_NUM, maxE: MAX_VERTICES_NUM-1})
             }
         }
         if (activeProperty === "General"){
             this.setState({
                 minE: MIN_EDGES_NUM,
-                maxE: Math.min(MAX_EDGES_NUM, Math.Floor(numV*(numV-1)/2)),
+                maxE: Math.min(MAX_EDGES_NUM, Math.floor(numV*(numV-1)/2)),
                 minV: MIN_VERTICES_NUM,
                 maxV : MAX_VERTICES_NUM,
             })

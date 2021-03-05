@@ -131,7 +131,10 @@ class App extends React.Component{
                     <IonInput placeholder = "filter" style = {{textAlign: "center"}}>
                     </IonInput>
                   </IonItem>
-                    {this.state.networkSettingsHTML}
+                    <div style = {{maxHeight: Math.max(this.state.height*(7/10), 300), overflowY: "scroll"}}>
+                      {this.state.networkSettingsHTML}
+                    </div>
+
                     <IonButton onClick = {() => this.checkImplementation()}> Log </IonButton>
                   </IonContent>
 
