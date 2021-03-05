@@ -1,4 +1,5 @@
 import React from "react";
+import Network from "./Network";
 
 class NetworkVisualizer extends React.Component{
     constructor(props){
@@ -6,6 +7,16 @@ class NetworkVisualizer extends React.Component{
         this.state = {
             width: 0,
             height: 0,
+            network: null,
+            sorted: false,
+            offsetX: 0,
+            offsetY: 0,
+            dragging: false,
+            previousMouseX: 0,
+            previousMouseY: 0,
+            zoomMouseX: null,
+            zoomMouseY: null,
+            scale: 1,
         }
         this.heightConstant= 8.5/10
         this.widthConstant = 7/10
@@ -13,29 +24,125 @@ class NetworkVisualizer extends React.Component{
         this.network = React.createRef()
     }
 
-
     componentDidMount(){
         const w = window.innerWidth * this.widthConstant
         const h = window.innerHeight * this.heightConstant
         this.network.current.width = w
         this.network.current.height = h
         window.addEventListener("resize", () => {this.resize()})
-        this.setState({width: w, height: h})
+
+        const network = new Network(null, false)
+        this.setState({width: w, height: h, network: network})
+        window.requestAnimationFrame(() => this.animate())
+    }
+
+    animate(){
+        if(this.state.network !== null && this.network.current !== null){
+            this.drawNetwork(this.state.network)
+        }
+        window.requestAnimationFrame(() => this.animate())
+
+    }
+
+    drawNetwork(network){
+        const w = this.network.current.width
+        const h = this.network.current.height
+        const ctx = this.network.current.getContext("2d");
+        ctx.clearRect(0, 0, this.network.current.width, this.network.current.height)
+        ctx.translate(this.state.offsetX, this.state.offsetY)//translate by the offsets
+
+        ctx.scale(this.state.scale, this.state.scale)
+
+        for(let i = 0; i < network.vertices.length; i++){
+            ctx.globalAlpha = 1.0
+            ctx.beginPath()
+            const color = "rgb(0,255,131)"
+            ctx.fillStyle = color
+            ctx.arc(network.vertices[i].x*w ,
+                network.vertices[i].y*h,
+                network.vertices[i].size, 0, Math.PI*2)
+            ctx.fill();
+            ctx.closePath()
+        }
+
+        for(let j = 0; j < network.edges.length; j++){
+            ctx.beginPath();
+            const index1 = network.edges[j].start;
+            const index2 = network.edges[j].end;
+            ctx.moveTo(network.vertices[index1].x * w ,
+                        network.vertices[index1].y * h )
+            ctx.lineTo(network.vertices[index2].x * w ,
+                        network.vertices[index2].y * h)
+            ctx.globalAlpha = network.edges[j].alpha
+            ctx.strokeStyle = network.edges[j].color
+            ctx.stroke();
+            ctx.closePath();
+        }
+        ctx.scale(1/this.state.scale, 1/this.state.scale) //scale by zoom
+        ctx.translate(-this.state.offsetX, -this.state.offsetY) //untranslate by the offsets
     }
 
     resize(){
         const h = Math.max(window.innerHeight *this.heightConstant, this.minheight)
         const w = window.innerWidth  * this.widthConstant
-        this.network.current.width = w
-        this.network.current.height = h
+        if(this.network.current !== null){
+            this.network.current.width = w
+            this.network.current.height = h
+        }
         this.setState({height: h, width: w})
-        console.log("resizing")
+    }
+
+    //SPECIFIC EVENT HANDLERS
+
+    /** handles whether drag events on canvas are occuring**/
+    setDrag(e,v){
+        e.preventDefault();
+        if(v === true) {
+            this.setState({previousMouseX : e.clientX});
+            this.setState({previousMouseY : e.clientY});
+        }
+        this.setState({dragging:v});
+    }
+
+    /** updates the camera based on user-input events on canvas**/
+    updateCamera(e){
+        e.preventDefault();
+        if(this.state.dragging){
+            const deltaX = e.clientX - this.state.previousMouseX;
+            const deltaY = e.clientY - this.state.previousMouseY;
+            const new_offsetX = this.state.offsetX + deltaX/(this.state.scale);
+            const new_offsetY = this.state.offsetY + deltaY/(this.state.scale);
+            this.setState({previousMouseX: e.clientX, previousMouseY: e.clientY,
+                offsetX: new_offsetX, offsetY: new_offsetY});
+        }
+        const rect = this.network.current.getBoundingClientRect()
+        this.setState({ currentMouseX: e.clientX -rect.left, currentMouseY: e.clientY - rect.top})
+    }
+
+    /** zoom camera**/
+    zoomCamera(e){
+        const delta = -Math.sign(e.deltaY);
+        const zoomIntensity = 0.1
+        const scale = (this.state.scale) + (delta*zoomIntensity);
+        const rect = this.network.current.getBoundingClientRect()
+        this.setState({scale: scale, zoomMouseX: e.clientX -rect.left, zoomMouseY: e.clientY- rect.top});
+    }
+
+    /** Resets camera to default position**/
+    resetCamera(){
+        this.setState({offsetX:0,offsetY:0, scale: 1, mouseX: this.state.width/2, mouseY:this.state.height/2})
     }
 
     render() {
         return (
             <div>
-                <canvas ref = {this.network} style = {{backgroundColor: "rgb(0, 255, 0)"}}/>
+                <canvas ref = {this.network} style = {{outline: "1px solid black"}}
+                        onMouseLeave = {(e) => this.setDrag(e,false)}
+                        onMouseDown = {(e) => this.setDrag(e,true)}
+                        onMouseUp = {(e) => this.setDrag(e,false)}
+                        onMouseMove = {(e) => this.updateCamera(e)}
+                        onWheel = {(e) => this.zoomCamera(e)}
+                />
             </div>
         )
     }
