@@ -16,6 +16,10 @@ class Network{
         this.createRandomNetwork()
     }
 
+    set3D(bool){
+        this.isThreeDimensional = bool
+    }
+
     /**
      * @returns whether or not a new random network should be assigned
      */

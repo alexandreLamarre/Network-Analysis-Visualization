@@ -7,8 +7,9 @@ import './App.css';
 import {Nav2D, Nav3D, NavCustom} from "./Components/NavBar"
 import Settings from "./Animations/Algorithms/AlgorithmSettings.js"
 import SettingObject from "./Animations/Algorithms/AlgorithmSetting.js"
-import {NetworkVisualizer, NetworkVisualizer3D, NetworkCustom} from "./Components/Network";
+import {NetworkVisualizer, NetworkVisualizer3D, NetworkCustom, Network} from "./Components/Network";
 import NetworkSettings from "./Components/Network/NetworkSettings";
+import Animator from "./Animations/Animator";
 
 //REACT ROUTER IMPORTS
 import {BrowserRouter as Router, Route, Link} from "react-router-dom";
@@ -31,6 +32,7 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 import { logoElectron, searchCircleOutline} from 'ionicons/icons';
 import {Redirect} from "react-router";
+import SpringEmbedding from "./Animations/Algorithms/LayoutAlgorithms/springEmbedding";
 
 
 class App extends React.Component{
@@ -43,14 +45,20 @@ class App extends React.Component{
       settingsObject : [],
       settingsHTML: null,
       networkSettingHTML : null,
+      algorithmSelectHTML: null
     }
     this.networkSettings = new NetworkSettings()
-    
+    this.networkData = new Network(this.networkSettings, false)
+    this.animator = new Animator(this.networkData)
+    console.log("Animator object network",this.animator.network)
   }
+
 
   componentDidMount(){
 
     const networkSettingsHTML = this.networkSettings.toHTML()
+    const algorithmSettingsHTML = this.animator.algorithmSettingsToHTML()
+    const algorithmSelectHTML = this.animator.algorithmsToHTML()
     const w = window.innerWidth;
     const h = window.innerHeight;
     window.addEventListener("resize", () => {this.resize()})
@@ -60,12 +68,21 @@ class App extends React.Component{
       settingsHTML: <div> Loading ...</div>,
       settingsObject: null,
       networkSettingsHTML : networkSettingsHTML,
+      algorithmSettingsHTML: algorithmSettingsHTML,
+      algorithmSelectHTML: algorithmSelectHTML
     });
   }
 
   checkImplementation(){
     console.log(this.state.settingsObject)
     console.log(this.networkSettings)
+    console.log(this.springEmbedding)
+  }
+
+  getAnimation(){
+    const a =this.springEmbedding.getAnimations(this.networkData.vertices, this.networkData.edges, this.networkData.isThreeDimensional)
+    console.log(a)
+    this.networkData.vertices = a[a.length-1]
   }
 
   resize(){
@@ -118,9 +135,9 @@ class App extends React.Component{
                 <IonCol size = {numnetwork}>
 
                   <Route path = "/Network-Analysis-Visualization/2d" render = {() => <NetworkVisualizer
-                      settings = {this.networkSettings} />}/>
+                      settings = {this.networkSettings} networkData = {this.networkData} />}/>
                   <Route path = "/Network-Analysis-Visualization/3d" render = {() => <NetworkVisualizer3D
-                      settings = {this.networkSettings} />}/>
+                      settings = {this.networkSettings} networkData = {this.networkData} />}/>
                   <Route path = "/Network-Analysis-Visualization/custom" render = {() => <NetworkCustom/>}/>
 
                 </IonCol>
@@ -131,11 +148,23 @@ class App extends React.Component{
                     <IonInput placeholder = "filter" style = {{textAlign: "center"}}>
                     </IonInput>
                   </IonItem>
-                    <div style = {{maxHeight: Math.max(this.state.height*(7/10), 300), overflowY: "scroll"}}>
-                      {this.state.networkSettingsHTML}
+                    <div style = {{outline: "1px solid black"}}>
+                      <div style =
+                               {{maxHeight: Math.max(this.state.height*(6/10), 300),
+                                 overflowY: "scroll"}}>
+                        {this.state.networkSettingsHTML}
+                        {this.state.algorithmSettingsHTML}
+                      </div>
                     </div>
+                    <hr/>
+                    <IonItem>
+                      {this.state.algorithmSelectHTML}
+                    </IonItem>
+                    <IonItem>
+                      <IonButton onClick = {() => this.checkImplementation()}> Log </IonButton>
+                      <IonButton onClick = {() => this.getAnimation()}> Fetch Animations</IonButton>
+                    </IonItem>
 
-                    <IonButton onClick = {() => this.checkImplementation()}> Log </IonButton>
                   </IonContent>
 
                 </IonCol>

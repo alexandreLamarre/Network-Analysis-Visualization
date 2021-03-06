@@ -181,7 +181,8 @@ class NetworkSettingsComponent extends React.Component{
                 </IonItem >
                 <IonItem lines = "full">
                     <p> Network Type </p>
-                    <select value = {this.state.activeProperty}
+                    <select style = {{marginLeft: "10px"}}
+                        value = {this.state.activeProperty}
                             onChange = {(e) => this.setProperties(e.target.value)}>
                         {propNetwork.map((property, index) => (
                             <option key = {index} value = {property}> {property} </option>

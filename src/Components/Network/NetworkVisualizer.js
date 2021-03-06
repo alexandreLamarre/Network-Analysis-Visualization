@@ -1,5 +1,6 @@
 import React from "react";
 import Network from "./Network";
+import SpringEmbedding from "../../Animations/Algorithms/LayoutAlgorithms/springEmbedding";
 
 class NetworkVisualizer extends React.Component{
     constructor(props){
@@ -23,6 +24,7 @@ class NetworkVisualizer extends React.Component{
         this.widthConstant = 7/10
         this.minheight = 420
         this.network = React.createRef()
+        this.networkData = this.props.networkData
     }
 
     componentDidMount(){
@@ -30,18 +32,21 @@ class NetworkVisualizer extends React.Component{
         const h = window.innerHeight * this.heightConstant
         this.network.current.width = w
         this.network.current.height = h
+
+        this.networkData.set3D(false)
+        this.networkData.createRandomNetwork()
+
+        this.setState({width: w, height: h})
         window.addEventListener("resize", () => {this.resize()})
-        const network = new Network(this.settings, false)
-        this.setState({width: w, height: h, network: network})
         window.requestAnimationFrame(() => this.animate())
     }
 
     animate(){
-        if(this.state.network !== null && this.network.current !== null){
-            if(this.state.network.shouldReset()){
-                this.state.network.createRandomNetwork()
+        if(this.networkData !== null && this.network.current !== null){
+            if(this.networkData.shouldReset()){
+                this.networkData.createRandomNetwork()
             }
-            this.drawNetwork(this.state.network)
+            this.drawNetwork(this.networkData)
             window.requestAnimationFrame(() => this.animate())
         }
 
@@ -134,6 +139,11 @@ class NetworkVisualizer extends React.Component{
     /** Resets camera to default position**/
     resetCamera(){
         this.setState({offsetX:0,offsetY:0, scale: 1, mouseX: this.state.width/2, mouseY:this.state.height/2})
+    }
+
+    getAnimations(){
+        const e = new SpringEmbedding()
+        e.getAnimations(this.networ)
     }
 
     render() {

@@ -24,15 +24,14 @@ class AlgorithmSettings{
         this.settings.push(setting)
     }
 
-    toHTML(){
+    toHTML(index){
         const settingsHTML = []
-
         for(let i = 0; i < this.settings.length; i++){
             settingsHTML.push(this.settings[i].toHTML(i))
         }
-        console.log("settings to HTML", settingsHTML)
         return (
             <AlgorithmSettingsComponent
+                key = {index}
                 name = {this.name}
                 settings = {settingsHTML}
             />

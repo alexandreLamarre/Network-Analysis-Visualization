@@ -9,20 +9,21 @@ class SettingRange extends React.Component{
         }
         this.settings = this.props.settings
         console.log(this.settings)
+        console.log("STEP", this.settings.step)
     }
 
     setSettingsValue(v){
-        this.settings.value = Number(v)
-        this.setState({value: Number(v)})
+        this.settings.value = Number.parseFloat(v)
+        this.setState({value: v})
     }
 
     render(){
         return (
 
-            <IonItem>
-                <IonLabel>
+            <IonItem lines = "full">
+                <p>
                     {this.settings.name} {this.state.value}
-                </IonLabel>
+                </p>
                 <IonRange
                     min = {this.settings.min}
                     max = {this.settings.max}

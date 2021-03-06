@@ -21,9 +21,7 @@ class AlgorithmSettingObject{
      * @returns {Setting}
      */
     static newRangeSetting(name, min, max, step, value){
-        console.log(name, min, max, step, value)
-        console.log(validParameter(name), validParameter(min), validParameter(max),
-            validParameter(step), validParameter(value))
+
         if (!validParameter(name) || !validParameter(min) || !validParameter(max) || !validParameter(step)){
             throw new Error("Invalid parameter provided to new Range setting")
         }

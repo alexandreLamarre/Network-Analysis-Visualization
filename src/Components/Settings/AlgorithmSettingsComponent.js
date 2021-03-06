@@ -15,11 +15,11 @@ class AlgorithmSettingsComponent extends React.Component{
         let settings = this.props.settings
         return (
             <div>
-                <IonItem color = "rgb(200, 200, 200)"
+                <IonItem lines = "full" color = "rgb(200, 200, 200)"
                          style = {{outline: "1px solid black"}}>
-                    <IonLabel style = {{textAlign: "center"}}>
+                    <p>
                         <b>{this.props.name}</b>
-                    </IonLabel>
+                    </p>
 
                 </IonItem >
                     {settings.map((s, index) => (

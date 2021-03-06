@@ -21,12 +21,12 @@ class NetworkVisualizer3D extends React.Component{
         this.widthConstant = 7/10
         this.minheight = 420
         this.network3D = React.createRef()
-        this.networkData = new Network(this.props.settings, true)
+        this.networkData = this.props.networkData
 
         this.renderer = null
         this.controls = null
         this.scene = null
-        this.camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000)
+        this.camera = new THREE.PerspectiveCamera(75, 1, 0.1)
         this.pointLight = new THREE.PointLight(0xffffff, 1);
         this.pointLight.position.set(1,1,2)
         this.camera.add(this.pointLight)
@@ -43,6 +43,8 @@ class NetworkVisualizer3D extends React.Component{
         const h = window.innerHeight * this.heightConstant
         this.network3D.current.width = w
         this.network3D.current.height = h
+        this.networkData.set3D(true)
+        this.networkData.createRandomNetwork()
         const network = this.networkData
 
 
@@ -50,7 +52,6 @@ class NetworkVisualizer3D extends React.Component{
         this.renderer = new THREE.WebGLRenderer({canvas: this.network3D.current, alpha:true})
         this.renderer.setSize(w, h)
         this.camera.aspect = (w/h)
-        this.camera.far = h*w*2
         this.controls = new OrbitControls(this.camera, this.network3D.current)
         this.controls.target.set( w/2, h/2, h/2);
         this.camera.position.set(w/2, h/2, 1.7*h)
@@ -75,6 +76,7 @@ class NetworkVisualizer3D extends React.Component{
                 this.networkData.createRandomNetwork()
                 this.resetSceneFromData(this.state.width, this.state.height)
             } else{
+                //TODO: call this only on resize
                 this.updateScene()
             }
             this.renderer.render(this.scene, this.camera)
