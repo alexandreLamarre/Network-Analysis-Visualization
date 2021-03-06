@@ -1,6 +1,8 @@
 import React from "react"
 import {IonItem} from "@ionic/react"
 
+import "./AlgorithmList.css";
+
 class AlgorithmList extends React.Component{
     constructor(props){
         super(props)
@@ -32,11 +34,9 @@ class AlgorithmList extends React.Component{
     render(){
         return (
             <div>
-
-
-
                 <IonItem lines = "full">
-                    <b> Select Algorithm </b>
+                    <b style = {{cursor: "default"}}
+                        className = "noSelectText"> Select Algorithm </b>
                     <select style = {{marginLeft: "10px"}} onChange = {(e) => this.setOption(e.target.value)}>
                         {this.algorithms.map((algorithm, index) => (
                             <option value = {algorithm.name} key = {index}> {algorithm.name} </option>

@@ -17,26 +17,26 @@ class AbstractNetworkAlgorithm{
 
     /**
      * nextAnimationStep should take the input set of vertices and return the update vertices and edges
-     * @param vertices the vertices to transform
-     * @param edges the edges to transform
+     * @param network the network to transform
      * @param animations object containing the animations information
      * @param currentStep the current step we are at in the animation (0-indexed)
      * @param steps the number of steps to apply : > 0 means forward steps, < 0 means backwards steps
      */
-    nextAnimationSteps(vertices, edges, animations, currentStep, steps) {
+    nextAnimationSteps(network, animations, currentStep, steps) {
         if (animations.length === 0) throw new Error("No animations provided to abstract algorithms")
         const actualSteps = this.trimSteps(animations, currentStep, steps)
-        this.applyAnimation(vertices, edges, animations, actualSteps)
+        this.applyAnimation(network, animations, currentStep, actualSteps)
+        return actualSteps
     }
 
     /**
      *
-     * @param vertices
-     * @param edges
+     * @param network
+     * @param animations
      * @param animations
      * @param actualSteps
      */
-    applyAnimation(vertices, edges, animations, currentStep, actualSteps){
+    applyAnimation(network, animations, currentStep, actualSteps){
         throw new Error("Cannot apply an animation on an abstract algorithm")
     }
 
@@ -86,12 +86,12 @@ class AbstractNetworkAlgorithm{
     trimSteps(animations, currentStep, steps){
         const n = animations.length - 1
 
-        if(currentStep === n) return 0 //already at animation end, perform 0 steps
-        if(currentStep === 0) return 0 //already at animation start, perform 0 steps
+        if(currentStep === n && steps > 0) return 0 //already at animation end, perform 0 steps
+        if(currentStep === 0 && steps < 0) return 0 //already at animation start, perform 0 steps
 
         var nextSteps = currentStep + steps
         if (nextSteps > n) return n - currentStep //steps will exceed the animation length
-        if (nextSteps < 0) return currentStep + 1 // steps will exceed minimum animation index
+        if (nextSteps < 0) return -currentStep // steps will exceed minimum animation index
         return steps
     }
 }

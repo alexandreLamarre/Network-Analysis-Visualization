@@ -24,13 +24,13 @@ class SettingRange extends React.Component{
                 <p>
                     {this.settings.name} {this.state.value}
                 </p>
-                <IonRange
+                <input type = "range" style = {{color: "rgb(63,111,255)", cursor: "grab", width: "100%"}}
                     min = {this.settings.min}
                     max = {this.settings.max}
                     step = {this.settings.step}
                     value = {this.state.value}
-                    onIonChange = {(e) => this.setSettingsValue(e.target.value)}>
-                </IonRange>
+                    onChange = {(e) => this.setSettingsValue(e.target.value)}/>
+
 
             </IonItem>)
     }

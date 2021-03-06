@@ -12,7 +12,7 @@ class Animator{
             console.log(key)
             for (const algo in ALGORITHMS[key]){
                 console.log(algo)
-                this.algorithms.push(new ALGORITHMS[key][algo])
+                this.algorithms.push(new ALGORITHMS[key][algo]())
 
             }
         }
@@ -28,6 +28,22 @@ class Animator{
 
     algorithmSettingsToHTML(){
         return <AlgorithmSettings algorithms = {this.algorithms}/>
+    }
+
+    getAnimations(vertices, edges, is3D){
+        return this.activeAlgorithm.getAnimations(vertices, edges, is3D)
+    }
+
+    /**
+     * Performs the specified amount of animation steps
+     * @param animations
+     * @param network
+     * @param currentStep
+     * @param steps
+     */
+    nextAnimationSteps(network, animations, currentStep, steps) {
+        if(this.animations === []) throw new Error("No animations loaded")
+        return this.activeAlgorithm.nextAnimationSteps(network, animations,currentStep, steps)
     }
 
 }

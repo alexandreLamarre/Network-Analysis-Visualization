@@ -25,14 +25,16 @@ class NetworkVisualizer extends React.Component{
         this.minheight = 420
         this.network = React.createRef()
         this.networkData = this.props.networkData
+        this.animator = this.props.animator
     }
 
-    componentDidMount(){
+    async componentDidMount(){
         const w = window.innerWidth * this.widthConstant
         const h = window.innerHeight * this.heightConstant
         this.network.current.width = w
         this.network.current.height = h
 
+        await this.props.parent.resetAnimationLogic() //clear any animations loaded when changing network visualizations
         this.networkData.set3D(false)
         this.networkData.createRandomNetwork()
 
@@ -129,6 +131,7 @@ class NetworkVisualizer extends React.Component{
 
     /** zoom camera**/
     zoomCamera(e){
+        e.preventDefault()
         const delta = -Math.sign(e.deltaY);
         const zoomIntensity = 0.1
         const scale = (this.state.scale) + (delta*zoomIntensity);
@@ -156,7 +159,6 @@ class NetworkVisualizer extends React.Component{
                         onMouseMove = {(e) => this.updateCamera(e)}
                         onWheel = {(e) => this.zoomCamera(e)}
                 />
-                <button onClick={() => {console.log(this.state.network.settings)}}> Log</button>
             </div>
         )
     }

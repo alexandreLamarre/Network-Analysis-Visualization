@@ -22,6 +22,7 @@ class NetworkVisualizer3D extends React.Component{
         this.minheight = 420
         this.network3D = React.createRef()
         this.networkData = this.props.networkData
+        this.animator = this.props.animator
 
         this.renderer = null
         this.controls = null
@@ -37,12 +38,14 @@ class NetworkVisualizer3D extends React.Component{
     }
 
 
-    componentDidMount(){
+    async componentDidMount(){
         //set up default constants and what not
         const w = window.innerWidth * this.widthConstant
         const h = window.innerHeight * this.heightConstant
         this.network3D.current.width = w
         this.network3D.current.height = h
+
+        await this.props.parent.resetAnimationLogic() //clear any animations loaded when changing network visualizations
         this.networkData.set3D(true)
         this.networkData.createRandomNetwork()
         const network = this.networkData
@@ -129,19 +132,23 @@ class NetworkVisualizer3D extends React.Component{
             // this.lines[j].material.color = new THREE.Color(this.networkData.edges[j].color)
             const v= this.networkData.vertices
             const e = this.networkData.edges[j]
-            const startX = v[e.start].x * w;
-            const startY = v[e.start].y * h;
-            const startZ = v[e.start].z * h;
-            const endX = v[e.end].x*w;
-            const endY = v[e.end].y*h;
-            const endZ = v[e.end].z*h;
+            // const startX = v[e.start].x * w;
+            // const startY = v[e.start].y * h;
+            // const startZ = v[e.start].z * h;
+            // const endX = v[e.end].x*w;
+            // const endY = v[e.end].y*h;
+            // const endZ = v[e.end].z*h;
+            //
+            // const vertices = new Float32Array([
+            //     startX, startY, startZ,
+            //     endX, endY, endZ,
+            // ])
+            var linePoints = []
+            linePoints.push(this.spheres[e.start].position)
+            linePoints.push(this.spheres[e.end].position)
 
-            const vertices = new Float32Array([
-                startX, startY, startZ,
-                endX, endY, endZ,
-            ])
 
-            this.lines[j].geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3))
+            this.lines[j].geometry.setFromPoints(linePoints)
             this.lines[j].geometry.attributes.position.needsUpdate = true;
 
             // this.lines[j].material.color.set(this.networkData.edges[j].color);
@@ -168,7 +175,6 @@ class NetworkVisualizer3D extends React.Component{
                         style = {{outline: "1px solid blue",
                         backgroundColor: "black"
                         }}/>
-                        <button onClick = {() => console.log(this.props.settings)}> Log</button>
             </div>
         )
     }
