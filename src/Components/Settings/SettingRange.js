@@ -20,7 +20,7 @@ class SettingRange extends React.Component{
     render(){
         return (
 
-            <IonItem lines = "full">
+            <IonItem lines = "full" color = "light">
                 <p>
                     {this.settings.name} {this.state.value}
                 </p>

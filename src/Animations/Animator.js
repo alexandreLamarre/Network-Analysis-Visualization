@@ -43,6 +43,7 @@ class Animator{
      */
     nextAnimationSteps(network, animations, currentStep, steps) {
         if(this.animations === []) throw new Error("No animations loaded")
+        network.shouldUpdate = true
         return this.activeAlgorithm.nextAnimationSteps(network, animations,currentStep, steps)
     }
 

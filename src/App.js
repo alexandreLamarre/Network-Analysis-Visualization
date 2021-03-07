@@ -62,7 +62,7 @@ class App extends React.Component{
     this.networkSettings = new NetworkSettings()
     this.networkData = new Network(this.networkSettings, false)
     this.animator = new Animator(this.networkData)
-    console.log("Animator object network",this.animator.network)
+
   }
 
 
@@ -88,7 +88,7 @@ class App extends React.Component{
   checkImplementation(){
     console.log(this.state.settingsObject)
     console.log(this.networkSettings)
-    console.log(this.springEmbedding)
+
   }
 
   getAnimation(){
@@ -96,7 +96,6 @@ class App extends React.Component{
         this.networkData.vertices,
         this.networkData.edges,
         this.networkData.isThreeDimensional)
-    console.log(animations)
     this.setState({animationsInBuffer: true, animations: animations, currentStep: 0})
   }
 
@@ -106,14 +105,11 @@ class App extends React.Component{
   }
 
   performAnimationStep(num){
-    console.log("number of animation steps to perform", num)
-    console.log("current animation step", this.state.currentStep)
     const numPerformed = this.animator.nextAnimationSteps(
         this.networkData,
         this.state.animations,
         this.state.currentStep,
         parseInt(num))
-    console.log("number of animation steps actually performed", numPerformed)
     this.setState({currentStep: this.state.currentStep + numPerformed})
   }
 
@@ -133,8 +129,8 @@ class App extends React.Component{
     }
   }
 
-  async resetAnimationLogic(){
-    await this.setState({animations : [], currentStep: 0, animationsInBuffer: false, running: false})
+  resetAnimationLogic(){
+    this.setState({animations : [], currentStep: 0, animationsInBuffer: false, running: false})
   }
 
   setSpecificAnimationFrame(animationIndex){
@@ -215,12 +211,12 @@ class App extends React.Component{
                 </IonCol>
                 <IonCol size = {numsettings}  id = "settings">
                   <IonContent style = {{boxShadow: "5px 10px 35px grey"}}>
-                    { this.state.animationsInBuffer === true? <div> </div>:(<div>
-                        <IonItem>
-                          <IonIcon icon = {searchCircleOutline}/>
-                          <IonInput placeholder = "filter" style = {{textAlign: "center"}}>
-                          </IonInput>
-                        </IonItem>
+                    <div hidden = {this.state.animationsInBuffer}>
+                      <IonItem>
+                            <IonIcon icon = {searchCircleOutline}/>
+                            <IonInput placeholder = "filter" style = {{textAlign: "center"}}>
+                            </IonInput>
+                      </IonItem>
                         <div style = {{outline: "1px solid black"}}>
                           <div style =
                                    {{maxHeight: Math.max(this.state.height*(6/10), 300),
@@ -229,16 +225,17 @@ class App extends React.Component{
                             {this.state.algorithmSettingsHTML}
                           </div>
                         </div>
-                    <hr/>
-                    <IonItem lines = "full">
-                      {this.state.algorithmSelectHTML}
-                    </IonItem></div>)
-                    }
+                      <hr/>
+                      <IonItem lines = "full">
+                        {this.state.algorithmSelectHTML}
+                      </IonItem>
+                    </div>
+
 
                     <div className = "animationPlayer" hidden = {this.state.animationsInBuffer === false}>
 
                       <IonIcon onClick = {() => this.resetAnimationLogic()}
-                               style = {{position: "absolute", top: 0, right: 0,cursorStyle: "pointer"}}
+                               style = {{position: "absolute", top: 0, right: 0,cursor: "pointer"}}
                                size = "large"
                                icon = {closeCircleOutline}/>
 
@@ -246,31 +243,47 @@ class App extends React.Component{
                       <p className = "noSelectText" style = {{textAlign: "center"}}><b>{this.animator.activeAlgorithm.name}</b></p>
                       <br className = "noSelectText"/>
 
-                        <IonItem lines = "none" color = "light">
-                          <div style = {{display: "flex", justifyContent:"center", alignItems:"center", alignContent:"center"}}>
-                          <IonIcon
-                              size = "large"
-                              icon = {playBackCircleOutline}
-                              onClick = {() => this.performAnimationStep(-this.state.animations.length)}/>
-                          <IonIcon
-                              size = "large"
-                              icon = {playSkipBackCircleOutline}
-                              onClick = {() => this.performAnimationStep(-1)}/>
-                          <IonIcon
-                              size = "large"
-                              icon = {this.state.running === false?playCircleOutline: pauseCircleSharp}
-                              onClick = {() => this.toggleAnimationsRunning()}/>
 
-                          <IonIcon
-                              size = "large"
-                              icon = {playSkipForwardCircleOutline}
-                              onClick = {() => this.performAnimationStep(1)}/>
-                          <IonIcon
-                              size = "large"
-                              icon = {playForwardCircleOutline}
-                              onClick = {() => this.performAnimationStep(this.state.animations.length)}/>
+                          <div style = {{display: "flex", justifyContent:"center",
+                            alignItems:"center", alignContent:"center", backgroundColor: "rgb(255,245,245)"}}>
+                            <IonButton expand = "block" fill = "clear" color = "medium"
+                                       onClick = {() => this.performAnimationStep(-this.state.animations.length)}>
+                              <IonIcon
+                                  size = "large"
+                                  icon = {playBackCircleOutline}
+                                  />
+                            </IonButton>
+                            <IonButton expand = "block" fill = "clear" color = "medium"
+                                       onClick = {() => this.performAnimationStep(-1)}>
+                              <IonIcon
+                                  size = "large"
+                                  icon = {playSkipBackCircleOutline}
+                                  />
+                            </IonButton>
+                            <IonButton expand = "block" fill = "clear" color = "medium"
+                                       onClick = {() => this.toggleAnimationsRunning()}>
+                              <IonIcon
+                                  size = "large"
+                                  icon = {this.state.running === false?playCircleOutline: pauseCircleSharp}
+                                  />
+                            </IonButton>
+                            <IonButton expand = "block" fill = "clear" color = "medium"
+                                       onClick = {() => this.performAnimationStep(1)}>
+                              <IonIcon
+                                  size = "large"
+                                  icon = {playSkipForwardCircleOutline}
+                                  />
+                            </IonButton>
+                            <IonButton expand = "block" fill = "clear" color = "medium"
+                                       onClick = {() => this.performAnimationStep(this.state.animations.length)}>
+                              <IonIcon
+                                  size = "large"
+                                  icon = {playForwardCircleOutline}
+                                  />
+                            </IonButton>
+
                           </div>
-                        </IonItem>
+
 
                       <IonItem lines = "none" color = "light">
                       <input type = "range"
@@ -284,7 +297,7 @@ class App extends React.Component{
 
                     </div>
                     <IonItem lines = "full" hidden = {this.state.animationsInBuffer === true}>
-                      <IonButton style = {{margin:"auto"}} onClick = {() => this.getAnimation()}> Fetch Animations</IonButton>
+                      <IonButton style = {{margin:"auto"}} onClick = {() => this.getAnimation()}> Animate </IonButton>
                     </IonItem>
                   </IonContent>
 

@@ -10,10 +10,21 @@ import Edge from "../../datatypes/Edge";
  */
 
 class Network{
+    /**
+     * Make a new network datatype to be shared by App and all its descendants,
+     * without having to be tied to an asynchronous react state
+     * @param settings NetworkSettings object provided by app when it is mounted
+     * @param isThreeDimensional boolean indicating whether the data should be 2D (false) or 3D (true)
+     */
     constructor(settings, isThreeDimensional){
         this.isThreeDimensional = isThreeDimensional
         this.settings = settings
+
+        this.edgeInitialColor = "rgb(41,150,150)" // only for 3D edges, or when color gradient is selected for network
         this.createRandomNetwork()
+        this.shouldUpdate = false //this attribute handles whether or not a change to the loaded network attributes
+                                // should result in a redraw for 3D networks (only used to improve performance)
+
     }
 
     set3D(bool){
@@ -69,7 +80,7 @@ class Network{
                     var v2 = unvisited[vIndex2]
                     visited.push(v2)
                     edges.push(new Edge(v1, v2))
-                    if (this.isThreeDimensional) edges[edges.length - 1].color = "rgb(68,34,136)"
+                    if (this.isThreeDimensional) edges[edges.length - 1].color = this.edgeInitialColor
                     vertices[v1].increment_degree()
                     vertices[v2].increment_degree()
                     remainingEdges--;
@@ -96,7 +107,7 @@ class Network{
                 if(already_connected.get(indexTo) === undefined ){
                     edges.push(new Edge(random1, random2));
                     if (this.isThreeDimensional){
-                        edges[edges.length-1].color = "rgb(68,34,136)"
+                        edges[edges.length-1].color = this.edgeInitialColor
                     }
                     vertices[random1].increment_degree();
                     vertices[random2].increment_degree();
@@ -113,7 +124,7 @@ class Network{
             var [path, root] = initialRandomCycle(vertices);
             for(let i = 0; i < path.length -1; i++){
                 const e = new Edge(path[i], path[i+1])
-                if (this.isThreeDimensional) e.color = "rgb(68,34,136)"
+                if (this.isThreeDimensional) e.color = this.edgeInitialColor
                 edges.push(e)
             }
 

@@ -55,10 +55,9 @@ class SpringEmbedding extends AbstractLayoutAlgorithm{
 
         this.settings.push(forceOfRepulsion)
         this.settings.push(epsilon)
-        this.settings.push(forceToAreaScaling)
+        // this.settings.push(forceToAreaScaling)
         this.settings.push(distanceType)
-        this.setRequiredProperty("Connected")
-        console.log(this.requiredProperty)
+        this.setRequiredProperty(null)
     }
 
     /** gets the settings of the spring embedding algorithm**/
@@ -136,6 +135,8 @@ class SpringEmbedding extends AbstractLayoutAlgorithm{
 
             for(let i = 0; i < vertices.length; i++){
                 forceList[i].scale(delta)
+                const fNorm = distance(forceList[i], new Force(0, 0, 0), is3D)
+                maxF = Math.max(maxF, fNorm)
                 iterationAnimations.push(new Vertex(
                     vertices[i].x + forceList[i].x,
                     vertices[i].y +forceList[i].y,
@@ -150,6 +151,10 @@ class SpringEmbedding extends AbstractLayoutAlgorithm{
             animations.push(iterationAnimations);
             vertices = iterationAnimations;
             t += 1;
+
+            //check convergence bound to see if we need to stop the algorithm early:
+            if(maxF < this.epsilon)break;
+
         } //end of iterations loop
         //scaling animations properly without affecting computations
         for(let i = 0; i < animations.length; i++){

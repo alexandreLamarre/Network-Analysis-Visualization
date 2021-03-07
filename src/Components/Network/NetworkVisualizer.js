@@ -66,7 +66,7 @@ class NetworkVisualizer extends React.Component{
         for(let i = 0; i < network.vertices.length; i++){
             ctx.globalAlpha = 1.0
             ctx.beginPath()
-            const color = "rgb(0,255,131)"
+            const color = network.vertices[i].color
             ctx.fillStyle = color
             ctx.arc(network.vertices[i].x*w ,
                 network.vertices[i].y*h,

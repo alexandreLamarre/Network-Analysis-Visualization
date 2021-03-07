@@ -17,7 +17,7 @@ class SettingCheckbox extends React.Component{
     }
     render(){
         return (
-            <IonItem>
+            <IonItem color = "light">
                 <IonLabel>
                     {this.settings.name}
                 </IonLabel>

@@ -173,13 +173,13 @@ class NetworkSettingsComponent extends React.Component{
         const propNetwork = this.state.properties === null? []: this.state.properties
         return (
             <div>
-                <IonItem lines = "full">
+                <IonItem lines = "full" color = "dark">
                     <div style = {{textAlign: "center"}}>
                         <b style = {{textAlign: "center"}}> {this.props.name}</b>
                     </div>
 
                 </IonItem >
-                <IonItem lines = "full">
+                <IonItem lines = "full" color = "light">
                     <p> Network Type </p>
                     <select style = {{marginLeft: "10px"}}
                         value = {this.state.activeProperty}
@@ -189,7 +189,7 @@ class NetworkSettingsComponent extends React.Component{
                         ))}
                     </select>
                 </IonItem>
-                <IonItem lines = "full">
+                <IonItem lines = "full" color = "light">
                     <p> Vertices {this.state.numV} </p>
                     <IonRange
                         value = {this.state.numV}
@@ -200,7 +200,7 @@ class NetworkSettingsComponent extends React.Component{
                         >
                     </IonRange>
                 </IonItem>
-                <IonItem lines = "full">
+                <IonItem lines = "full" color = "light">
                     <p> Edges {this.state.numE}</p>
                     <IonRange
                         value = {this.state.numE}
@@ -210,34 +210,34 @@ class NetworkSettingsComponent extends React.Component{
                         onIonChange = {(e) => this.setNumEdges(e.target.value)}
                     > </IonRange>
                 </IonItem>
-                <IonItem lines = "full">
+                <IonItem lines = "full" color = "medium">
                     <p> Dynamic Sizing </p>
                     <IonCheckbox style = {{marginLeft: "5%"}}> </IonCheckbox>
                 </IonItem>
                 <div>
-                    <IonItem lines = "full">
+                    <IonItem lines = "full" color = "light">
                         <p> Minimum Vertex Size</p>
                         <IonRange
                             disabled = {!this.state.scaleVertices}> </IonRange>
                     </IonItem>
-                    <IonItem lines = "full">
+                    <IonItem lines = "full" color = "light">
                         <p> Maximum Vertex Size</p>
                         <IonRange
                             disabled = {!this.state.scaleVertices}> </IonRange>
                     </IonItem>
                 </div>
-                <IonItem lines = "full">
-                    <p> Apply Color Gradient </p>
+                <IonItem lines = "full" color = "medium">
+                    <p> Apply Vertex Color Gradient </p>
                     <IonCheckbox style = {{marginLeft: "5%"}}> </IonCheckbox>
                 </IonItem>
-                <IonItem>
+                <IonItem color = "light">
                     <p> Start Color</p>
                     <input
                         disabled = {!this.state.applyColorGradient}
                         style = {{marginLeft: "5%"}}
                         type = "color" defaultValue = {this.settings.startColor} />
                 </IonItem>
-                <IonItem>
+                <IonItem color = "light">
                     <p> End Color </p>
                     <input
                         disabled = {!this.state.applyColorGradient}

@@ -15,7 +15,7 @@ class AlgorithmSettingsComponent extends React.Component{
         let settings = this.props.settings
         return (
             <div>
-                <IonItem lines = "full" color = "rgb(200, 200, 200)"
+                <IonItem lines = "full" color = "dark"
                          style = {{outline: "1px solid black"}}>
                     <p>
                         <b>{this.props.name}</b>
