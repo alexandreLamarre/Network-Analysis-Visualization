@@ -1,3 +1,4 @@
 import SpringEmbedding from "./springEmbedding";
+import FruchtermanReingold from "./fruchtermanReingold";
 
-export {SpringEmbedding}
+export {SpringEmbedding, FruchtermanReingold}

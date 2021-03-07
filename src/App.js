@@ -52,6 +52,7 @@ class App extends React.Component{
       settingsHTML: null,
       networkSettingHTML : null,
       algorithmSelectHTML: null,
+      activeAlgorithm : { },
       animations: [],
       animationsInBuffer: false,
       currentStep : 0,
@@ -59,7 +60,7 @@ class App extends React.Component{
     }
     this.networkSettings = new NetworkSettings()
     this.networkData = new Network(this.networkSettings, false)
-    this.animator = new Animator(this.networkData)
+    this.animator = new Animator()
   }
 
 
@@ -78,7 +79,8 @@ class App extends React.Component{
       settingsObject: null,
       networkSettingsHTML : networkSettingsHTML,
       algorithmSettingsHTML: algorithmSettingsHTML,
-      algorithmSelectHTML: algorithmSelectHTML
+      algorithmSelectHTML: algorithmSelectHTML,
+      activeAlgorithm: this.animator.activeAlgorithm
     });
   }
 
@@ -89,11 +91,13 @@ class App extends React.Component{
   }
 
   getAnimation(){
+    console.log("fetching animations from algorithm ...", this.animator.activeAlgorithm)
     const animations = this.animator.getAnimations(
         this.networkData.vertices,
         this.networkData.edges,
         this.networkData.isThreeDimensional)
-    this.setState({animationsInBuffer: true, animations: animations, currentStep: 0})
+    console.log(animations)
+    this.setState({animationsInBuffer: true, animations: animations, currentStep: 0, activeAlgorithm: this.animator.activeAlgorithm})
   }
 
   async toggleAnimationsRunning(){
@@ -238,7 +242,7 @@ class App extends React.Component{
                                icon = {closeCircleOutline}/>
 
                       <br className = "noSelectText"/>
-                      <p className = "noSelectText" style = {{textAlign: "center"}}><b>{this.animator.activeAlgorithm.name}</b></p>
+                      <p className = "noSelectText" style = {{textAlign: "center"}}><b>{this.state.activeAlgorithm.name}</b></p>
                       <br className = "noSelectText"/>
 
 

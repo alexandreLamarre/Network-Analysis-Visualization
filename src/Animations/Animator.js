@@ -23,11 +23,11 @@ class Animator{
 
 
     algorithmsToHTML(){
-        return <AlgorithmList algorithms = {this.algorithms}/>
+        return <AlgorithmList algorithms = {this.algorithms} animator = {this}/>
     }
 
     algorithmSettingsToHTML(){
-        return <AlgorithmSettings algorithms = {this.algorithms}/>
+        return <AlgorithmSettings algorithms = {this.algorithms} />
     }
 
     getAnimations(vertices, edges, is3D){

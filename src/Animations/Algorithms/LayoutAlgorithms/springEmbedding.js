@@ -11,50 +11,42 @@ class SpringEmbedding extends AbstractLayoutAlgorithm{
         super("Spring Embedding")
         //declare all of the algorithm settings
 
-        const forceOfAttraction = AlgorithmSettingObject.newRangeSetting(
-            "Force of attraction",
+        this.forceOfAttraction = AlgorithmSettingObject.newRangeSetting(
+            "Force of Attraction",
             0.1,
             2,
             0.1,
             2
         )
-        const forceOfRepulsion = AlgorithmSettingObject.newRangeSetting(
-            "Fore of repulsion",
+        this.forceOfRepulsion = AlgorithmSettingObject.newRangeSetting(
+            "Fore of Repulsion",
             0.1,
             2,
             0.1,
             1
         )
-        const epsilon = AlgorithmSettingObject.newRangeSetting(
+        this.epsilon = AlgorithmSettingObject.newRangeSetting(
             "Convergence bound",
             0.001,
             3,
             0.001,
             0.1,
         )
-        const forceToAreaScaling = AlgorithmSettingObject.newRangeSetting(
+        this.forceToAreaScaling = AlgorithmSettingObject.newRangeSetting(
             "Force to area scaling",
             0,
             100,
             0.1,
             0
         )
-        const distanceType = AlgorithmSettingObject.newOptionSetting(
+        this.distanceType = AlgorithmSettingObject.newOptionSetting(
             "Distance type",
             ["Graph theoretic", "Continuous"],
             "Continuous"
             )
-        this.forceOfAttraction = forceOfAttraction
-        this.forceOfRepulsion = forceOfRepulsion
-        this.epsilon = epsilon
-        this.forceToAreaScaling = forceToAreaScaling
-        this.distanceType = distanceType
-        this.settings.push(forceOfAttraction)
 
-        this.settings.push(forceOfRepulsion)
-        this.settings.push(epsilon)
-        // this.settings.push(forceToAreaScaling)
-        this.settings.push(distanceType)
+        this.settings.push([this.forceOfAttraction,this.forceOfRepulsion,this.epsilon, this.distanceType])
+
         this.setRequiredProperty(null)
     }
 
@@ -81,7 +73,7 @@ class SpringEmbedding extends AbstractLayoutAlgorithm{
         while(t < K){
             let forceList = [];
             for(let i = 0; i < vertices.length; i++){
-                let f = new Force(0, 0);
+                let f = new Force(0, 0, 0);
                 let verticesConnected = [];
 
                 //CALCULATE FORCES OF ATTRACTION
