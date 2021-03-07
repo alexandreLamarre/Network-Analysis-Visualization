@@ -19,6 +19,7 @@ class NetworkVisualizer extends React.Component{
             zoomMouseY: null,
             scale: 1,
         }
+        this.frameId = 0;
         this.settings = this.props.settings
         this.heightConstant= 8.5/10
         this.widthConstant = 7/10
@@ -40,16 +41,25 @@ class NetworkVisualizer extends React.Component{
 
         this.setState({width: w, height: h})
         window.addEventListener("resize", () => {this.resize()})
-        window.requestAnimationFrame(() => this.animate())
+        this.frameId = window.requestAnimationFrame(() => this.animate())
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", () => {this.resize()})
+        window.cancelAnimationFrame(this.frameId)
     }
 
     animate(){
         if(this.networkData !== null && this.network.current !== null){
             if(this.networkData.shouldReset()){
                 this.networkData.createRandomNetwork()
+            } else if(this.networkData.shouldResizeVertex()){
+                this.networkData.applyVertexSize()
+            } else if(this.networkData.shouldRecolor()){
+                this.networkData.applyColorGradient()
             }
             this.drawNetwork(this.networkData)
-            window.requestAnimationFrame(() => this.animate())
+            this.frameId = window.requestAnimationFrame(() => this.animate())
         }
 
     }
@@ -84,7 +94,7 @@ class NetworkVisualizer extends React.Component{
             ctx.lineTo(network.vertices[index2].x * w ,
                         network.vertices[index2].y * h)
             ctx.globalAlpha = network.edges[j].alpha
-            ctx.strokeStyle = network.edges[j].color
+            ctx.strokeStyle = this.applyEdgeColorGradient(network.vertices,network.edges[j], ctx, w, h)
             ctx.stroke();
             ctx.closePath();
         }
@@ -98,8 +108,24 @@ class NetworkVisualizer extends React.Component{
         if(this.network.current !== null){
             this.network.current.width = w
             this.network.current.height = h
+            this.setState({height: h, width: w})
         }
-        this.setState({height: h, width: w})
+
+    }
+
+    applyEdgeColorGradient(vertices, edge, ctx, w, h){
+        if(Array.isArray(edge.color)){
+            var gradient = ctx.createLinearGradient(
+                vertices[edge.start].x *w,
+                vertices[edge.start].y * h,
+                vertices[edge.end].x*w,
+                vertices[edge.end].y*h)
+            gradient.addColorStop(0, edge.color[0]);
+            gradient.addColorStop(1, edge.color[1])
+            return gradient
+        } else{
+            return edge.color
+        }
     }
 
     //SPECIFIC EVENT HANDLERS

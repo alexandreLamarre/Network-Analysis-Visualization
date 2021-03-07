@@ -5,6 +5,7 @@ var MIN_VERTICES_NUM = 4
 var MAX_VERTICES_NUM = 200
 var MIN_EDGES_NUM = 3
 var MAX_EDGES_NUM = 600
+var MAX_VERTEX_SIZE = 12
 
 /**
  * Network Settings Component is the react component that represents & controls
@@ -27,6 +28,8 @@ class NetworkSettingsComponent extends React.Component{
             minSize : this.props.settings.minSize,
             maxSize : this.props.settings.maxSize,
             applyColorGradient : this.props.settings.applyColorGradient,
+            applyColorGradientVertex: this.props.settings.applyColorGradientVertex,
+            applyColorGradientEdge : this.props.settings.applyColorGradientEdge,
             startColor: this.props.settings.startColor,
             endColor : this.props.settings.endColor,
             properties : null,
@@ -131,27 +134,59 @@ class NetworkSettingsComponent extends React.Component{
     }
 
     setScalingVertex(v){
+        this.settings.scaleVertices = !this.settings.scaleVertices
         this.settings.shouldResizeVertex = true
+
+        this.setState({scaleVertices: this.settings.scaleVertices})
     }
 
     setMinSize(v){
-
+        this.settings.shouldResizeVertex = true
+        this.settings.minSize = parseInt(v)
+        this.settings.maxSize = Math.max(parseInt(v), this.state.maxSize)
+        this.setState({minSize: parseInt(v), maxSize : Math.max(parseInt(v), this.state.maxSize)})
     }
 
     setMaxSize(v){
-
+        this.settings.shouldResizeVertex = true
+        this.settings.maxSize = parseInt(v)
+        this.setState({maxSize: parseInt(v)})
     }
 
-    setApplyColorGradient(v){
+    setApplyColorGradient(type){
+        if(type === "vertex"){
+            this.settings.applyColorGradientVertex = !this.settings.applyColorGradientVertex
+            if(!this.settings.applyColorGradientVertex && !this.settings.applyColorGradientEdge){
+                this.settings.applyColorGradient = false
+                this.setState({applyColorGradient: false})
+            } else{
+                this.settings.applyColorGradient = true
+                this.setState({applyColorGradient: true})
+            }
+        }
+        if(type === "edge"){
+            this.settings.applyColorGradientEdge = !this.settings.applyColorGradientEdge
+            if(!this.settings.applyColorGradientVertex && !this.settings.applyColorGradientEdge){
+                this.settings.applyColorGradient = false
+                this.setState({applyColorGradient: false})
+            } else{
+                this.settings.applyColorGradient = true
+                this.setState({applyColorGradient: true})
+            }
+        }
         this.settings.shouldRecolor = true
     }
 
     setStartColor(v){
-
+        this.settings.startColor = v
+        this.settings.shouldRecolor = true
+        this.setState({startColor: this.settings.startColor})
     }
 
     setEndColor(v){
-
+        this.settings.endColor = v
+        this.settings.shouldRecolor = true
+        this.setState({endColor: this.settings.endColor})
     }
 
     setProperties(v){
@@ -212,27 +247,44 @@ class NetworkSettingsComponent extends React.Component{
                 </IonItem>
                 <IonItem lines = "full" color = "medium">
                     <p> Dynamic Sizing </p>
-                    <IonCheckbox style = {{marginLeft: "5%"}}> </IonCheckbox>
+                    <IonCheckbox style = {{marginLeft: "5%"}}
+                                 onIonChange = {() => this.setScalingVertex()}
+                    > </IonCheckbox>
                 </IonItem>
                 <div>
                     <IonItem lines = "full" color = "light">
-                        <p> Minimum Vertex Size</p>
-                        <IonRange
+                        <p> Minimum Vertex Size  {this.state.minSize}</p>
+                        <IonRange min = "1"
+                                  value = {this.state.minSize}
+                                  max = {MAX_VERTEX_SIZE}
+                                  onIonChange = {(e) => this.setMinSize(e.target.value)}
                             disabled = {!this.state.scaleVertices}> </IonRange>
                     </IonItem>
                     <IonItem lines = "full" color = "light">
-                        <p> Maximum Vertex Size</p>
-                        <IonRange
+                        <p> Maximum Vertex Size  {this.state.maxSize}</p>
+                        <IonRange min = {Math.max(1, this.state.minSize)}
+                                  value = {this.state.maxSize}
+                                  max = {MAX_VERTEX_SIZE}
+                                  onIonChange = {(e) => this.setMaxSize(e.target.value)}
                             disabled = {!this.state.scaleVertices}> </IonRange>
                     </IonItem>
                 </div>
                 <IonItem lines = "full" color = "medium">
                     <p> Apply Vertex Color Gradient </p>
-                    <IonCheckbox style = {{marginLeft: "5%"}}> </IonCheckbox>
+                    <IonCheckbox
+                        onIonChange = {(e) => {this.setApplyColorGradient("vertex")}}
+                        style = {{marginLeft: "5%"}}> </IonCheckbox>
+                </IonItem>
+                <IonItem lines = "full" color = "medium">
+                    <p> Apply Edge Color Gradient </p>
+                    <IonCheckbox
+                        onIonChange = {(e) => {this.setApplyColorGradient("edge")}}
+                        style = {{marginLeft: "5%"}}> </IonCheckbox>
                 </IonItem>
                 <IonItem color = "light">
                     <p> Start Color</p>
                     <input
+                        onChange = {(e) => this.setStartColor(e.target.value)}
                         disabled = {!this.state.applyColorGradient}
                         style = {{marginLeft: "5%"}}
                         type = "color" defaultValue = {this.settings.startColor} />
@@ -240,6 +292,7 @@ class NetworkSettingsComponent extends React.Component{
                 <IonItem color = "light">
                     <p> End Color </p>
                     <input
+                        onChange = {(e) => this.setEndColor(e.target.value)}
                         disabled = {!this.state.applyColorGradient}
                         style = {{marginLeft: "5%"}}
                         type = "color" defaultValue = {this.settings.endColor}/>

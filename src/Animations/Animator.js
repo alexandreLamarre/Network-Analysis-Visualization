@@ -4,8 +4,8 @@ import AlgorithmSettings from "../Components/Settings/AlgorithmSettings";
 import React from "react";
 
 class Animator{
-    constructor(network){
-        this.network = network
+    constructor(){
+
         this.algorithms = [];
         console.log("iterating over all algorithms defined in index.js")
         for(const key in ALGORITHMS){
@@ -23,7 +23,7 @@ class Animator{
 
 
     algorithmsToHTML(){
-        return <AlgorithmList algorithms = {this.algorithms} network = {this.network}/>
+        return <AlgorithmList algorithms = {this.algorithms}/>
     }
 
     algorithmSettingsToHTML(){

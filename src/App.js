@@ -5,8 +5,6 @@ import './App.css';
 //CUSTOM COMPONENT IMPORTS
 
 import {Nav2D, Nav3D, NavCustom} from "./Components/NavBar"
-import Settings from "./Animations/Algorithms/AlgorithmSettings.js"
-import SettingObject from "./Animations/Algorithms/AlgorithmSetting.js"
 import {NetworkVisualizer, NetworkVisualizer3D, NetworkCustom, Network} from "./Components/Network";
 import NetworkSettings from "./Components/Network/NetworkSettings";
 import Animator from "./Animations/Animator";
@@ -62,7 +60,6 @@ class App extends React.Component{
     this.networkSettings = new NetworkSettings()
     this.networkData = new Network(this.networkSettings, false)
     this.animator = new Animator(this.networkData)
-
   }
 
 
@@ -105,6 +102,7 @@ class App extends React.Component{
   }
 
   performAnimationStep(num){
+    if(num === 1 || num === -1) this.setState({running:false})
     const numPerformed = this.animator.nextAnimationSteps(
         this.networkData,
         this.state.animations,

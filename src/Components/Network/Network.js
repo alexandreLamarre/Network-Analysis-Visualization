@@ -1,5 +1,5 @@
-import {NewDefaultNetworkSettings} from "./NetworkSettings";
-import Vertex from "./datatypes/Vertex";
+import LinearColorGradient from "../../datatypes/ColorGradient/LinearColorGradient";
+import Vertex from "../../datatypes/Vertex";
 import Edge from "../../datatypes/Edge";
 /**
  * Network is a class that handles the implementation of a network:
@@ -21,6 +21,8 @@ class Network{
         this.settings = settings
 
         this.edgeInitialColor = "rgb(41,150,150)" // only for 3D edges, or when color gradient is selected for network
+        this.maxDegree = -Infinity
+        this.minDegree = Infinity
         this.createRandomNetwork()
         this.shouldUpdate = false //this attribute handles whether or not a change to the loaded network attributes
                                 // should result in a redraw for 3D networks (only used to improve performance)
@@ -36,6 +38,97 @@ class Network{
      */
     shouldReset(){
         return this.settings.shouldReset
+    }
+
+    /**
+     *
+     * @returns whether or not a network should resize its vertices based on user input change
+     */
+    shouldResizeVertex(){
+        return this.settings.shouldResizeVertex;
+    }
+
+    shouldRecolor(){
+        return this.settings.shouldRecolor;
+    }
+
+    /**
+     * Applies the vertex size settings to the network
+     */
+    applyVertexSize(){
+        if(this.settings.scaleVertices){
+            const minSize = this.settings.minSize
+            const maxSize = this.settings.maxSize
+            for(let i = 0; i < this.vertices.length; i++){
+                const v = this.vertices[i];
+                v.size =  Math.floor(
+                    ((v.degree - this.minDegree)/(this.maxDegree -this.minDegree))
+                    * (maxSize - minSize)) + minSize
+            }
+        }else {
+            for(let i = 0; i < this.vertices.length; i++){
+                this.vertices[i].size = 3;
+            }
+        }
+        this.settings.shouldResizeVertex = false
+    }
+
+    /**
+     * Applies the color gradient from settings to the network
+     */
+    applyColorGradient(){
+        //define color gradient for use by both vertices and edges
+        const colorGradient = new LinearColorGradient(
+            this.settings.startColor,
+            this.settings.endColor,
+            this.maxDegree - this.minDegree + 1)
+
+        if(this.settings.applyColorGradientVertex && this.settings.applyColorGradient){
+            for(let i = 0; i < this.vertices.length; i++){
+                colorGradient.assignColor(this.vertices[i], this.minDegree)
+                if(this.vertices[i].color === undefined){ console.warn("Color gradient could not apply color to vertex", this.vertices[i])}
+            }
+        } else{//default vertex color
+            for(let i = 0; i < this.vertices.length; i++){
+                this.vertices[i].color = "rgb(0,255,255)"
+            }
+        }
+        if(this.settings.applyColorGradientEdge && this.settings.applyColorGradient){
+            //TODO : refactor edges to use multiple colors
+            //do nothing for now
+            for(let j = 0; j < this.edges.length; j++){
+                const v = this.vertices;
+                const e = this.edges[j]
+                const color1 = colorGradient.getColorGradientColor(v[e.start], this.minDegree)
+                const color2 = colorGradient.getColorGradientColor(v[e.end], this.minDegree)
+                this.edges[j].color = [color1, color2]
+                this.edges[j].alpha = 0.5
+            }
+
+        } else{ //default edge colors
+            for(let j = 0; j < this.edges.length; j++){
+                this.edges[j].alpha = 0.1
+                if(this.isThreeDimensional){
+                    this.edges[j].color = this.edgeInitialColor;
+                } else{
+                    this.edges[j].color = "rgb(0,0,0)"
+                }
+            }
+        }
+        this.settings.shouldRecolor = false
+    }
+
+    /**
+     * Find extreme degrees, calculates the max and min vertex degrees of the network for reuse later.
+     * requires network defined vertices (this.vertices)
+     */
+    findExtremeDegrees(){
+        this.maxDegree = -Infinity
+        this.minDegree = Infinity
+        for(let i = 0; i < this.vertices.length; i ++){
+            this.maxDegree = Math.max(this.maxDegree, this.vertices[i].degree)
+            this.minDegree = Math.min(this.minDegree, this.vertices[i].degree)
+        }
     }
 
     /**
@@ -132,9 +225,13 @@ class Network{
                 vertices[i].degree = 2
             }
         }
+
         this.settings.shouldReset = false
         this.vertices = vertices
         this.edges = edges
+        this.findExtremeDegrees()
+        this.applyVertexSize()
+        this.applyColorGradient()
     }
 }
 

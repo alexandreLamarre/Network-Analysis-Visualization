@@ -20,10 +20,13 @@ class Edge{
     this.alpha = alpha;
   }
 
-  copy_edge(){
+  copyEdge(){
     const e = new Edge(this.start, this.end);
-    e.setColor(this.color);
-    e.setAlpha(this.alpha);
+    for(const key in this){
+      if(this.hasOwnProperty(key)){
+        e[key] = this[key]
+      }
+    }
     return e;
   }
 

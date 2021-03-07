@@ -3,6 +3,8 @@ import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
 import Network from "./Network";
 
+
+
 class NetworkVisualizer3D extends React.Component{
     constructor(props){
         super(props)
@@ -17,6 +19,7 @@ class NetworkVisualizer3D extends React.Component{
             renderer: null,
             controls: null,
         }
+        this.frameID = 0
         this.heightConstant= 8.5/10
         this.widthConstant = 7/10
         this.minheight = 420
@@ -69,8 +72,13 @@ class NetworkVisualizer3D extends React.Component{
 
         //add listeners and set state
         window.addEventListener("resize", () => {this.resize()})
-        window.requestAnimationFrame(() => this.animate())
+        this.frameID = window.requestAnimationFrame(() => this.animate())
         this.setState({width: w, height: h})
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", () => {this.resize()})
+        window.cancelAnimationFrame(this.frameID)
     }
 
     animate(){
@@ -81,9 +89,15 @@ class NetworkVisualizer3D extends React.Component{
             } else if (this.networkData.shouldUpdate){
                 this.updateScene()
                 this.networkData.shouldUpdate = false
+            } else if (this.networkData.shouldResizeVertex()){
+                this.networkData.applyVertexSize()
+                this.updateScene()
+            } else if (this.networkData.shouldRecolor()){
+                this.networkData.applyColorGradient()
+                this.updateScene()
             }
             this.renderer.render(this.scene, this.camera)
-            window.requestAnimationFrame(() => this.animate())
+            this.frameID = window.requestAnimationFrame(() => this.animate())
         }
     }
 
@@ -96,7 +110,9 @@ class NetworkVisualizer3D extends React.Component{
             var geometrySphere = new THREE.SphereGeometry(v.size, 4, 4)
             var materialSphere = new THREE.MeshLambertMaterial({color: new THREE.Color(v.color)})
             var sphere = new THREE.Mesh(geometrySphere, materialSphere);
+
             sphere.position.set(v.x* w, v.y*h, v.z*h)
+            sphere.scale.setScalar(1+v.size/5)
             spheres.push(sphere)
             this.scene.add(sphere)
         }
@@ -104,12 +120,24 @@ class NetworkVisualizer3D extends React.Component{
         const lines = []
         for(let j = 0; j < this.networkData.edges.length; j++){
             const e = this.networkData.edges[j]
+            const v = this.networkData.vertices
             var linePoints = []
-            var material = new THREE.LineBasicMaterial({color: new THREE.Color(e.color)});
-            material.opacity = 0.1
+
             linePoints.push(spheres[e.start].position)
             linePoints.push(spheres[e.end].position)
             var geometry = new THREE.BufferGeometry().setFromPoints(linePoints)
+
+            const colors = []
+            const edgecolors = this.getEdgeColors(e)
+            for(let i = 0; i < edgecolors.length; i++){
+                edgecolors[i] = new THREE.Color(edgecolors[i])
+                colors.push(edgecolors[i].r, edgecolors[i].g, edgecolors[i].b);
+            }
+
+            geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3))
+
+            var material = new THREE.LineBasicMaterial({vertexColors: true});
+            material.opacity = 0.1
             var line = new THREE.Line(geometry, material)
             this.scene.add(line)
             lines.push(line)
@@ -124,14 +152,21 @@ class NetworkVisualizer3D extends React.Component{
         for(let i = 0; i < this.networkData.vertices.length; i++){
             const v = this.networkData.vertices[i]
             this.spheres[i].position.set(v.x*w, v.y*h, v.z*h);
+            this.spheres[i].scale.setScalar(1+v.size/4)
             this.spheres[i].material.color.set(v.color);
         }
 
         for(let j = 0; j < this.networkData.edges.length; j++){
-            // if(j == 0) console.log(this.networkData.edges[j].color)
-            this.lines[j].material.color = new THREE.Color(this.networkData.edges[j].color)
-            const v= this.networkData.vertices
             const e = this.networkData.edges[j]
+
+            const colors = []
+            const edgecolors = this.getEdgeColors(e)
+            for(let i = 0; i < edgecolors.length; i++){
+                edgecolors[i] = new THREE.Color(edgecolors[i])
+                colors.push(edgecolors[i].r, edgecolors[i].g, edgecolors[i].b);
+            }
+            this.lines[j].geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3))
+
 
             var linePoints = []
             linePoints.push(this.spheres[e.start].position)
@@ -142,6 +177,14 @@ class NetworkVisualizer3D extends React.Component{
             this.lines[j].geometry.attributes.position.needsUpdate = true;
 
             // this.lines[j].material.color.set(this.networkData.edges[j].color);
+        }
+    }
+
+    getEdgeColors(edge){
+        if(Array.isArray(edge.color)){
+            return edge.color
+        } else{
+            return [edge.color]
         }
     }
 
@@ -156,8 +199,9 @@ class NetworkVisualizer3D extends React.Component{
             this.controls.target.set(w/2, h/2, h/2)
             this.controls.update()
             this.networkData.shouldUpdate = true
+            this.setState({height: h, width: w})
         }
-        this.setState({height: h, width: w})
+
     }
 
     render() {

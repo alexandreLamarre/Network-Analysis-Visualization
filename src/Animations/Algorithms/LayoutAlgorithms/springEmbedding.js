@@ -1,10 +1,8 @@
 import AbstractLayoutAlgorithm from "./AbstractLayoutAlgorithm.js"
-import {fruchtermanReingold} from "../../../NetworkAlgorithms/FruchtermanReingold";
-import AlgorithmSettings from "../AlgorithmSettings";
 import AlgorithmSettingObject from "../AlgorithmSetting";
-import Force from "./datatypes/Force.js"
-import Vertex from "./datatypes/Vertex.js"
-import Edge from "./datatypes/Edge.js"
+import Force from "../../../datatypes/Force.js"
+import Vertex from "../../../datatypes/Vertex.js"
+import Edge from "../../../datatypes/Edge.js"
 
 const ITERATIONS = 100;
 
@@ -77,8 +75,8 @@ class SpringEmbedding extends AbstractLayoutAlgorithm{
         let animations = [];
         let scaling_factor = []; //the animations will sometimes push vertices x,y, z
                     // outside of the range (0,1) so we need to rescale every iteration of the animation once it is done
-        // animations.push(vertices);
-        // scaling_factor.push([0, 0, 0, 1, 1, 1])
+        animations.push(vertices);
+        scaling_factor.push([0, 0, 0, 1, 1, 1])
         //apply forces to all vertices on each iteration
         while(t < K){
             let forceList = [];
@@ -137,11 +135,8 @@ class SpringEmbedding extends AbstractLayoutAlgorithm{
                 forceList[i].scale(delta)
                 const fNorm = distance(forceList[i], new Force(0, 0, 0), is3D)
                 maxF = Math.max(maxF, fNorm)
-                iterationAnimations.push(new Vertex(
-                    vertices[i].x + forceList[i].x,
-                    vertices[i].y +forceList[i].y,
-                    vertices[i].z+ forceList[i].z))
 
+                iterationAnimations.push(vertices[i].add(forceList[i]))
                 minX = Math.min(minX, iterationAnimations[i].x); maxX = Math.max(maxX, iterationAnimations[i].x);
                 minY = Math.min(minY, iterationAnimations[i].y); maxY = Math.max(maxY, iterationAnimations[i].y);
                 minZ = Math.min(minZ, iterationAnimations[i].z); maxZ = Math.max(maxZ, iterationAnimations[i].z);

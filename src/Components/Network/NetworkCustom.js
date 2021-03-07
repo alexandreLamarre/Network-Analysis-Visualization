@@ -23,15 +23,18 @@ class NetworkCustom extends React.Component{
         this.setState({width: w, height: h})
     }
 
+    componentWillUnmount() {
+        window.cancelAnimationFrame("resize", () => {this.resize()})
+    }
+
     resize(){
         const h = Math.max(window.innerHeight *this.heightConstant, this.minheight)
         const w = window.innerWidth  * this.widthConstant
         if (this.network.current !== null){
             this.network.current.width = w
             this.network.current.height = h
+            this.setState({height: h, width: w})
         }
-        this.setState({height: h, width: w})
-        console.log("resizing")
     }
 
     //SPECIFIC EVENT HANDLERS

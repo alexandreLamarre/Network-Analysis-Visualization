@@ -7,7 +7,6 @@ class AlgorithmList extends React.Component{
     constructor(props){
         super(props)
         this.algorithms = this.props.algorithms
-        this.network = this.props.network
         this.parent = this.props.parent
 
         this.state = {
@@ -44,13 +43,6 @@ class AlgorithmList extends React.Component{
                     </select>
 
                 </IonItem>
-                {/*
-                <p style = {{color: "red"}}
-                   hidden = {this.state.requiredProperty === null
-                   || this.network.settings.properties[this.state.requiredProperty] === true}>
-                    Algorithm '{this.state.activeAlgorithm}' requires Network type '{this.state.requiredProperty}'
-                </p>
-                */}
             </div>
         )
     }
