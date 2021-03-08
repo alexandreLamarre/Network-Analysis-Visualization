@@ -33,7 +33,8 @@ class NetworkSettingsComponent extends React.Component{
             startColor: this.props.settings.startColor,
             endColor : this.props.settings.endColor,
             properties : null,
-            activeProperty: "General"
+            activeProperty: "General",
+            filter: ""
         }
         this.settings = this.props.settings
     }
@@ -148,6 +149,7 @@ class NetworkSettingsComponent extends React.Component{
     }
 
     setMaxSize(v){
+        console.log(v)
         this.settings.shouldResizeVertex = true
         this.settings.maxSize = parseInt(v)
         this.setState({maxSize: parseInt(v)})
@@ -207,7 +209,7 @@ class NetworkSettingsComponent extends React.Component{
     render(){
         const propNetwork = this.state.properties === null? []: this.state.properties
         return (
-            <div>
+            <div hidden = {!"network".includes(this.state.filter.toLowerCase())}>
                 <IonItem lines = "full" color = "dark">
                     <div style = {{textAlign: "center"}}>
                         <b style = {{textAlign: "center"}}> {this.props.name}</b>

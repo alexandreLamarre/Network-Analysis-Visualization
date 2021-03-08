@@ -57,17 +57,21 @@ class App extends React.Component{
       animationsInBuffer: false,
       currentStep : 0,
       running : false,
+      filter: "",
     }
     this.networkSettings = new NetworkSettings()
     this.networkData = new Network(this.networkSettings, false)
     this.animator = new Animator()
+
+    this.networkSettingsRef = React.createRef()
+    this.algorithmSettingsRef = React.createRef()
   }
 
 
   componentDidMount(){
 
-    const networkSettingsHTML = this.networkSettings.toHTML()
-    const algorithmSettingsHTML = this.animator.algorithmSettingsToHTML()
+    const networkSettingsHTML = this.networkSettings.toHTML(this.networkSettingsRef)
+    const algorithmSettingsHTML = this.animator.algorithmSettingsToHTML(this.algorithmSettingsRef)
     const algorithmSelectHTML = this.animator.algorithmsToHTML()
     const w = window.innerWidth;
     const h = window.innerHeight;
@@ -84,19 +88,13 @@ class App extends React.Component{
     });
   }
 
-  checkImplementation(){
-    console.log(this.state.settingsObject)
-    console.log(this.networkSettings)
 
-  }
 
   getAnimation(){
-    console.log("fetching animations from algorithm ...", this.animator.activeAlgorithm)
     const animations = this.animator.getAnimations(
         this.networkData.vertices,
         this.networkData.edges,
         this.networkData.isThreeDimensional)
-    console.log(animations)
     this.setState({animationsInBuffer: true, animations: animations, currentStep: 0, activeAlgorithm: this.animator.activeAlgorithm})
   }
 
@@ -151,6 +149,12 @@ class App extends React.Component{
     const w = window.innerWidth
     const h = window.innerHeight
     this.setState({height: h, width: w})
+  }
+
+  setFilter(v){
+    this.networkSettingsRef.current.setState({filter: v})
+    this.algorithmSettingsRef.current.setState({filter:v})
+    this.setState({filter: v})
   }
 
   render() {
@@ -216,12 +220,16 @@ class App extends React.Component{
                     <div hidden = {this.state.animationsInBuffer}>
                       <IonItem>
                             <IonIcon icon = {searchCircleOutline}/>
-                            <IonInput placeholder = "filter" style = {{textAlign: "center"}}>
+                            <IonInput
+                                onIonChange = {(e) => this.setFilter(e.target.value)}
+                                placeholder = "filter"
+                                style = {{textAlign: "center"}} >
                             </IonInput>
                       </IonItem>
                         <div style = {{outline: "1px solid black"}}>
                           <div style =
-                                   {{maxHeight: Math.max(this.state.height*(6/10), 300),
+                                   {{minHeight:  Math.max(this.state.height*(6/10), 300),
+                                     maxHeight: Math.max(this.state.height*(6/10), 300),
                                      overflowY: "scroll"}}>
                             {this.state.networkSettingsHTML}
                             {this.state.algorithmSettingsHTML}

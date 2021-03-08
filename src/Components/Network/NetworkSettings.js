@@ -54,8 +54,9 @@ class NetworkSettings{
         return this.properties
     }
 
-    toHTML(){
+    toHTML(ref){
         return (<NetworkSettingsComponent
+            ref = {ref}
             settings = {this} name = {"Network Settings"}/>)
     }
 }

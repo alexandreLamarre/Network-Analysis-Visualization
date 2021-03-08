@@ -79,6 +79,8 @@ class NetworkVisualizer3D extends React.Component{
     componentWillUnmount() {
         window.removeEventListener("resize", () => {this.resize()})
         window.cancelAnimationFrame(this.frameID)
+        if(this.renderer !== null) this.renderer = null; //destroy the webgl context
+        if(this.network3D.current != null) this.network3D.current = null //destroy webgl context
     }
 
     animate(){
@@ -112,7 +114,7 @@ class NetworkVisualizer3D extends React.Component{
             var sphere = new THREE.Mesh(geometrySphere, materialSphere);
 
             sphere.position.set(v.x* w, v.y*h, v.z*h)
-            sphere.scale.setScalar(1+v.size/5)
+            sphere.scale.set(1+v.size/5, 1+v.size/5, 1+v.size/5)
             spheres.push(sphere)
             this.scene.add(sphere)
         }
@@ -152,7 +154,7 @@ class NetworkVisualizer3D extends React.Component{
         for(let i = 0; i < this.networkData.vertices.length; i++){
             const v = this.networkData.vertices[i]
             this.spheres[i].position.set(v.x*w, v.y*h, v.z*h);
-            this.spheres[i].scale.setScalar(1+v.size/4)
+            this.spheres[i].scale.set(1+v.size/5, 1+v.size/5, 1+v.size/5)
             this.spheres[i].material.color.set(v.color);
         }
 

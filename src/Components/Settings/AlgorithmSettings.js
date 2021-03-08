@@ -8,13 +8,18 @@ class AlgorithmSettings extends React.Component{
             console.log("adding settings", this.props.algorithms[i].settings)
             this.algoSettings.push(this.props.algorithms[i].settings)
         }
+        this.state = {
+            filter: ""
+        }
     }
 
     render(){
         return(
             <div>
                 {this.algoSettings.map((algorithmSettings, index) => (
-                    algorithmSettings.toHTML(index)
+                    <div key = {index} hidden = {!algorithmSettings.name.toLowerCase().includes(this.state.filter.toLowerCase())}>
+                        {algorithmSettings.toHTML(index)}
+                    </div>
                 ))}
             </div>
         )

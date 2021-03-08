@@ -157,7 +157,6 @@ class NetworkVisualizer extends React.Component{
 
     /** zoom camera**/
     zoomCamera(e){
-        e.preventDefault()
         const delta = -Math.sign(e.deltaY);
         const zoomIntensity = 0.1
         const scale = (this.state.scale) + (delta*zoomIntensity);
