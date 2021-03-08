@@ -1,11 +1,12 @@
 import AbstractColorGradient from "./AbstractColorGradient";
 
-class LinearColorGradient extends AbstractColorGradient{
-    constructor(startColor, endColor, numColors){
+class PolarColorGradient extends AbstractColorGradient{
+    constructor(startColor, endColor, numColors) {
         super(startColor, endColor)
         this.numColors = numColors
-        if(startColor === endColor) this.numColors = 1
+        this.colorGradient = [];
 
+        //parse input colors
         if(this.isValidRGB(startColor)){
             startColor = this.rgbToNums(startColor)
         } else if(this.isValidHexString(startColor)){
@@ -22,19 +23,13 @@ class LinearColorGradient extends AbstractColorGradient{
             throw new Error("Cannot recognize start color: neither hex nor rgb")
         }
 
-        this.colorGradient = []
         if(this.numColors === 1) {
-            this.colorGradient.push(this.numsToHex(startColor))
+            this.colorGradient = [this.numsToHex(startColor)]
         } else{
-            for(let i = 0; i < numColors; i ++){
-                const t = i/(numColors-1)
-                const newRed = parseInt(this.lerp(startColor[0], endColor[0], t))
-                const newGreen = parseInt(this.lerp(startColor[1], endColor[1], t))
-                const newBlue = parseInt(this.lerp(startColor[2], endColor[2], t));
-                this.colorGradient.push(this.numsToHex([newRed,newGreen, newBlue]))
-            }
+            this.createColorGradient(startColor, endColor)
         }
     }
+
     /**
      *  Gets the color for a given networkDataType and applies a linear gradient along start color to end color
      *  given its degree and its relative distance from minRange/maxRange
@@ -51,6 +46,29 @@ class LinearColorGradient extends AbstractColorGradient{
         }
 
     }
+
+    /**
+     * constructor method for generating the color gradient. requires this.numColors > 1
+     * @param startColor
+     * @param endColor
+     */
+    createColorGradient(startColor, endColor){
+        var [startHue, startSaturation, startLightness] = this.rgbNumsToHSLNums(startColor)
+        var [endHue, endSaturation, endLightness] = this.rgbNumsToHSLNums(endColor)
+        for(let i = 0; i < this.numColors; i++){
+            const t = i/(this.numColors-1); //we have already assumed by calling this
+            const newHue = this.lerp(startHue, endHue, t)
+            const newSaturation = this.lerp(startSaturation, endSaturation, t)
+            const newLightness = this.lerp(startLightness, endLightness, t)
+            const rgb = this.HSLNumsToRGBNums(newHue, newSaturation, newLightness);
+            this.colorGradient.push(this.numsToHex(rgb))
+        }
+
+        if(this.colorGradient.length !== this.numColors) {
+            throw new Error("Did not generate the correct amount of colors", this.colorGradient.length, "versus", this.numColors);
+        }
+    }
+
 }
 
-export default LinearColorGradient;
+export default PolarColorGradient;

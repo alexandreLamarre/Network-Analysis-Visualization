@@ -29,6 +29,7 @@ class NetworkSettings{
         this.minSize = 1
         this.maxSize = 12
         //apply color gradients
+        this.gradientType = "Linear"
         this.applyColorGradient = false
         this.applyColorGradientVertex = false
         this.applyColorGradientEdge = false

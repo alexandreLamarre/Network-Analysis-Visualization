@@ -1,6 +1,7 @@
 import LinearColorGradient from "../../datatypes/ColorGradient/LinearColorGradient";
 import Vertex from "../../datatypes/Vertex";
 import Edge from "../../datatypes/Edge";
+import PolarColorGradient from "../../datatypes/ColorGradient/PolarColorGradient";
 /**
  * Network is a class that handles the implementation of a network:
  *   - network settings
@@ -78,10 +79,10 @@ class Network{
      */
     applyColorGradient(){
         //define color gradient for use by both vertices and edges
-        const colorGradient = new LinearColorGradient(
-            this.settings.startColor,
-            this.settings.endColor,
-            this.maxDegree - this.minDegree + 1)
+
+        const colorGradient =  this.settings.gradientType === "Linear"? new LinearColorGradient(
+            this.settings.startColor, this.settings.endColor, this.maxDegree - this.minDegree + 1) :
+            new PolarColorGradient(this.settings.startColor, this.settings.endColor, this.maxDegree - this.minDegree + 1)
 
         if(this.settings.applyColorGradientVertex && this.settings.applyColorGradient){
             for(let i = 0; i < this.vertices.length; i++){

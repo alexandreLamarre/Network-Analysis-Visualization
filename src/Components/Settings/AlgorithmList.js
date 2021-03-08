@@ -15,6 +15,12 @@ class AlgorithmList extends React.Component{
         console.log(this.network)
     }
 
+    componentDidMount(){
+        const w = window.innerWidth
+        this.setState({width: w})
+        window.addEventListener("resize", () => this.resize())
+    }
+
     setOption(v){
         console.log("setting algorithm", v)
         for(let i = 0; i < this.algorithms.length; i++){
@@ -30,13 +36,19 @@ class AlgorithmList extends React.Component{
         }
     }
 
+    resize(){
+        const w = window.innerWidth;
+        this.setState({width: w})
+    }
+
+
     render(){
         return (
             <div>
                 <IonItem lines = "full">
-                    <b style = {{cursor: "default"}}
+                    <b style = {{cursor: "default", maxWidth: this.state.width*(0.75/10)}}
                         className = "noSelectText"> Select Algorithm </b>
-                    <select style = {{marginLeft: "10px"}} onChange = {(e) => this.setOption(e.target.value)}>
+                    <select style = {{marginLeft: "10px", maxWidth: this.state.width*(1/10)}} onChange = {(e) => this.setOption(e.target.value)}>
                         {this.algorithms.map((algorithm, index) => (
                             <option value = {algorithm.name} key = {index}> {algorithm.name} </option>
                         ))}

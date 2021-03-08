@@ -27,6 +27,7 @@ class NetworkSettingsComponent extends React.Component{
             scaleVertices: this.props.settings.scaleVertices,
             minSize : this.props.settings.minSize,
             maxSize : this.props.settings.maxSize,
+            gradientType: this.props.settings.gradientType,
             applyColorGradient : this.props.settings.applyColorGradient,
             applyColorGradientVertex: this.props.settings.applyColorGradientVertex,
             applyColorGradientEdge : this.props.settings.applyColorGradientEdge,
@@ -179,6 +180,12 @@ class NetworkSettingsComponent extends React.Component{
         this.settings.shouldRecolor = true
     }
 
+    selectGradientType(type){
+        this.settings.gradientType = type;
+        this.settings.shouldRecolor = true;
+        this.setState({gradientType: type})
+    }
+
     setStartColor(v){
         this.settings.startColor = v
         this.settings.shouldRecolor = true
@@ -282,6 +289,17 @@ class NetworkSettingsComponent extends React.Component{
                     <IonCheckbox
                         onIonChange = {(e) => {this.setApplyColorGradient("edge")}}
                         style = {{marginLeft: "5%"}}> </IonCheckbox>
+                </IonItem>
+                <IonItem>
+                    <p> Color Gradient Type</p>
+                    <select
+                        style = {{marginLeft: "5%"}}
+                        disabled = {!this.state.applyColorGradient}
+                        onChange = {(e) => this.selectGradientType(e.target.value)}
+                        value = {this.state.gradientType}>
+                        <option value = "Linear"> Linear</option>
+                        <option value = "Polar"> Polar </option>
+                    </select>
                 </IonItem>
                 <IonItem color = "light">
                     <p> Start Color</p>
