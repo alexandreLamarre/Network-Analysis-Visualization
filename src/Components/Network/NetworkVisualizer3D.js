@@ -190,7 +190,7 @@ class NetworkVisualizer3D extends React.Component{
         if(Array.isArray(edge.color)){
             return edge.color
         } else{
-            return [edge.color]
+            return [edge.color, edge.color]
         }
     }
 

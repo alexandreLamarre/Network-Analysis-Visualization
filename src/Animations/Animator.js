@@ -7,11 +7,8 @@ class Animator{
     constructor(){
 
         this.algorithms = [];
-        console.log("iterating over all algorithms defined in index.js")
         for(const key in ALGORITHMS){
-            console.log(key)
             for (const algo in ALGORITHMS[key]){
-                console.log(algo)
                 this.algorithms.push(new ALGORITHMS[key][algo]())
 
             }
@@ -30,8 +27,9 @@ class Animator{
         return <AlgorithmSettings ref = {ref} algorithms = {this.algorithms} />
     }
 
-    getAnimations(vertices, edges, is3D){
-        return this.activeAlgorithm.getAnimations(vertices, edges, is3D)
+    async getAnimations(vertices, edges, is3D){
+        const a = await this.activeAlgorithm.getAnimations(vertices, edges, is3D)
+        return a
     }
 
     /**

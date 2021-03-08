@@ -4,18 +4,18 @@ import './App.css';
 
 //CUSTOM COMPONENT IMPORTS
 
-import {Nav2D, Nav3D, NavCustom} from "./Components/NavBar"
-import {NetworkVisualizer, NetworkVisualizer3D, NetworkCustom, Network} from "./Components/Network";
+import {NavBar} from "./Components/NavBar"
+import {Visualizer, Network} from "./Components/Network";
 import NetworkSettings from "./Components/Network/NetworkSettings";
 import Animator from "./Animations/Animator";
+import PolarColorGradient from "./datatypes/ColorGradient/PolarColorGradient";
 
 //REACT ROUTER IMPORTS
 import {BrowserRouter as Router, Route} from "react-router-dom";
 
 // IONIC IMPORTS
 import {
-  IonApp, IonGrid, IonRow, IonCol,
-  IonLabel, IonContent, IonItem, IonIcon, IonInput, IonButton, IonRange
+  IonApp, IonGrid, IonRow, IonCol, IonContent, IonItem, IonIcon, IonInput, IonButton, IonProgressBar
 } from "@ionic/react"
 import '@ionic/react/css/core.css';
 /* Basic CSS for apps built with Ionic */
@@ -34,13 +34,13 @@ import {
   playBackCircleOutline,
   playCircleOutline, playForwardCircleOutline,
   playSkipBackCircleOutline, playSkipForwardCircleOutline,
-  searchCircleOutline, stopCircleOutline, pauseCircleSharp,
+  searchCircleOutline, pauseCircleSharp,
     closeCircleOutline,
 } from 'ionicons/icons';
 import {Redirect} from "react-router";
 
 
-
+const ANIMATOR = new Animator()
 
 class App extends React.Component{
   constructor(props){
@@ -63,7 +63,6 @@ class App extends React.Component{
     }
     this.networkSettings = new NetworkSettings()
     this.networkData = new Network(this.networkSettings, false)
-    this.animator = new Animator()
 
     this.networkSettingsRef = React.createRef()
     this.algorithmSettingsRef = React.createRef()
@@ -72,8 +71,8 @@ class App extends React.Component{
 
   componentDidMount(){
     const networkSettingsHTML = this.networkSettings.toHTML(this.networkSettingsRef)
-    const algorithmSettingsHTML = this.animator.algorithmSettingsToHTML(this.algorithmSettingsRef)
-    const algorithmSelectHTML = this.animator.algorithmsToHTML()
+    const algorithmSettingsHTML = ANIMATOR.algorithmSettingsToHTML(this.algorithmSettingsRef)
+    const algorithmSelectHTML = ANIMATOR.algorithmsToHTML()
     const w = window.innerWidth;
     const h = window.innerHeight;
     window.addEventListener("resize", () => {this.resize()})
@@ -85,7 +84,7 @@ class App extends React.Component{
       networkSettingsHTML : networkSettingsHTML,
       algorithmSettingsHTML: algorithmSettingsHTML,
       algorithmSelectHTML: algorithmSelectHTML,
-      activeAlgorithm: this.animator.activeAlgorithm
+      activeAlgorithm: ANIMATOR.activeAlgorithm
     });
   }
 
@@ -95,7 +94,7 @@ class App extends React.Component{
         this.setState({running:false})
       }
 
-      const stepsPerformed = this.animator.nextAnimationSteps(
+      const stepsPerformed = ANIMATOR.nextAnimationSteps(
           this.networkData,
           this.state.animations,
           this.state.currentStep,
@@ -111,31 +110,42 @@ class App extends React.Component{
     this.setState({height: h, width: w})
   }
 
-  getAnimation(){
+  async getAnimation(){
     //check if network is of valid type
-    if( this.animator.activeAlgorithm.requiredProperty !== null &&
-        !this.networkData.settings.properties[this.animator.activeAlgorithm.requiredProperty]){
+    if( ANIMATOR.activeAlgorithm.requiredProperty !== null &&
+        !this.networkData.settings.properties[ANIMATOR.activeAlgorithm.requiredProperty]){
       this.setState({
         invalidAlgorithm: true,
         invalidAlgorithmInfo: {
-          name: this.animator.activeAlgorithm.name,
-          requiredProperty: this.animator.activeAlgorithm.requiredProperty
+          name: ANIMATOR.activeAlgorithm.name,
+          requiredProperty: ANIMATOR.activeAlgorithm.requiredProperty
         },
       })
     }else{
-      this.setState({invalidAlgorithm: false, invalidAlgorithmInfo: {}})
-      const animations = this.animator.getAnimations(
+      //animationsInBuffer tells to load the animation player, and loading dictates whether or not
+      // the animation is done fetching
+      await this.setState({
+        invalidAlgorithm: false,
+        invalidAlgorithmInfo: {},
+        animationsInBuffer: true,
+        loading: true,
+        currentStep: 0,
+        activeAlgorithm: ANIMATOR.activeAlgorithm, })
+      await this.forceUpdate()
+      setTimeout(() => ANIMATOR.getAnimations(
           this.networkData.vertices,
           this.networkData.edges,
-          this.networkData.isThreeDimensional)
-      this.setState({animationsInBuffer: true, animations: animations, currentStep: 0, activeAlgorithm: this.animator.activeAlgorithm})
+          this.networkData.isThreeDimensional).then((animations) => {
+            this.setState({animations: animations, loading: false})
+          }), 10)
+
     }
   }
 
 
   performAnimationStep(num){
     if(num === 1 || num === -1) this.setState({running:false})
-    const numPerformed = this.animator.nextAnimationSteps(
+    const numPerformed = ANIMATOR.nextAnimationSteps(
         this.networkData,
         this.state.animations,
         this.state.currentStep,
@@ -146,7 +156,7 @@ class App extends React.Component{
   setSpecificAnimationFrame(animationIndex){
     if(this.state.animations.length === 0 || !this.state.animationsInBuffer) return
     //using current step = 0; means we can apply any animation index and have the returned steps be the new current step number
-    const newCurrentStep = this.animator.nextAnimationSteps(
+    const newCurrentStep = ANIMATOR.nextAnimationSteps(
         this.networkData,
         this.state.animations,
         0,
@@ -161,7 +171,12 @@ class App extends React.Component{
   }
 
   resetAnimationLogic(){
-    this.setState({animations : [], currentStep: 0, animationsInBuffer: false, running: false})
+    this.setState({
+      animations : [],
+      currentStep: 0,
+      animationsInBuffer: false,
+      running: false,
+      activeAlgorithm: {}})
   }
 
   setFilter(v){
@@ -171,151 +186,114 @@ class App extends React.Component{
   }
 
   render() {
-    var numnetwork = 9
-    var numsettings = 3
-
     return (
-        <IonApp>
-          <Router>
-
+        <Router>
             <Route exact path = "/">
-              <Redirect to ="/Network-Analysis-Visualization/2d"/>
-            </Route>
+            <Redirect to ="/Network-Analysis-Visualization/2d"/>
+          </Route>
             <Route exact path = "/Network-Analysis-Visualization">
               <Redirect to ="/Network-Analysis-Visualization/2d"/>
             </Route>
 
+        <IonApp>
+
           <IonContent>
             <IonGrid width = "100%">
-              <IonRow size = "1" id = "toolbar" style = {{height: Math.max(this.state.height/10, 50)}}>
-                <IonCol size = "3">
-                  <Route path = "/Network-Analysis-Visualization/2d" render = {() => <Nav2D selected = {true}/>}/>
-                  <Route path = "/Network-Analysis-Visualization/3d" render = {() => <Nav2D selected = {false}/>}/>
-                  <Route path = "/Network-Analysis-Visualization/custom" render = {() => <Nav2D selected = {false}/>}/>
-
-                </IonCol>
-                <IonCol size = "3">
-                  <Route path = "/Network-Analysis-Visualization/2d" render = {() => <Nav3D selected = {false}/>}/>
-                  <Route path = "/Network-Analysis-Visualization/3d" render = {() => <Nav3D selected = {true}/>}/>
-                  <Route path = "/Network-Analysis-Visualization/custom" render = {() => <Nav3D selected = {false}/>}/>
-
-                </IonCol>
-                <IonCol size = "3">
-                  <Route path = "/Network-Analysis-Visualization/2d" render = {() => <NavCustom selected = {false}/>}/>
-                  <Route path = "/Network-Analysis-Visualization/3d" render = {() => <NavCustom selected = {false}/>}/>
-                  <Route path = "/Network-Analysis-Visualization/custom" render = {() => <NavCustom selected = {true}/>}/>
-                </IonCol>
-                <IonCol size = "3" >
-                  <IonItem> <IonLabel> Network Settings </IonLabel> </IonItem>
-                </IonCol>
-              </IonRow>
+              <NavBar parent = {this} />
 
               <IonRow size = "11" style = {{overflow: "auto"}} id = "appcontent">
-                <IonCol size = {numnetwork}>
 
-                  <Route path = "/Network-Analysis-Visualization/2d" render = {() => <NetworkVisualizer
-                      settings = {this.networkSettings}
-                      networkData = {this.networkData}
-                      animator = {this.animator}
-                      parent = {this}/>}
-                  />
-                  <Route path = "/Network-Analysis-Visualization/3d" render = {() => <NetworkVisualizer3D
-                      settings = {this.networkSettings}
-                      networkData = {this.networkData}
-                      animator = {this.animator}
-                      parent = {this}/>}
-                  />
-                  <Route path = "/Network-Analysis-Visualization/custom" render = {() => <NetworkCustom/>}/>
+                <Visualizer parent = {this} />
 
-                </IonCol>
-                <IonCol size = {numsettings}  id = "settings">
+                <IonCol size = "3"  id = "settings">
+
                   <IonContent style = {{boxShadow: "5px 10px 35px grey"}}>
-                    <div hidden = {this.state.animationsInBuffer}>
+                    {/*SETTINGS/ ANIMATION PlAYER CONDITIONAL*/}
+                    {this.state.animationsInBuffer === false? <div>
                       <IonItem>
-                            <IonIcon icon = {searchCircleOutline}/>
-                            <IonInput
-                                onIonChange = {(e) => this.setFilter(e.target.value)}
-                                placeholder = "filter"
-                                style = {{textAlign: "center"}} >
-                            </IonInput>
+                        <IonIcon icon = {searchCircleOutline}/>
+                        <IonInput
+                            onIonChange = {(e) => this.setFilter(e.target.value)}
+                            placeholder = "filter"
+                            style = {{textAlign: "center"}} >
+                        </IonInput>
                       </IonItem>
-                        <div style = {{outline: "1px solid black"}}>
-                          <div style =
-                                   {{minHeight:  Math.max(this.state.height*(5.8/10), 300),
-                                     maxHeight: Math.max(this.state.height*(5.8/10), 300),
-                                     overflowY: "scroll"}}>
-                            {this.state.networkSettingsHTML}
-                            {this.state.algorithmSettingsHTML}
-                          </div>
+                      <div style = {{outline: "1px solid black"}}>
+                        <div style =
+                                 {{minHeight:  Math.max(this.state.height*(5.8/10), 300),
+                                   maxHeight: Math.max(this.state.height*(5.8/10), 300),
+                                   overflowY: "scroll"}}>
+                          {this.state.networkSettingsHTML}
+                          {this.state.algorithmSettingsHTML}
                         </div>
+                      </div>
                       <hr/>
                       <IonItem lines = "full">
                         {this.state.algorithmSelectHTML}
 
                       </IonItem>
-                      <IonItem lines = "full" hidden = {this.state.animationsInBuffer === true}>
+                      <IonItem lines = "full">
                         <IonButton style = {{margin:"auto"}} onClick = {() => this.getAnimation()}> Animate </IonButton>
                       </IonItem>
-                        <div
-                            hidden = {!this.state.invalidAlgorithm}
-                            style = {{color:"red", textAlign:"center"}}>
-                          Algorithm '{this.state.invalidAlgorithmInfo.name}' requires Network property/type
-                          '{this.state.invalidAlgorithmInfo.requiredProperty}'
-                        </div>
-                    </div>
-
-
-                    <div className = "animationPlayer" hidden = {this.state.animationsInBuffer === false}>
-
-                      <IonIcon onClick = {() => this.resetAnimationLogic()}
+                      <div
+                          hidden = {!this.state.invalidAlgorithm}
+                          style = {{color:"red", textAlign:"center"}}>
+                        Algorithm '{this.state.invalidAlgorithmInfo.name}' requires Network property/type
+                        '{this.state.invalidAlgorithmInfo.requiredProperty}'
+                      </div>
+                    </div>:
+                    // ANIMATION PLAYER
+                    <div className = "animationPlayer">
+                      <IonIcon hidden = {this.state.loading}
+                               onClick = {() => this.resetAnimationLogic()}
                                style = {{position: "absolute", top: 0, right: 0,cursor: "pointer"}}
                                size = "large"
                                icon = {closeCircleOutline}/>
 
                       <br className = "noSelectText"/>
                       <p className = "noSelectText" style = {{textAlign: "center"}}><b>{this.state.activeAlgorithm.name}</b></p>
+                      <IonProgressBar hidden = {!this.state.loading}type = "indeterminate"/>
+
                       <br className = "noSelectText"/>
-
-
-                          <div style = {{display: "flex", justifyContent:"center",
-                            alignItems:"center", alignContent:"center", backgroundColor: "rgb(255,245,245)"}}>
-                            <IonButton expand = "block" fill = "clear" color = "medium"
-                                       onClick = {() => this.performAnimationStep(-this.state.animations.length)}>
-                              <IonIcon
-                                  size = "large"
-                                  icon = {playBackCircleOutline}
-                                  />
-                            </IonButton>
-                            <IonButton expand = "block" fill = "clear" color = "medium"
-                                       onClick = {() => this.performAnimationStep(-1)}>
-                              <IonIcon
-                                  size = "large"
-                                  icon = {playSkipBackCircleOutline}
-                                  />
-                            </IonButton>
-                            <IonButton expand = "block" fill = "clear" color = "medium"
-                                       onClick = {() => this.toggleAnimationsRunning()}>
-                              <IonIcon
-                                  size = "large"
-                                  icon = {this.state.running === false?playCircleOutline: pauseCircleSharp}
-                                  />
-                            </IonButton>
-                            <IonButton expand = "block" fill = "clear" color = "medium"
-                                       onClick = {() => this.performAnimationStep(1)}>
-                              <IonIcon
-                                  size = "large"
-                                  icon = {playSkipForwardCircleOutline}
-                                  />
-                            </IonButton>
-                            <IonButton expand = "block" fill = "clear" color = "medium"
-                                       onClick = {() => this.performAnimationStep(this.state.animations.length)}>
-                              <IonIcon
-                                  size = "large"
-                                  icon = {playForwardCircleOutline}
-                                  />
-                            </IonButton>
-
-                          </div>
+                      <div className = "animationControls" hidden = {this.state.loading}>
+                      <div style = {{display: "flex", justifyContent:"center",
+                        alignItems:"center", alignContent:"center", backgroundColor: "rgb(255,245,245)"}}>
+                        <IonButton expand = "block" fill = "clear" color = "medium"
+                                   onClick = {() => this.performAnimationStep(-this.state.animations.length)}>
+                          <IonIcon
+                              size = "large"
+                              icon = {playBackCircleOutline}
+                              />
+                        </IonButton>
+                        <IonButton expand = "block" fill = "clear" color = "medium"
+                                   onClick = {() => this.performAnimationStep(-1)}>
+                          <IonIcon
+                              size = "large"
+                              icon = {playSkipBackCircleOutline}
+                              />
+                        </IonButton>
+                        <IonButton expand = "block" fill = "clear" color = "medium"
+                                   onClick = {() => this.toggleAnimationsRunning()}>
+                          <IonIcon
+                              size = "large"
+                              icon = {this.state.running === false?playCircleOutline: pauseCircleSharp}
+                              />
+                        </IonButton>
+                        <IonButton expand = "block" fill = "clear" color = "medium"
+                                   onClick = {() => this.performAnimationStep(1)}>
+                          <IonIcon
+                              size = "large"
+                              icon = {playSkipForwardCircleOutline}
+                              />
+                        </IonButton>
+                        <IonButton expand = "block" fill = "clear" color = "medium"
+                                   onClick = {() => this.performAnimationStep(this.state.animations.length)}>
+                          <IonIcon
+                              size = "large"
+                              icon = {playForwardCircleOutline}
+                              />
+                        </IonButton>
+                      </div>
 
 
                       <IonItem lines = "none" color = "light">
@@ -327,8 +305,9 @@ class App extends React.Component{
                           onChange = {(e) => this.setSpecificAnimationFrame(e.target.value)}
                       />
                       </IonItem>
+                      </div>
 
-                    </div>
+                    </div>}
 
                   </IonContent>
 
@@ -337,8 +316,9 @@ class App extends React.Component{
 
             </IonGrid>
           </IonContent>
-          </Router>
+
         </IonApp>
+        </Router>
     )
   }
 }

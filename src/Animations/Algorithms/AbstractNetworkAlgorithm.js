@@ -11,7 +11,7 @@ class AbstractNetworkAlgorithm{
         this.requiredProperty = null
     }
     /** getAnimations should run the algorithm and get the animations**/
-    getAnimations (){
+    async getAnimations (){
         throw new Error("Cannot fetch animation of an Abstract algorithm")
     }
 
@@ -33,7 +33,7 @@ class AbstractNetworkAlgorithm{
      *
      * @param network
      * @param animations
-     * @param animations
+     * @param currentStep
      * @param actualSteps
      */
     applyAnimation(network, animations, currentStep, actualSteps){
@@ -59,11 +59,9 @@ class AbstractNetworkAlgorithm{
      * @param property the required property of the algorithm
      */
     setRequiredProperty(property){
-        console.log("setting algorithm required property", property)
         if(property === null) {this.requiredProperty = null; return;}
         const properties = new NetworkSettings().properties
         for(const key in properties){
-            console.log(key)
             if(key === property){
                 this.requiredProperty = property
                 return

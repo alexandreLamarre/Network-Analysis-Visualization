@@ -49,7 +49,7 @@ class FruchtermanReingold extends AbstractLayoutAlgorithm{
         return this.settings
     }
 
-    getAnimations(vertices, edges, is3D){
+    async getAnimations(vertices, edges, is3D){
         const K = ITERATIONS;
         const epsilon = this.epsilon.obj.value;
         this.area = Math.sqrt(1000/(vertices.length))
@@ -68,7 +68,7 @@ class FruchtermanReingold extends AbstractLayoutAlgorithm{
         //apply forces to all vertices on each iteration
         while(t < K){
             let forceList = [];
-            if(t === 2) console.log("calculating repulsize forces")
+
             //CALCULATE REPULSIVE FORCES
             for(let i = 0; i < vertices.length; i++){
                 let f = new Force(0, 0, 0)
@@ -83,14 +83,11 @@ class FruchtermanReingold extends AbstractLayoutAlgorithm{
                 forceList.push(f)
             }
 
-            if(t === 2) console.log("calculating attractive forces")
-            console.log(vertices)
 
             //CALCULATE ATTRACTIVE FORCES
             for(let i = 0; i < edges.length; i++){
                 const e = edges[i];
                 if(e.start === e.end) console.warn("vertex connected to itself")
-                if(t == 2) console.log(vertices[e.start], vertices[e.end])
                 const delta = distance(vertices[e.start], vertices[e.end], is3D);
                 const calcs = this.fattract(vertices[e.start], vertices[e.end], delta, is3D)
                 const ncalcs = [calcs[0]*-1, calcs[1]*-1, calcs[2]*-1]
@@ -99,7 +96,6 @@ class FruchtermanReingold extends AbstractLayoutAlgorithm{
                 forceList[e.start].addVector(ncalcs);
             }
 
-            if(t === 2) console.log("updating positions")
 
             //update positions
             const iterAnimations = [];
@@ -109,7 +105,7 @@ class FruchtermanReingold extends AbstractLayoutAlgorithm{
             const origin = new Vertex(0,0,0)
 
             for(let i = 0; i < vertices.length; i++){
-                // const forceNorm = distance(forceList[i], origin, is3D);
+                const forceNorm = distance(forceList[i], origin, is3D);
                 const unitvector = unitVector(forceList[i], origin, is3D);
                 const unitForce = new Force(unitvector[0], unitvector[1], unitvector[2]);
                 unitForce.setX(unitForce.x * Math.min(temperature, Math.abs(forceList[i].x)))
@@ -121,17 +117,17 @@ class FruchtermanReingold extends AbstractLayoutAlgorithm{
                 minZ = Math.min(minZ, iterAnimations[i].z)
                 maxX = Math.max(maxX, iterAnimations[i].x); maxY = Math.max(maxY, iterAnimations[i].y);
                 maxZ = Math.max(maxZ, iterAnimations[i].z)
-                // maxForce = Math.max(forceNorm)
+                maxForce = Math.max(forceNorm)
             }
             scalingFactor.push([-minX, -minY, -minZ, 1/(maxX -minX), 1/(maxY - minY), 1/(maxZ - minZ)]);
             animations.push(iterAnimations);
             vertices = animations[animations.length -1];
             temperature = this.cool(temperature,initialTemperature, K)
             t += 1
-            // if(maxForce < epsilon) {
-            //     console.log("Convergence bound met")
-            //     break;
-            // }
+            if(maxForce < epsilon) {
+                console.log("Convergence bound met")
+                break;
+            }
         }
 
         for(let i = 0; i < animations.length; i++){

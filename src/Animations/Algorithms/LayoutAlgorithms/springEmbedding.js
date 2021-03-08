@@ -58,7 +58,7 @@ class SpringEmbedding extends AbstractLayoutAlgorithm{
     /**
      * Performs the spring embedding algorithm on a set of vertices and edges
      */
-    getAnimations(vertices, edges, is3D){
+    async getAnimations(vertices, edges, is3D){
         const K = ITERATIONS;
         const distType = this.distanceType.obj.value;
         const delta = 0.1

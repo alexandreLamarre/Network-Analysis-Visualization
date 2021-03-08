@@ -46,12 +46,7 @@ class NetworkSettingsComponent extends React.Component{
         //here we set the default network type to General in case something
         //goes wrong in the declaration of the NetworkSettings Class
         for (const key in this.settings.properties){
-            if(key === "General") {
-                this.settings.properties[key] = true
-            } else{
-                this.settings.properties[key]= false
-            }
-            properties.push(key)
+            if(this.settings.properties.hasOwnProperty(key))properties.push(key)
         }
         this.setState({properties: properties})
     }

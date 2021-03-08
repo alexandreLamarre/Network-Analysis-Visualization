@@ -11,8 +11,8 @@ class AlgorithmList extends React.Component{
 
         this.state = {
             activeAlgorithm: this.algorithms[0].name,
+            width: 0,
         }
-        console.log(this.network)
     }
 
     componentDidMount(){
@@ -22,7 +22,6 @@ class AlgorithmList extends React.Component{
     }
 
     setOption(v){
-        console.log("setting algorithm", v)
         for(let i = 0; i < this.algorithms.length; i++){
             if(this.algorithms[i].name === v){
                 console.log("algorithm found")
@@ -30,7 +29,6 @@ class AlgorithmList extends React.Component{
                     activeAlgorithm:  v,
                 });
                 this.animator.activeAlgorithm = this.algorithms[i]
-                console.log(this.algorithms.activeAlgorithm)
                 break;
             }
         }
