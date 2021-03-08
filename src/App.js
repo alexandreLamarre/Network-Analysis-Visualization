@@ -58,6 +58,8 @@ class App extends React.Component{
       currentStep : 0,
       running : false,
       filter: "",
+      invalidAlgorithm: false,
+      invalidAlgorithmInfo: {},
     }
     this.networkSettings = new NetworkSettings()
     this.networkData = new Network(this.networkSettings, false)
@@ -69,7 +71,6 @@ class App extends React.Component{
 
 
   componentDidMount(){
-
     const networkSettingsHTML = this.networkSettings.toHTML(this.networkSettingsRef)
     const algorithmSettingsHTML = this.animator.algorithmSettingsToHTML(this.algorithmSettingsRef)
     const algorithmSelectHTML = this.animator.algorithmsToHTML()
@@ -88,31 +89,6 @@ class App extends React.Component{
     });
   }
 
-
-
-  getAnimation(){
-    const animations = this.animator.getAnimations(
-        this.networkData.vertices,
-        this.networkData.edges,
-        this.networkData.isThreeDimensional)
-    this.setState({animationsInBuffer: true, animations: animations, currentStep: 0, activeAlgorithm: this.animator.activeAlgorithm})
-  }
-
-  async toggleAnimationsRunning(){
-    await this.setState({running: !this.state.running})
-    this.animate()
-  }
-
-  performAnimationStep(num){
-    if(num === 1 || num === -1) this.setState({running:false})
-    const numPerformed = this.animator.nextAnimationSteps(
-        this.networkData,
-        this.state.animations,
-        this.state.currentStep,
-        parseInt(num))
-    this.setState({currentStep: this.state.currentStep + numPerformed})
-  }
-
   animate(){
     if(this.state.running){
       if(this.state.currentStep === this.state.animations.length -1){
@@ -129,8 +105,42 @@ class App extends React.Component{
     }
   }
 
-  resetAnimationLogic(){
-    this.setState({animations : [], currentStep: 0, animationsInBuffer: false, running: false})
+  resize(){
+    const w = window.innerWidth
+    const h = window.innerHeight
+    this.setState({height: h, width: w})
+  }
+
+  getAnimation(){
+    //check if network is of valid type
+    if( this.animator.activeAlgorithm.requiredProperty !== null &&
+        !this.networkData.settings.properties[this.animator.activeAlgorithm.requiredProperty]){
+      this.setState({
+        invalidAlgorithm: true,
+        invalidAlgorithmInfo: {
+          name: this.animator.activeAlgorithm.name,
+          requiredProperty: this.animator.activeAlgorithm.requiredProperty
+        },
+      })
+    }else{
+      this.setState({invalidAlgorithm: false, invalidAlgorithmInfo: {}})
+      const animations = this.animator.getAnimations(
+          this.networkData.vertices,
+          this.networkData.edges,
+          this.networkData.isThreeDimensional)
+      this.setState({animationsInBuffer: true, animations: animations, currentStep: 0, activeAlgorithm: this.animator.activeAlgorithm})
+    }
+  }
+
+
+  performAnimationStep(num){
+    if(num === 1 || num === -1) this.setState({running:false})
+    const numPerformed = this.animator.nextAnimationSteps(
+        this.networkData,
+        this.state.animations,
+        this.state.currentStep,
+        parseInt(num))
+    this.setState({currentStep: this.state.currentStep + numPerformed})
   }
 
   setSpecificAnimationFrame(animationIndex){
@@ -141,14 +151,17 @@ class App extends React.Component{
         this.state.animations,
         0,
         parseInt(animationIndex)
-        )
+    )
     this.setState({currentStep: newCurrentStep, running:false});
   }
 
-  resize(){
-    const w = window.innerWidth
-    const h = window.innerHeight
-    this.setState({height: h, width: w})
+  async toggleAnimationsRunning(){
+    await this.setState({running: !this.state.running})
+    this.animate()
+  }
+
+  resetAnimationLogic(){
+    this.setState({animations : [], currentStep: 0, animationsInBuffer: false, running: false})
   }
 
   setFilter(v){
@@ -228,8 +241,8 @@ class App extends React.Component{
                       </IonItem>
                         <div style = {{outline: "1px solid black"}}>
                           <div style =
-                                   {{minHeight:  Math.max(this.state.height*(6/10), 300),
-                                     maxHeight: Math.max(this.state.height*(6/10), 300),
+                                   {{minHeight:  Math.max(this.state.height*(5.8/10), 300),
+                                     maxHeight: Math.max(this.state.height*(5.8/10), 300),
                                      overflowY: "scroll"}}>
                             {this.state.networkSettingsHTML}
                             {this.state.algorithmSettingsHTML}
@@ -238,7 +251,17 @@ class App extends React.Component{
                       <hr/>
                       <IonItem lines = "full">
                         {this.state.algorithmSelectHTML}
+
                       </IonItem>
+                      <IonItem lines = "full" hidden = {this.state.animationsInBuffer === true}>
+                        <IonButton style = {{margin:"auto"}} onClick = {() => this.getAnimation()}> Animate </IonButton>
+                      </IonItem>
+                        <div
+                            hidden = {!this.state.invalidAlgorithm}
+                            style = {{color:"red", textAlign:"center"}}>
+                          Algorithm '{this.state.invalidAlgorithmInfo.name}' requires Network property/type
+                          '{this.state.invalidAlgorithmInfo.requiredProperty}'
+                        </div>
                     </div>
 
 
@@ -306,9 +329,7 @@ class App extends React.Component{
                       </IonItem>
 
                     </div>
-                    <IonItem lines = "full" hidden = {this.state.animationsInBuffer === true}>
-                      <IonButton style = {{margin:"auto"}} onClick = {() => this.getAnimation()}> Animate </IonButton>
-                    </IonItem>
+
                   </IonContent>
 
                 </IonCol>
