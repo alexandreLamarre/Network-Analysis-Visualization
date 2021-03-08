@@ -218,6 +218,10 @@ class NetworkVisualizer3D extends React.Component{
         this.controls.update()
     }
 
+    saveAs(type){
+        alert("Saving not yet implemented for 3D networks")
+    }
+
     render() {
         return (
             <div>
@@ -225,7 +229,7 @@ class NetworkVisualizer3D extends React.Component{
                         style = {{outline: "1px solid blue",
                         backgroundColor: "black"
                         }}/>
-                <div
+                <div className = "dropdown"
                     title = "Save as"
                     style = {{
                         cursor: "pointer",
@@ -243,6 +247,11 @@ class NetworkVisualizer3D extends React.Component{
                             color = "primary"
                             icon={save}/>
                     </IonButton>
+                    <div className = "dropdown-content" style = {{top: -85}}>
+                        <a className = "aFile" onClick = {() => this.saveAs("csv")}>.csv</a>
+                        <a className = "aFile" onClick = {() => this.saveAs("png")}>.png</a>
+                        <a className = "aFile" onClick = {() => this.saveAs("jpg")}>.jpg</a>
+                    </div>
                 </div>
                 <div
                     title = "Reset camera to default"

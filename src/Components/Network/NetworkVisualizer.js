@@ -175,9 +175,26 @@ class NetworkVisualizer extends React.Component{
         this.setState({offsetX:0,offsetY:0, scale: 1, mouseX: this.state.width/2, mouseY:this.state.height/2})
     }
 
-    getAnimations(){
-        const e = new SpringEmbedding()
-        e.getAnimations(this.networ)
+    /**
+     * Saves the network as a file
+     * @param type string: the extension type to save the file as
+     */
+    saveAs(type){
+        var link = document.createElement("a");
+        link.download = "Network." + type;
+        document.body.appendChild(link);
+
+        if(type === "csv"){
+            alert("csv format networks download is not fully supported yet")
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Nothing here yet";
+            link.href = csvContent;
+        } else{
+            const canvas = this.network.current;
+            link.href = canvas.toDataURL("network/"+type);
+        }
+        link.click();
+        document.body.removeChild(link)
     }
 
     render() {
@@ -190,7 +207,7 @@ class NetworkVisualizer extends React.Component{
                         onMouseMove = {(e) => this.updateCamera(e)}
                         onWheel = {(e) => this.zoomCamera(e)}
                 />
-                <div
+                <div className = "dropdown"
                     title = "Save as"
                     style = {{
                     cursor: "pointer",
@@ -208,6 +225,11 @@ class NetworkVisualizer extends React.Component{
                         color = "primary"
                         icon={save}/>
                     </IonButton>
+                    <div className = "dropdown-content" style = {{top: -85}}>
+                        <a className = "aFile" onClick = {() => this.saveAs("csv")}>.csv</a>
+                        <a className = "aFile" onClick = {() => this.saveAs("png")}>.png</a>
+                        <a className = "aFile" onClick = {() => this.saveAs("jpg")}>.jpg</a>
+                    </div>
                 </div>
                 <div
                     title = "Reset camera to default"
@@ -231,6 +253,7 @@ class NetworkVisualizer extends React.Component{
                     </IonIcon>
                     </IonButton>
                 </div>
+
             </div>
         )
     }
