@@ -1,5 +1,5 @@
 import React from "react";
-import {IonCheckbox, IonItem, IonLabel, IonRange} from "@ionic/react";
+import {IonCheckbox, IonItem, IonLabel} from "@ionic/react";
 
 class SettingCheckbox extends React.Component{
     constructor(props){

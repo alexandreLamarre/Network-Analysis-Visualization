@@ -1,5 +1,5 @@
 import React from "react";
-import {IonItem, IonLabel, IonRange} from "@ionic/react";
+import {IonItem} from "@ionic/react";
 
 class SettingRange extends React.Component{
     constructor(props){
@@ -8,8 +8,6 @@ class SettingRange extends React.Component{
             value : this.props.settings.value
         }
         this.settings = this.props.settings
-        console.log(this.settings)
-        console.log("STEP", this.settings.step)
     }
 
     setSettingsValue(v){

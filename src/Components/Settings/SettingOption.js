@@ -1,5 +1,5 @@
 import React from "react";
-import {IonItem, IonLabel, IonRange} from "@ionic/react";
+import {IonItem, IonLabel} from "@ionic/react";
 
 class SettingOption extends React.Component{
     constructor(props){

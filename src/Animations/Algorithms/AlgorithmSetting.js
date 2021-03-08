@@ -1,8 +1,8 @@
 import React from "react"
-import {IonRange, IonItem, IonLabel, IonCheckbox} from "@ionic/react"
-import SettingOption from "../../Components/Settings/SettingOption";
-import SettingRange from "../../Components/Settings/SettingRange";
-import SettingCheckbox from "../../Components/Settings/SettingCheckbox";
+import {SettingOption, SettingCheckbox,
+    SettingRange, SettingColor} from "../../Components/Settings"
+
+
 /**
  * Setting represents a setting on an algorithm
  */
@@ -18,7 +18,7 @@ class AlgorithmSettingObject{
      * @param max maximum value of the range of values
      * @param step the increment the user can change the value by
      * @param value is the initial value of the setting
-     * @returns {Setting}
+     * @returns {AlgorithmSettingObject}
      */
     static newRangeSetting(name, min, max, step, value){
 
@@ -37,6 +37,7 @@ class AlgorithmSettingObject{
      * @param name the name string of the new setting
      * @param options the array of string options
      * @param value the value string of options
+     * @returns {AlgorithmSettingObject}
      */
     static newOptionSetting(name, options, value){
         if (!validParameter(name) || !validParameter(options)){
@@ -56,9 +57,9 @@ class AlgorithmSettingObject{
 
     /**
      * Creates a new setting that generates a binary setting in the form of a checkbox
-     * @param name
-     * @param value
-     * @returns {Setting}
+     * @param name name of the checkbox
+     * @param value default value of the checkbox
+     * @returns {AlgorithmSettingObject}
      */
     static newCheckBoxSetting(name, value){
         if (!validParameter(name)){
@@ -67,6 +68,22 @@ class AlgorithmSettingObject{
         if (!validParameter(value)) value = false
 
         var s = {type: "checkbox", name: name, value: value}
+        return new AlgorithmSettingObject(s)
+    }
+
+    /**
+     * Creates a new color picker setting
+     * @param name the name of the color picker
+     * @param value the initial color string value of the color setting, must be in hex color string format
+     * @returns {AlgorithmSettingObject}
+     */
+    static newColorSetting(name, value){
+        if(!validParameter(name)){
+            throw new Error("Name provided to new Color setting is not valid")
+        }
+
+        if (!validParameter(value)) value = "#ff00ff"
+        var s = {type: "color", name : name, value: value}
         return new AlgorithmSettingObject(s)
     }
 
@@ -98,6 +115,13 @@ class AlgorithmSettingObject{
                    settings = {this.obj}
                />
                )
+       }
+       if (this.obj.type === "color"){
+           return(
+               <SettingColor
+                   key = {key}
+                   settings = {this.obj}/>
+           )
        }
     }
 }
