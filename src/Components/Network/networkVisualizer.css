@@ -1,0 +1,4 @@
+.no-ripple{
+    --ripple-color: transparent;
+    --background-hover: none;
+}

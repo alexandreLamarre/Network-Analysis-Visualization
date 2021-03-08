@@ -3,6 +3,10 @@ import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
 import Network from "./Network";
 
+import {IonButton, IonIcon} from "@ionic/react";
+import {cameraReverse, save} from "ionicons/icons";
+
+import "./networkVisualizer.css";
 
 
 class NetworkVisualizer3D extends React.Component{
@@ -206,6 +210,14 @@ class NetworkVisualizer3D extends React.Component{
 
     }
 
+    resetCamera(){
+        const h = Math.max(window.innerHeight *this.heightConstant, this.minheight)
+        const w = window.innerWidth  * this.widthConstant
+        this.camera.position.set(w/2, h/2, 1.7*h)
+        this.controls.target.set( w/2, h/2, h/2);
+        this.controls.update()
+    }
+
     render() {
         return (
             <div>
@@ -213,6 +225,47 @@ class NetworkVisualizer3D extends React.Component{
                         style = {{outline: "1px solid blue",
                         backgroundColor: "black"
                         }}/>
+                <div
+                    title = "Save as"
+                    style = {{
+                        cursor: "pointer",
+                        width: 10,
+                        height: 10,
+                        position: "absolute",
+                        top:this.state.height -36,
+                        left: this.state.width-47}}>
+                    <IonButton
+                        class = "no-ripple"
+                        fill = "clear">
+                        <IonIcon
+                            title = {false}
+                            size = "large"
+                            color = "primary"
+                            icon={save}/>
+                    </IonButton>
+                </div>
+                <div
+                    title = "Reset camera to default"
+                    style = {{
+                        cursor: "pointer",
+                        width: 10,
+                        height: 10,
+                        position: "absolute",
+                        top:this.state.height -36,
+                        left: this.state.width-85,
+                    }}>
+                    <IonButton fill = "clear"
+                               class = "no-ripple"
+                               onClick = {() => this.resetCamera()}
+                    >
+                        <IonIcon
+                            size = "large"
+                            title = {false}
+                            color = "primary"
+                            icon = {cameraReverse}>
+                        </IonIcon>
+                    </IonButton>
+                </div>
             </div>
         )
     }
