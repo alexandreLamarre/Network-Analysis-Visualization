@@ -60,10 +60,11 @@ class App extends React.Component{
       filter: "",
       invalidAlgorithm: false,
       invalidAlgorithmInfo: {},
+      fps: 60,
     }
     this.networkSettings = new NetworkSettings()
     this.networkData = new Network(this.networkSettings, false)
-
+    this.maxTimeout = 0;
     this.networkSettingsRef = React.createRef()
     this.algorithmSettingsRef = React.createRef()
   }
@@ -84,23 +85,32 @@ class App extends React.Component{
       networkSettingsHTML : networkSettingsHTML,
       algorithmSettingsHTML: algorithmSettingsHTML,
       algorithmSelectHTML: algorithmSelectHTML,
-      activeAlgorithm: ANIMATOR.activeAlgorithm
+      activeAlgorithm: ANIMATOR.activeAlgorithm,
     });
+  }
+
+  componentWillUnmount() {
+    while(this.maxTimeout >= 0){
+      clearTimeout(this.maxTimeout);
+      this.maxTimeout --;
+    }
   }
 
   animate(){
     if(this.state.running){
-      if(this.state.currentStep === this.state.animations.length -1){
-        this.setState({running:false})
-      }
+      this.maxTimeout = setTimeout(() => {
+        if(this.state.currentStep === this.state.animations.length -1){
+          this.setState({running:false})
+        }
 
-      const stepsPerformed = ANIMATOR.nextAnimationSteps(
-          this.networkData,
-          this.state.animations,
-          this.state.currentStep,
-          1)
-      this.setState({currentStep: this.state.currentStep + stepsPerformed})
-      window.requestAnimationFrame(() => this.animate())
+        const stepsPerformed = ANIMATOR.nextAnimationSteps(
+            this.networkData,
+            this.state.animations,
+            this.state.currentStep,
+            1)
+        this.setState({currentStep: this.state.currentStep + stepsPerformed})
+        window.requestAnimationFrame(() => this.animate())
+      }, parseInt(1000/ this.state.fps));
     }
   }
 
@@ -185,6 +195,10 @@ class App extends React.Component{
     this.setState({filter: v})
   }
 
+  setFPS(v){
+    this.setState({fps: parseInt(v)})
+  }
+
   render() {
     return (
         <Router>
@@ -256,8 +270,9 @@ class App extends React.Component{
 
                       <br className = "noSelectText"/>
                       <div className = "animationControls" hidden = {this.state.loading}>
+
                       <div style = {{display: "flex", justifyContent:"center",
-                        alignItems:"center", alignContent:"center", backgroundColor: "rgb(255,245,245)"}}>
+                        alignItems:"center", alignContent:"center", backgroundColor: "#f4f5f8"}}>
                         <IonButton expand = "block" fill = "clear" color = "medium"
                                    onClick = {() => this.performAnimationStep(-this.state.animations.length)}>
                           <IonIcon
@@ -296,7 +311,7 @@ class App extends React.Component{
                       </div>
 
 
-                      <IonItem lines = "none" color = "light">
+                      <IonItem lines = "none" color = "medium">
                       <input type = "range"
                           style = {{color: "rgb(63,111,255)", cursor: "grab", width: "100%"}}
                           min = "0"
@@ -305,6 +320,16 @@ class App extends React.Component{
                           onChange = {(e) => this.setSpecificAnimationFrame(e.target.value)}
                       />
                       </IonItem>
+                        <div style = {{display: "flex", flexDirection: "row", alignContent: "center", backgroundColor: "#f4f5f8"}}>
+                        <p style = {{textAlign: "center", marginLeft: "5%"}}> FPS Cap: {this.state.fps}</p>
+                        <input type = "range"
+                               style = {{marginLeft: "5%", marginRight: "5%", color: "rgb(63,111,255)", cursor: "grab", width: "100%"}}
+                               min = "10"
+                               max = "60"
+                               step = "1"
+                               value = {this.state.fps}
+                               onChange = {(e) => this.setFPS(e.target.value)}/>
+                      </div>
                       </div>
 
                     </div>}
