@@ -8,9 +8,9 @@ class AlgorithmList extends React.Component{
         super(props)
         this.algorithms = this.props.algorithms
         this.animator = this.props.animator
-
+        console.log(this.animator.activeAlgorithm.name)
         this.state = {
-            activeAlgorithm: this.algorithms[0].name,
+            activeAlgorithm: this.animator.activeAlgorithm.name,
             width: 0,
         }
     }
@@ -46,10 +46,17 @@ class AlgorithmList extends React.Component{
                 <IonItem lines = "full">
                     <b style = {{cursor: "default", maxWidth: this.state.width*(0.75/10)}}
                         className = "noSelectText"> Select Algorithm </b>
-                    <select style = {{marginLeft: "10px", maxWidth: this.state.width*(1/10)}} onChange = {(e) => this.setOption(e.target.value)}>
-                        {this.algorithms.map((algorithm, index) => (
-                            <option value = {algorithm.name} key = {index}> {algorithm.name} </option>
-                        ))}
+                    <select
+                        value = {this.state.activeAlgorithm}
+                        style = {{
+                            marginLeft: "10px",
+                            maxWidth: this.state.width*(1/10)
+                        }}
+                        onChange = {(e) => this.setOption(e.target.value)}
+                    >
+                    {this.algorithms.map((algorithm, index) => (
+                        <option value = {algorithm.name} key = {index}> {algorithm.name} </option>
+                    ))}
                     </select>
 
                 </IonItem>

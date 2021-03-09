@@ -45,7 +45,19 @@ class SpringEmbedding extends AbstractLayoutAlgorithm{
             "Continuous"
             )
 
-        this.settings.push([this.forceOfAttraction,this.forceOfRepulsion,this.epsilon, this.distanceType])
+        this.iterations = AlgorithmSettingObject.newRangeSetting(
+            "Maximum Iterations",
+            100,
+            300,
+            1,
+            100)
+
+        this.settings.push([
+            this.forceOfAttraction,
+            this.forceOfRepulsion,
+            this.epsilon,
+            this.distanceType,
+            this.iterations])
 
         this.setRequiredProperty(null)
     }

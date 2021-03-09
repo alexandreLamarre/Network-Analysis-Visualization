@@ -34,8 +34,19 @@ class FruchtermanReingold extends AbstractLayoutAlgorithm{
             ["Linear", "Logarithmic", "Directional"],
             "Linear")
 
+        this.iterations = AlgorithmSettingObject.newRangeSetting(
+            "Maximum Iterations",
+            100,
+            300,
+            1,
+            100)
 
-        this.settings.push([this.epsilon, this.cTemp, this.tempHeuristic]);
+
+        this.settings.push([
+            this.epsilon,
+            this.cTemp,
+            this.tempHeuristic,
+            this.iterations]);
 
         this.setRequiredProperty(null)
 

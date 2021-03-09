@@ -45,10 +45,18 @@ class NetworkSettingsComponent extends React.Component{
         const properties = [];
         //here we set the default network type to General in case something
         //goes wrong in the declaration of the NetworkSettings Class
+        let lastActive = false
         for (const key in this.settings.properties){
-            if(this.settings.properties.hasOwnProperty(key))properties.push(key)
+            if(this.settings.properties.hasOwnProperty(key)){
+                properties.push(key)
+                if(this.settings.properties[key]){
+                    lastActive = key
+                }
+            }
         }
-        this.setState({properties: properties})
+
+
+        this.setState({properties: properties, activeProperty: lastActive})
     }
 
     /**
