@@ -49,11 +49,13 @@ class Opt2 extends AbstractTSPAlgorithm{
         const animations = [];
         const firstFrameAnimation = [];
         //set up intial cycle definitions & first animation
-        var path = [];
+        let path = [];
         const initialColors = [];
-        var betterSolution = false;
-        var root = edges[0].start;
+        const initialAlpha = [];
+        let betterSolution = false;
+        let root = edges[0].start;
         initialColors.push(edges[0].color)
+        initialAlpha.push(edges[0].alpha)
         firstFrameAnimation.push(edges[0].copyEdge())
         path.push(root)
         var I = -1;
@@ -62,6 +64,7 @@ class Opt2 extends AbstractTSPAlgorithm{
         for(let i = 1; i < edges.length; i++){
             path.push(edges[i].start);
             initialColors.push(edges[i].color);
+            initialAlpha.push(edges[i].alpha);
             firstFrameAnimation.push(edges[i].copyEdge())
         }
         path.push(root)
@@ -117,8 +120,10 @@ class Opt2 extends AbstractTSPAlgorithm{
                     newEdges.push(e);
                     if(i === I || i === K){
                         newEdges[i].color = this.selectedColor.obj.value
+                        newEdges[i].alpha = 0.5
                     } else{
                         newEdges[i].color = initialColors[i]
+                        newEdges[i].alpha = initialAlpha[i];
                     }
                 }
                 animations.push(newEdges)
