@@ -10,7 +10,7 @@ class Opt2 extends AbstractTSPAlgorithm{
             100,
             10000,
             1,
-            10000);
+            5025);
 
         this.simulations = AlgorithmSettingObject.newRangeSetting(
             "Attempts Per Iteration",

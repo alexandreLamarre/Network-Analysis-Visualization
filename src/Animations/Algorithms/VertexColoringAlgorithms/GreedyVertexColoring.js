@@ -9,7 +9,7 @@ class GreedyVertexColoring extends AbstractVertexColoringAlgorithm{
 
         this.gradientType = AlgorithmSettingObject.newOptionSetting(
             "Color Gradient Type",
-            ["Polar", "linear"],
+            ["Polar", "Linear"],
             "Polar")
 
         this.startColor = AlgorithmSettingObject.newColorSetting("Start Color", "#ff0000")
@@ -84,29 +84,6 @@ class GreedyVertexColoring extends AbstractVertexColoringAlgorithm{
             }
         }
         return res;
-    }
-
-    /**
-     * Creates a Network's adjacency matrix from its vertices and edges
-     * @param v vertices
-     * @param e edges
-     * @returns {Number[][]} the adjacency matrix of the network
-     */
-    createAdjacencyMatrix(v, e){
-        const adj = [];
-        for(let i = 0; i < v.length; i++){
-            const adj_row = [];
-            for(let j = 0; j < v.length; j++){
-                adj_row.push(0);
-            }
-            adj.push(adj_row);
-        }
-
-        for(let i = 0; i < e.length; i ++){
-            adj[e[i].start][e[i].end] = 1;
-            adj[e[i].end][e[i].start] = 1;
-        }
-        return adj;
     }
 
     getAvailableColors(assignedColors, neighbors, colors){

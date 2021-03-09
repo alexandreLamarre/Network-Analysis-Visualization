@@ -8,7 +8,6 @@ class AlgorithmList extends React.Component{
         super(props)
         this.algorithms = this.props.algorithms
         this.animator = this.props.animator
-        console.log(this.animator.activeAlgorithm.name)
         this.state = {
             activeAlgorithm: this.animator.activeAlgorithm.name,
             width: 0,
@@ -24,7 +23,6 @@ class AlgorithmList extends React.Component{
     setOption(v){
         for(let i = 0; i < this.algorithms.length; i++){
             if(this.algorithms[i].name === v){
-                console.log("algorithm found")
                 this.setState({
                     activeAlgorithm:  v,
                 });
