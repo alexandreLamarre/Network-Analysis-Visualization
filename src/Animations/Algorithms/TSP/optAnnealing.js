@@ -124,11 +124,8 @@ class Opt2Annealing extends AbstractTSPAlgorithm{
 
         for(let j = 0; j < this.iterations.obj.value; j++){
             //try and perform a swap that improves the below distance
-            let dist = this.calculateDistancePath(path, vertices, is3D)
-            let newPath = [];
             for(let n = 0; n < this.simulations.obj.value; n++){
-                newPath = [];
-                newPath.push(root);
+
 
                 var i = Math.floor(Math.random() *(path.length -2)) + 1;
                 var k = Math.floor(Math.random() * (path.length - 2)) + 1;
@@ -140,21 +137,29 @@ class Opt2Annealing extends AbstractTSPAlgorithm{
                     k = temp;
                 }
 
-                for(let m = 0; m < i; m ++){
-                    newPath.push(path[m+1]);
-                }
+                const [A, B, C, D] = [path[i], path[i+1], path[k], path[k+1]]
+                const v = vertices;
+                let dist = distance(v[A], v[B], is3D) + distance(v[C], v[D], is3D);
+                let newDist = distance(v[A], v[C], is3D) + distance(v[B], v[D], is3D);
 
-                for(let m = k- 1; m > i -1; m--){
-                    newPath.push(path[m+1]);
-                }
 
-                for(let m = k; m < path.length -1; m++){
-                    newPath.push(path[m+1])
-                }
 
-                var newDist = this.calculateDistancePath(newPath, vertices, is3D);
                 const accepted = Math.random()
                 if(newDist < dist || accepted < temperature* this.ACCEPTANCE) {
+                    let newPath = [];
+                    newPath.push(root);
+                    for(let m = 0; m < i; m ++){
+
+                        newPath.push(path[m+1]);
+                    }
+
+                    for(let m = k- 1; m > i -1; m--){
+                        newPath.push(path[m+1]);
+                    }
+
+                    for(let m = k; m < path.length -1; m++){
+                        newPath.push(path[m+1])
+                    }
                     dist = newDist
                     betterSolution = true;
                     path = newPath
@@ -168,8 +173,8 @@ class Opt2Annealing extends AbstractTSPAlgorithm{
                 const newEdges = [];
                 for(let i = 0; i < path.length - 1; i++){
                     const e = currentEdges[i].copyEdge();
-                    e.start = newPath[i];
-                    e.end = newPath[i+1];
+                    e.start = path[i];
+                    e.end = path[i+1];
                     newEdges.push(e);
                     if(i === I || i === K){
                         let degree = (this.initialTemperature.obj.value - temperature)/(this.initialTemperature.obj.value)
@@ -220,7 +225,7 @@ class Opt2Annealing extends AbstractTSPAlgorithm{
 
 function distance(v1, v2, is3D){
     let dist = 0;
-    if(!is3D) dist = Math.pow(v1.x-v2.x*100,2) + Math.pow(v1.y-v2.y, 2);
+    if(!is3D) dist = Math.pow(v1.x-v2.x,2) + Math.pow(v1.y-v2.y, 2);
     if(is3D) dist = Math.pow(v1.x-v2.x,2) + Math.pow(v1.y-v2.y, 2) + Math.pow(v1.z-v2.z,2);
     if(dist === 0) dist = 0.00000000000000000001;
     return dist

@@ -40,7 +40,10 @@ class Animator{
      * @param steps
      */
     nextAnimationSteps(network, animations, currentStep, steps) {
-        if(this.animations === []) throw new Error("No animations loaded")
+        if(this.animations === []) {
+            console.warn("No animations were loaded")
+            return;
+        }
         network.shouldUpdate = true
         return this.activeAlgorithm.nextAnimationSteps(network, animations,currentStep, steps)
     }

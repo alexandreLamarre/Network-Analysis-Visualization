@@ -23,7 +23,10 @@ class AbstractNetworkAlgorithm{
      * @param steps the number of steps to apply : > 0 means forward steps, < 0 means backwards steps
      */
     nextAnimationSteps(network, animations, currentStep, steps) {
-        if (animations.length === 0) throw new Error("No animations provided to abstract algorithms")
+        if (animations.length === 0) {
+            console.warn("No animations found");
+            return;
+        }
         const actualSteps = this.trimSteps(animations, currentStep, steps)
         this.applyAnimation(network, animations, currentStep, actualSteps)
         return actualSteps
