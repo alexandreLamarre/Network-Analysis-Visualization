@@ -30,9 +30,9 @@ class FruchtermanReingold extends AbstractLayoutAlgorithm{
         )
 
         this.tempHeuristic = AlgorithmSettingObject.newOptionSetting(
-            "Temperature Heuristic",
-            ["Linear", "Logarithmic", "Directional"],
-            "Linear")
+            "Temperature Cooling Heuristic",
+            ["Linear", "Exponential", "Directional"],
+            "Exponential")
 
         this.iterations = AlgorithmSettingObject.newRangeSetting(
             "Maximum Iterations",
@@ -159,7 +159,7 @@ class FruchtermanReingold extends AbstractLayoutAlgorithm{
         if(heuristic === "Linear"){
             return temperature - initial/iterations
         }
-        if(heuristic === "Logarithmic"){
+        if(heuristic === "Exponential"){
             return 0.90*temperature
         }
         if(heuristic === "Directinoal"){
