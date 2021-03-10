@@ -1,13 +1,19 @@
 import React from "react";
 
-import {IonRow, IonCol, IonItem, IonLabel} from "@ionic/react";
+import {IonRow, IonCol, IonItem, IonLabel, IonIcon} from "@ionic/react";
 import {Route} from "react-router-dom";
 import {Nav2D, Nav3D, NavCustom} from "./index";
+import {logoOctocat} from "ionicons/icons";
 
 class NavBar extends React.Component{
-    constructor(props){
-        super(props)
+
+    openDocumentation(){
+        const el = document.createElement("a");
+        el.href = "https://github.com/alexandreLamarre/Network-Analysis-Visualization"
+        el.target = "_blank"
+        el.click();
     }
+
     render(){
 
         return (
@@ -30,7 +36,10 @@ class NavBar extends React.Component{
                     <Route path = "/Network-Analysis-Visualization/custom" render = {() => <NavCustom selected = {true}/>}/>
                 </IonCol>
                 <IonCol size = "3" >
-                    <IonItem> <IonLabel> Network Settings </IonLabel> </IonItem>
+                    <IonItem style = {{cursor: "pointer"}} onClick = {() => this.openDocumentation()}>
+                        <IonIcon icon={ logoOctocat}/>
+                        <IonLabel style = {{marginLeft: "5%"}}> Documentation </IonLabel>
+                    </IonItem>
                 </IonCol>
             </IonRow>
         )
