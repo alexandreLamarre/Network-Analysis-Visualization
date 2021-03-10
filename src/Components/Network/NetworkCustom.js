@@ -19,7 +19,7 @@ class NetworkCustom extends React.Component{
             startDragVertex: null, // for edge tool
             dragging: false,
             selectBox: null,
-            selectBoxDrag: false,
+            selectedVertices : [],
         }
         this.heightConstant= 8.5/10
         this.widthConstant = 7/10
@@ -62,13 +62,28 @@ class NetworkCustom extends React.Component{
         //console.log(this.state.offsetX, this.state.offsetY)
         ctx.save();
         ctx.translate(this.state.offsetX, this.state.offsetY)//translate by the offsets
-        ctx.scale(this.state.scale, this.state.scale)
+        ctx.scale(this.state.scale, this.state.scale);
+
+        for(let i = 0; i < this.state.selectedVertices.length; i++){
+            const s = this.state.selectedVertices[i];
+            const v = this.boundingBoxes[s].vertex
+            ctx.globalAlpha = 1.0
+            ctx.beginPath()
+
+            ctx.fillStyle = "rgb(0, 255, 0)"
+            ctx.arc(v.x*w ,
+                v.y*h,
+                v.size + 5, 0, Math.PI*2)
+            ctx.fill();
+            ctx.closePath()
+        }
+
+
         for(let i = 0; i < this.boundingBoxes.length; i++){
             const v = this.boundingBoxes[i].vertex
             ctx.globalAlpha = 1.0
             ctx.beginPath()
-            const color = v.color
-            ctx.fillStyle = color
+            ctx.fillStyle = v.color
             ctx.arc(v.x*w ,
                 v.y*h,
                 v.size, 0, Math.PI*2)
@@ -88,9 +103,31 @@ class NetworkCustom extends React.Component{
             ctx.stroke();
             ctx.closePath();
         }
+
+        if(this.state.selectBox !== null){
+            const sx = this.state.selectBox.startX;
+            const sy = this.state.selectBox.startY;
+            const ex = this.state.selectBox.endX;
+            const ey = this.state.selectBox.endY;
+            ctx.save();
+
+            ctx.beginPath();
+            ctx.setLineDash([5,15]);
+            ctx.globalAlpha = 1
+            ctx.rect(
+                sx * w,
+                sy * h,
+                (ex-sx) * w ,
+                (ey-sy) * h);
+            ctx.stroke();
+            ctx.closePath();
+            ctx.restore();
+        }
         ctx.scale(1/this.state.scale, 1/this.state.scale) //scale by zoom
         ctx.translate(-this.state.offsetX, -this.state.offsetY) //untranslate by the offsets
         ctx.restore();
+
+
     }
 
     drawTools(){
@@ -116,7 +153,7 @@ class NetworkCustom extends React.Component{
                 ctx.restore();
             }
 
-        } else if(this.state.drawTool === "select"){
+        } else if(this.state.drawTool === "select" && this.state.selectBox === null){
             const ctx = this.network.current.getContext("2d");
             const sx = this.state.startDragX;
             const sy = this.state.startDragY;
@@ -130,6 +167,7 @@ class NetworkCustom extends React.Component{
             ctx.closePath();
             ctx.restore();
         }
+
     }
 
     /**
@@ -137,6 +175,8 @@ class NetworkCustom extends React.Component{
      * @param e mouse event
      */
     processDownOutcome(e){
+        this.checkRemoveSelectedBox();
+
         const rect = this.network.current.getBoundingClientRect();
         const x = e.clientX; const y = e.clientY;
         const canvasX = x - rect.left;
@@ -159,7 +199,39 @@ class NetworkCustom extends React.Component{
     }
 
     processDrag(){
-        if(this.state.drawTool === "edge"){
+        if(this.state.selectBox !== null && this.state.drawTool === "select"){
+            //we should move the select box and its contents if it is selected with the mouse
+            const coords1 = this.canvasSpaceToObjectSpace(
+                this.state.startDragX,
+                this.state.startDragY,
+                this.state.width,
+                this.state.height)
+            const coords2 = this.canvasSpaceToObjectSpace(
+                this.state.currentDragX,
+                this.state.currentDragY,
+                this.state.width,
+                this.state.height
+            )
+
+            const sx = coords1.x; const sy = coords1.y;
+            const cx = coords2.x; const cy = coords2.y;
+            if(sx > this.state.selectBox.startX
+                && sx <this.state.selectBox.endX
+                && sy > this.state.selectBox.startY
+                && sy < this.state.selectBox.endY){
+
+                const deltaX = cx - sx
+                const deltaY = cy - sy
+                this.updateSelectedCoords(deltaX, deltaY);
+                // this.updateSelectedCoordsVertices();
+                this.setState({
+                    startDragX: this.state.currentDragX,
+                    startDragY : this.state.currentDragY
+                });
+            } else{
+                this.removeSelectedVertices();
+            }
+        }else if(this.state.drawTool === "edge"){
             console.log("processing edge")
             const vertex = this.nearbyVertexExists(
                 this.state.currentDragX,
@@ -179,8 +251,6 @@ class NetworkCustom extends React.Component{
                     startDragY : this.state.currentDragY,
                 })
             }
-        } else if (this.state.drawTool === "select"){
-            console.log("processing select")
         } else if(this.state.drawTool === "move"){
             console.log(this.state.startDragX, this.state.startDragY)
             const deltaX = this.state.startDragX - this.state.currentDragX;
@@ -199,6 +269,32 @@ class NetworkCustom extends React.Component{
 
     processDragOutcome(){
         console.log("mouse up")
+        if(this.state.drawTool === "select" && this.state.selectBox === null
+            && this.state.currentDragX !== this.state.startDragX
+            && this.state.currentDragY !== this.state.startDragY){
+            const coords1 = this.canvasSpaceToObjectSpace(
+                this.state.startDragX,
+                this.state.startDragY,
+                this.state.width,
+                this.state.height);
+            const coords2 = this.canvasSpaceToObjectSpace(
+                this.state.currentDragX,
+                this.state.currentDragY,
+                this.state.width,
+                this.state.height
+            )
+            const x1 = coords1.x; const x2 = coords2.x;
+            const y1 = coords1.y; const y2 = coords2.y;
+            const selectBox = {
+                startX:  Math.min(x1, x2),
+                startY: Math.min(y1, y2),
+                endX : Math.max(x1, x2),
+                endY: Math.max(y1, y2)}
+
+            this.selectVerticesFromBox(selectBox);
+            this.setState({
+                selectBox: selectBox});
+            }
         this.clearDragging()
     }
 
@@ -259,6 +355,69 @@ class NetworkCustom extends React.Component{
         this.edges.push(e)
     }
 
+    /**
+     * Updates the selected vertices upon creation of a select box
+     * @param box
+     * @returns {[]}
+     */
+    selectVerticesFromBox(box){
+        const selectedVertices = [];
+        for(let i = 0; i < this.boundingBoxes.length; i++){
+            const v = this.boundingBoxes[i].vertex;
+            if(v.x < box.endX && v.x > box.startX && v.y < box.endY && v.y > box.startY){
+                selectedVertices.push(i)
+            }
+        }
+        console.log("SELECTED VERTICES", selectedVertices)
+
+        this.setState({selectedVertices: selectedVertices})
+    }
+
+
+    /**
+     * Updates the coordinates of the select box
+     * and all of its dependant selected vertices by the specified amounts
+     * @param deltaX the amount to move in the X direction in object space
+     * @param deltaY the amount to move in the Y direction in object space
+     */
+    updateSelectedCoords(deltaX, deltaY){
+        const selectBox = this.state.selectBox;
+
+        selectBox.startX += deltaX
+        selectBox.startY += deltaY;
+        selectBox.endX += deltaX;
+        selectBox.endY += deltaY;
+        const selectedVertices = this.state.selectedVertices
+        for(let i = 0; i < selectedVertices.length; i++){
+            const s = selectedVertices[i];
+            const v = this.boundingBoxes[s].vertex;
+            v.x += deltaX;
+            v.y += deltaY;
+            const b = this.boundingBoxes[s].box;
+            b.maxX += deltaX;
+            b.minX += deltaX;
+            b.minY += deltaY;
+            b.maxY += deltaY;
+        }
+
+        this.setState({selectBox: selectBox})
+    }
+
+    /**
+     * Checks to see if we should remove the selected box if it exists
+     */
+    checkRemoveSelectedBox(){
+        if(this.state.drawTool !== "move" && this.state.drawTool !== "select" && this.state.selectBox !== null){
+            this.removeSelectedVertices();
+        }
+    }
+
+    /**
+     * Resets the selected vertices
+     */
+    removeSelectedVertices(){
+        this.setState({selectBox: null, selectedVertices: []})
+    }
 
     /**
      * Helper method to check whether or not there is a vertices near the selected canvas coords
