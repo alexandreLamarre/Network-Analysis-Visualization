@@ -61,6 +61,7 @@ class App extends React.Component{
       invalidAlgorithm: false,
       invalidAlgorithmInfo: {},
       fps: 60,
+      custom: false,
     }
     this.networkSettings = new NetworkSettings()
     this.networkData = new Network(this.networkSettings, false)
@@ -247,7 +248,9 @@ class App extends React.Component{
 
                       </IonItem>
                       <IonItem lines = "full">
-                        <IonButton style = {{margin:"auto"}} onClick = {() => this.getAnimation()}> Animate </IonButton>
+                        <IonButton
+                            disabled = {this.state.custom}
+                            style = {{margin:"auto"}} onClick = {() => this.getAnimation()}> Animate </IonButton>
                       </IonItem>
                       <div
                           hidden = {!this.state.invalidAlgorithm}
