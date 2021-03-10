@@ -9,13 +9,22 @@ class Vertex {
     this.color = "rgb(0,255,255)";
   }
 
-  add(other){
-    this.x += other.x;
-    this.y += other.y;
-    if(this.z !== null) this.z += other.z;
+  /**
+   * Returns a copied vertex that has the coords object added to it
+   * @param coords an object with x,y,z property are numbers
+   */
+  add(coords){
+    if(!coords.hasOwnProperty("x"))throw new Error("coords argument must have an 'x' property to add it to a vertex")
+    if(!coords.hasOwnProperty("y")) throw new Error("coords argument must have an 'y' property to add it to a vertex")
+    if(!coords.hasOwnProperty("z")) throw new Error("coords argument must have a 'z' property to add it to a vertex")
+    const v = this.copyVertex()
+    v.x += coords.x
+    v.y += coords.y
+    if(v.z !== null && coords.z !== null) v.z += coords.z
+    return v
   }
 
-  /*In case we need to set specific coordinates, but we shouldn't have to */
+
 
   setX(x){
     this.x = x;
@@ -49,13 +58,17 @@ class Vertex {
     }
   }
 
-  copy_vertex(){
+  copyVertex(){
     const v = new Vertex(this.x, this.y, this.z);
-    v.color = this.color;
-    v.degree = this.degree;
-    v.size = this.size;
+    for(const key in this){
+      if(this.hasOwnProperty(key)){
+        v[key] = this[key]
+      }
+    }
     return v;
   }
+
+
 
   toCSV(){
     var row = "vertex,";
