@@ -200,7 +200,7 @@ class NetworkVisualizer extends React.Component{
     render() {
         return (
             <div>
-                <canvas ref = {this.network} style = {{outline: "1px solid black"}}
+                <canvas ref = {this.network} style = {{backgroundColor: "rgba(255,255,255,0.5)", outline: "1px solid blue"}}
                         onMouseLeave = {(e) => this.setDrag(e,false)}
                         onMouseDown = {(e) => this.setDrag(e,true)}
                         onMouseUp = {(e) => this.setDrag(e,false)}

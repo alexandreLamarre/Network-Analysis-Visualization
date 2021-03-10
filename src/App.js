@@ -272,7 +272,7 @@ class App extends React.Component{
                       <div className = "animationControls" hidden = {this.state.loading}>
 
                       <div style = {{display: "flex", justifyContent:"center",
-                        alignItems:"center", alignContent:"center", backgroundColor: "#f4f5f8"}}>
+                        alignItems:"center", alignContent:"center"}}>
                         <IonButton expand = "block" fill = "clear" color = "medium"
                                    onClick = {() => this.performAnimationStep(-this.state.animations.length)}>
                           <IonIcon
@@ -311,7 +311,7 @@ class App extends React.Component{
                       </div>
 
 
-                      <IonItem lines = "none" color = "medium">
+                      <IonItem lines = "none" color = "light">
                       <input type = "range"
                           style = {{color: "rgb(63,111,255)", cursor: "grab", width: "100%"}}
                           min = "0"
@@ -320,16 +320,17 @@ class App extends React.Component{
                           onChange = {(e) => this.setSpecificAnimationFrame(e.target.value)}
                       />
                       </IonItem>
-                        <div style = {{display: "flex", flexDirection: "row", alignContent: "center", backgroundColor: "#f4f5f8"}}>
-                        <p style = {{textAlign: "center", marginLeft: "5%"}}> FPS Cap: {this.state.fps}</p>
-                        <input type = "range"
-                               style = {{marginLeft: "5%", marginRight: "5%", color: "rgb(63,111,255)", cursor: "grab", width: "100%"}}
-                               min = "10"
-                               max = "60"
-                               step = "1"
-                               value = {this.state.fps}
-                               onChange = {(e) => this.setFPS(e.target.value)}/>
-                      </div>
+                          <div style = {{display: "flex", flexDirection: "row", alignContent: "center"}}>
+                          <p style = {{textAlign: "center", marginLeft: "5%"}}> FPS Cap: {this.state.fps}</p>
+                          <input type = "range"
+                                 style = {{marginLeft: "5%", marginRight: "5%", color: "rgb(63,111,255)", cursor: "grab", width: "100%"}}
+                                 min = "10"
+                                 max = "60"
+                                 step = "1"
+                                 value = {this.state.fps}
+                                 onChange = {(e) => this.setFPS(e.target.value)}/>
+                        </div>
+
                       </div>
 
                     </div>}

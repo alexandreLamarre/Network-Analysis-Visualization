@@ -47,13 +47,14 @@ class AlgorithmList extends React.Component{
                     <select
                         value = {this.state.activeAlgorithm}
                         style = {{
+                            color: "blue",
                             marginLeft: "10px",
                             maxWidth: this.state.width*(1/10)
                         }}
                         onChange = {(e) => this.setOption(e.target.value)}
                     >
                     {this.algorithms.map((algorithm, index) => (
-                        <option value = {algorithm.name} key = {index}> {algorithm.name} </option>
+                        <option style = {{color: "blue"}}value = {algorithm.name} key = {index}> {algorithm.name} </option>
                     ))}
                     </select>
 

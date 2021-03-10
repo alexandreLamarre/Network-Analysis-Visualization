@@ -1,12 +1,28 @@
 import React from "react";
 
-import {IonRow, IonCol, IonItem, IonLabel, IonIcon} from "@ionic/react";
+import {IonRow, IonCol, IonItem, IonLabel, IonIcon, IonToggle} from "@ionic/react";
 import {Route} from "react-router-dom";
 import {Nav2D, Nav3D, NavCustom} from "./index";
-import {logoOctocat} from "ionicons/icons";
+import {logoOctocat, moon} from "ionicons/icons";
+
+
+import "./darkmode.css";
+
+
 
 class NavBar extends React.Component{
 
+    /**
+     * Toggles the ionic color theme between light and dark
+     * @param e toggle event
+     */
+    setDarkMode(e){
+        document.body.classList.toggle('dark', e.detail.checked)
+    }
+
+    /**
+     * Creates a proxy a tag to click to redirect in a new tab to the documentation of the project
+     */
     openDocumentation(){
         const el = document.createElement("a");
         el.href = "https://github.com/alexandreLamarre/Network-Analysis-Visualization"
@@ -36,9 +52,14 @@ class NavBar extends React.Component{
                     <Route path = "/Network-Analysis-Visualization/custom" render = {() => <NavCustom selected = {true}/>}/>
                 </IonCol>
                 <IonCol size = "3" >
-                    <IonItem style = {{cursor: "pointer"}} onClick = {() => this.openDocumentation()}>
-                        <IonIcon icon={ logoOctocat}/>
-                        <IonLabel style = {{marginLeft: "5%"}}> Documentation </IonLabel>
+                    <IonItem  >
+                        <IonIcon style = {{cursor: "pointer"}}
+                                 onClick = {() => this.openDocumentation()} icon={ logoOctocat}/>
+                        <IonLabel style = {{cursor: "pointer",marginLeft: "5%"}}
+                                  onClick = {() => this.openDocumentation()}>
+                            Documentation </IonLabel>
+                        <IonToggle onIonChange = {(e) => this.setDarkMode(e)}/>
+                        <IonIcon icon = {moon}/>
                     </IonItem>
                 </IonCol>
             </IonRow>

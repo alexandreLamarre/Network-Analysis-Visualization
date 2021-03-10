@@ -22,10 +22,11 @@ class SettingOption extends React.Component{
                     {this.settings.name}
                 </IonLabel>
                 <select
+                    style = {{color: "blue"}}
                     value = {this.settings.value}
                     onChange = {(e) => this.setOption(e.target.value)}>
                     {this.settings.options.map((opt, index) => (
-                        <option key = {index} value = {opt}> {opt} </option>
+                        <option style = {{color: "blue"}} key = {index} value = {opt}> {opt} </option>
                     ))}
                 </select>
 
