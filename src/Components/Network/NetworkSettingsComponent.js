@@ -260,6 +260,7 @@ class NetworkSettingsComponent extends React.Component{
                 <IonItem lines = "full" color = "medium">
                     <p> Dynamic Sizing </p>
                     <IonCheckbox style = {{marginLeft: "5%"}}
+                                 checked = {this.state.scaleVertices}
                                  onIonChange = {() => this.setScalingVertex()}
                     > </IonCheckbox>
                 </IonItem>
@@ -285,11 +286,14 @@ class NetworkSettingsComponent extends React.Component{
                     <p> Apply Vertex Color Gradient </p>
                     <IonCheckbox
                         onIonChange = {(e) => {this.setApplyColorGradient("vertex")}}
+                        checked = {this.state.applyColorGradientVertex}
                         style = {{marginLeft: "5%"}}> </IonCheckbox>
                 </IonItem>
                 <IonItem lines = "full" color = "medium">
                     <p> Apply Edge Color Gradient </p>
                     <IonCheckbox
+                        checked = {this.state.applyColorGradientEdge}
+                        checked = {this.state.applyColorGradientEdge}
                         onIonChange = {(e) => {this.setApplyColorGradient("edge")}}
                         style = {{marginLeft: "5%"}}> </IonCheckbox>
                 </IonItem>
