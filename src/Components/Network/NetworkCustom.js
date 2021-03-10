@@ -1,5 +1,6 @@
 import React from "react";
 import Vertex from "../../datatypes/Vertex";
+import Edge from "../../datatypes/Edge";
 
 class NetworkCustom extends React.Component{
     constructor(props){
@@ -15,7 +16,10 @@ class NetworkCustom extends React.Component{
             startDragY : null,
             currentDragX: null,
             currentDragY: null,
-            dragging: false
+            startDragVertex: null, // for edge tool
+            dragging: false,
+            selectBox: null,
+            selectBoxDrag: false,
         }
         this.heightConstant= 8.5/10
         this.widthConstant = 7/10
@@ -46,6 +50,7 @@ class NetworkCustom extends React.Component{
     animate(){
         if(this.state.dragging) this.processDrag()
         this.drawNetwork()
+        if(this.state.dragging) this.drawTools() //some tools leave marks as they are being operated
         this.maxFrame = window.requestAnimationFrame(() => this.animate())
     }
 
@@ -55,6 +60,7 @@ class NetworkCustom extends React.Component{
         const w = this.state.width;
         const h = this.state.height;
         //console.log(this.state.offsetX, this.state.offsetY)
+        ctx.save();
         ctx.translate(this.state.offsetX, this.state.offsetY)//translate by the offsets
         ctx.scale(this.state.scale, this.state.scale)
         for(let i = 0; i < this.boundingBoxes.length; i++){
@@ -74,16 +80,56 @@ class NetworkCustom extends React.Component{
             const index1 = this.edges[j].start;
             const index2 = this.edges[j].end;
             ctx.moveTo(this.boundingBoxes[index1].vertex.x * w ,
-                this.boundingBox[index1].vertex.y * h )
-            ctx.lineTo(this.boundingBox[index2].vertex.x * w ,
-                this.boundingBox[index2].vertex.y * h)
+                this.boundingBoxes[index1].vertex.y * h )
+            ctx.lineTo(this.boundingBoxes[index2].vertex.x * w ,
+                this.boundingBoxes[index2].vertex.y * h)
             ctx.globalAlpha = this.edges[j].alpha
-            ctx.strokeStyle = this.applyEdgeColorGradient(this.boundingBox,this.edges[j], ctx, w, h)
+            ctx.strokeStyle = this.edges[j].color;
             ctx.stroke();
             ctx.closePath();
         }
         ctx.scale(1/this.state.scale, 1/this.state.scale) //scale by zoom
         ctx.translate(-this.state.offsetX, -this.state.offsetY) //untranslate by the offsets
+        ctx.restore();
+    }
+
+    drawTools(){
+        if(this.state.drawTool === "edge"){
+            const v = this.state.startDragVertex
+            if(v !== null){
+                const coords = this.objectSpaceToCanvasSpace(
+                    this.boundingBoxes[v].vertex.x,
+                    this.boundingBoxes[v].vertex.y,
+                    this.state.width,
+                    this.state.height,
+                )
+                const x = coords.x
+                const y = coords.y
+                const ctx = this.network.current.getContext("2d");
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.setLineDash([5,15])
+                ctx.lineTo(this.state.currentDragX, this.state.currentDragY);
+                ctx.stroke();
+                ctx.closePath();
+                ctx.restore();
+            }
+
+        } else if(this.state.drawTool === "select"){
+            const ctx = this.network.current.getContext("2d");
+            const sx = this.state.startDragX;
+            const sy = this.state.startDragY;
+            const ex = this.state.currentDragX;
+            const ey = this.state.currentDragY;
+            ctx.save();
+            ctx.beginPath();
+            ctx.setLineDash([5,15]);
+            ctx.rect(sx,sy,ex-sx,ey - sy)
+            ctx.stroke();
+            ctx.closePath();
+            ctx.restore();
+        }
     }
 
     /**
@@ -102,18 +148,40 @@ class NetworkCustom extends React.Component{
             this.createVertex(canvasX, canvasY, w, h);
         } else if (this.state.drawTool === "edge"
             || this.state.drawTool === "select"
-            || this.state.drawTool === "shit") {
-            console.log(this.state.drawTool)
-            this.setState({dragging: true, startDragX: canvasX, startDragY: canvasY});
+            || this.state.drawTool === "move") {
+            this.setState({
+                dragging: true,
+                startDragX: canvasX,
+                startDragY: canvasY,
+                currentDragX: canvasX,
+                currentDragY: canvasY});
         }
     }
 
     processDrag(){
         if(this.state.drawTool === "edge"){
             console.log("processing edge")
+            const vertex = this.nearbyVertexExists(
+                this.state.currentDragX,
+                this.state.currentDragY,
+                this.state.width, this.state.height).vertex
+            if(vertex === null) return;
+            if(this.state.startDragVertex === null){
+                this.setState({
+                    startDragVertex: vertex,
+                    startDragX: this.state.currentDragX,
+                    startDragY: this.state.currentDragY});
+            } else if(this.state.startDragVertex !== vertex){
+                this.createEdge(this.state.startDragVertex, vertex);
+                this.setState({
+                    startDragVertex: vertex,
+                    startDragX : this.state.currentDragX,
+                    startDragY : this.state.currentDragY,
+                })
+            }
         } else if (this.state.drawTool === "select"){
             console.log("processing select")
-        } else if(this.state.drawTool === "shit"){
+        } else if(this.state.drawTool === "move"){
             console.log(this.state.startDragX, this.state.startDragY)
             const deltaX = this.state.startDragX - this.state.currentDragX;
             const deltaY = this.state.startDragY - this.state.currentDragY;
@@ -166,10 +234,29 @@ class NetworkCustom extends React.Component{
         const minY  = min.y;
         const box = {
             vertex: vertex,
-            box: {maxX: maxX, maxY: maxY, minX: minX, minY : minY}}
+            box: {maxX: maxX, maxY: maxY, minX: minX, minY : minY},
+            selected: false,
+        }
 
         this.boundingBoxes.push(box)
         this.buffer.push({bbox: box});
+    }
+
+    /**
+     * Creates an edge between v1 and v2 if non already exists between them
+     * @param v1 first enpoint
+     * @param v2 second endpoint
+     */
+    createEdge(v1, v2){
+        for(let i = 0; i < this.edges.length; i++){
+            const e = this.edges[i];
+            if(e.start === v1 && e.start === v2){
+                console.log("edge already exists")
+                return
+            }
+        }
+        const e = new Edge(v1, v2);
+        this.edges.push(e)
     }
 
 
@@ -191,7 +278,7 @@ class NetworkCustom extends React.Component{
             const coords = this.canvasSpaceToObjectSpace(canvasX, canvasY, w, h)
             if(this.inBox(box, coords.x, coords.y)){
                 nearbyAlreadyExists = true;
-                vertex = this.boundingBoxes[i].vertex;
+                vertex = i
                 break;
             }
         }
@@ -217,7 +304,13 @@ class NetworkCustom extends React.Component{
      */
     clearDragging(){
         console.log("drag cleared")
-        this.setState({startDragX: null, startDragY: null, currentDragX: null, currentDragY: null, dragging:false})
+        this.setState({
+            startDragX: null,
+            startDragY: null,
+            currentDragX: null,
+            currentDragY: null,
+            dragging:false,
+            startDragVertex: null})
     }
 
     inBox(box, x, y){
@@ -234,6 +327,18 @@ class NetworkCustom extends React.Component{
      */
     canvasSpaceToObjectSpace(x, y, w, h){
         return {x : (x-this.state.offsetX)*(1/this.state.scale)/w, y: (y - this.state.offsetY)*(1/this.state.scale)/h}
+    }
+
+    /**
+     * transforms a set of coordinates from object space to canvas space
+     * @param x x coordinate to transform
+     * @param y y coordinate to transform
+     * @param w width of the canvas
+     * @param h height of the canvas
+     * @returns {{x: number, y: *}}
+     */
+    objectSpaceToCanvasSpace(x, y, w, h){
+        return {x : x*w*this.state.scale+ this.state.offsetX, y: y*this.state.scale*h +this.state.offsetY}
     }
 
     resize(){
@@ -269,7 +374,8 @@ class NetworkCustom extends React.Component{
             <div>
                 <canvas ref = {this.network}
                         style = {{
-                            cursor: this.state.drawTool === "shit"? "move": "default",
+                            cursor: this.state.drawTool === "move"? "move":
+                                this.state.drawTool === "select"? "cell": "default",
                             outline: "1px solid black"
                         }}
                         onMouseDown= {(e) => this.processDownOutcome(e, true)}
@@ -281,7 +387,7 @@ class NetworkCustom extends React.Component{
                 <button onClick = {() => this.setState({drawTool: "vertex"})}> Vertex </button>
                 <button onClick = {() => this.setState({drawTool: "edge"})}> Edge</button>
                 <button onClick = {() => this.setState({drawTool: "select"})}> Select </button>
-                <button onClick = {() => this.setState({drawTool: "shit"})}> Move </button>
+                <button onClick = {() => this.setState({drawTool: "move"})}> Move </button>
                 <button> Undo </button>
                 <button> Redo </button>
                 <button onClick = {() => this.resetCamera()}> Reset camera </button>
