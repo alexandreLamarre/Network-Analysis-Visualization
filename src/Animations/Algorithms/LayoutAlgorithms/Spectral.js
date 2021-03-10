@@ -124,7 +124,7 @@ class GeneralizedEigenvector extends AbstractLayoutAlgorithm{
                 min = Math.min(eigenvectors[dim][k], min);
                 max = Math.max(eigenvectors[dim][k], max);
             }
-            console.log("Minimum found", min)
+
             for(let k = 0; k < eigenvectors[dim].length; k++){
                 eigenvectors[dim][k] = (eigenvectors[dim][k] - min)/(max-min)
 
