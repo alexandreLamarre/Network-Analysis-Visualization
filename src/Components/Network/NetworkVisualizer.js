@@ -172,7 +172,6 @@ class NetworkVisualizer extends React.Component{
 
     /** Resets camera to default position**/
     resetCamera(){
-        console.log("resetting camera")
         this.setState({offsetX:0,offsetY:0, scale: 1, mouseX: this.state.width/2, mouseY:this.state.height/2})
     }
 

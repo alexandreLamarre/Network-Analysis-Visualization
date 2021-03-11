@@ -131,7 +131,6 @@ class Opt2 extends AbstractTSPAlgorithm{
         //add one last animation where all the edges have their intial colors;
         const lastAnimationFrame = [];
         for(let i = 0; i < animations[animations.length-1].length; i++){
-            console.log(animations[animations.length -1])
             lastAnimationFrame.push(animations[animations.length-1][i].copyEdge());
             lastAnimationFrame[i].color = initialColors[i];
             lastAnimationFrame[i].alpha = initialAlpha[i];

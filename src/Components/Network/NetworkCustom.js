@@ -79,7 +79,6 @@ class NetworkCustom extends React.Component{
         ctx.clearRect(0, 0, this.state.width, this.state.height)
         const w = this.state.width;
         const h = this.state.height;
-        //console.log(this.state.offsetX, this.state.offsetY)
         ctx.save();
         ctx.translate(this.state.offsetX, this.state.offsetY)//translate by the offsets
         ctx.scale(this.state.scale, this.state.scale);

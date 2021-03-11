@@ -136,7 +136,6 @@ class FruchtermanReingold extends AbstractLayoutAlgorithm{
             temperature = this.cool(temperature,initialTemperature, K)
             t += 1
             if(maxForce < epsilon) {
-                console.log("Convergence bound met")
                 break;
             }
         }

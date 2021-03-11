@@ -265,7 +265,6 @@ class MisraGries extends AbstractEdgeColoringAlgorithm{
         return freeColors[0];
     }
 
-
     /**
      * Checks if an edge is uncolored
      * @param u
