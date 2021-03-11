@@ -149,5 +149,21 @@
 
         --ion-card-background: #1e1e1e;
     }
+    :root {
+        --ion-color-moon: #e5e463;
+        --ion-color-moon-rgb: 105,187,123;
+        --ion-color-moon-contrast: #ffffff;
+        --ion-color-moon-contrast-rgb: 255,255,255;
+        --ion-color-moon-shade: #e2db8e;
+        --ion-color-moon-tint: #d0d466;
+    }
 
+    .ion-color-moon {
+        --ion-color-base: var(--ion-color-moon);
+        --ion-color-base-rgb: var(--ion-color-moon-rgb);
+        --ion-color-contrast: var(--ion-color-moon-contrast);
+        --ion-color-contrast-rgb: var(--ion-color-moon-contrast-rgb);
+        --ion-color-shade: var(--ion-color-moon-shade);
+        --ion-color-tint: var(--ion-color-moon-tint);
+    }
 

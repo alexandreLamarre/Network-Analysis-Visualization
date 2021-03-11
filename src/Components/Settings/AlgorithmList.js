@@ -12,12 +12,17 @@ class AlgorithmList extends React.Component{
             activeAlgorithm: this.animator.activeAlgorithm.name,
             width: 0,
         }
+        this.resize = this.resize.bind(this);
     }
 
     componentDidMount(){
         const w = window.innerWidth
         this.setState({width: w})
-        window.addEventListener("resize", () => this.resize())
+        window.addEventListener("resize", this.resize)
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.resize);
     }
 
     setOption(v){
@@ -35,10 +40,12 @@ class AlgorithmList extends React.Component{
     resize(){
         const w = window.innerWidth;
         this.setState({width: w})
+
     }
 
 
     render(){
+
         return (
             <div>
                 <IonItem lines = "full">

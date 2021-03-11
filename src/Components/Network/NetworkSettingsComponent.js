@@ -162,16 +162,18 @@ class NetworkSettingsComponent extends React.Component{
     setApplyColorGradient(type){
         if(type === "vertex"){
             this.settings.applyColorGradientVertex = !this.settings.applyColorGradientVertex
+            this.setState({applyColorGradientVertex: this.settings.applyColorGradientVertex})
             if(!this.settings.applyColorGradientVertex && !this.settings.applyColorGradientEdge){
                 this.settings.applyColorGradient = false
                 this.setState({applyColorGradient: false})
             } else{
                 this.settings.applyColorGradient = true
-                this.setState({applyColorGradient: true})
+                this.setState({applyColorGradient: true, applyColorGradientVertex: true})
             }
         }
         if(type === "edge"){
             this.settings.applyColorGradientEdge = !this.settings.applyColorGradientEdge
+            this.setState({applyColorGradientEdge: this.settings.applyColorGradientEdge})
             if(!this.settings.applyColorGradientVertex && !this.settings.applyColorGradientEdge){
                 this.settings.applyColorGradient = false
                 this.setState({applyColorGradient: false})
@@ -292,7 +294,6 @@ class NetworkSettingsComponent extends React.Component{
                 <IonItem lines = "full" color = "medium">
                     <p> Apply Edge Color Gradient </p>
                     <IonCheckbox
-                        checked = {this.state.applyColorGradientEdge}
                         checked = {this.state.applyColorGradientEdge}
                         onIonChange = {(e) => {this.setApplyColorGradient("edge")}}
                         style = {{marginLeft: "5%"}}> </IonCheckbox>

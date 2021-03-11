@@ -32,6 +32,8 @@ class NetworkVisualizer extends React.Component{
         this.network = React.createRef()
         this.networkData = this.props.networkData
         this.animator = this.props.animator
+
+        this.resize = this.resize.bind(this);
     }
 
     async componentDidMount(){
@@ -45,12 +47,12 @@ class NetworkVisualizer extends React.Component{
         this.networkData.createRandomNetwork()
 
         this.setState({width: w, height: h})
-        window.addEventListener("resize", () => {this.resize()})
+        window.addEventListener("resize", this.resize)
         this.frameId = window.requestAnimationFrame(() => this.animate())
     }
 
     componentWillUnmount() {
-        window.removeEventListener("resize", () => {this.resize()})
+        window.removeEventListener("resize", this.resize)
         window.cancelAnimationFrame(this.frameId)
     }
 
@@ -115,7 +117,6 @@ class NetworkVisualizer extends React.Component{
             this.network.current.height = h
             this.setState({height: h, width: w})
         }
-
     }
 
     applyEdgeColorGradient(vertices, edge, ctx, w, h){
@@ -185,10 +186,10 @@ class NetworkVisualizer extends React.Component{
         document.body.appendChild(link);
 
         if(type === "csv"){
-            alert("csv format networks download is not fully supported yet")
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Nothing here yet";
-            link.href = csvContent;
+            alert("csv format networks download is not supported yet")
+            // let csvContent = "data:text/csv;charset=utf-8,";
+            // csvContent += "Nothing here yet";
+            // link.href = csvContent;
         } else{
             const canvas = this.network.current;
             link.href = canvas.toDataURL("network/"+type);

@@ -42,6 +42,7 @@ class NetworkVisualizer3D extends React.Component{
         this.spheres = []
         this.lines = []
 
+        this.resize = this.resize.bind(this);
     }
 
 
@@ -75,13 +76,13 @@ class NetworkVisualizer3D extends React.Component{
 
 
         //add listeners and set state
-        window.addEventListener("resize", () => {this.resize()})
+        window.addEventListener("resize", this.resize)
         this.frameID = window.requestAnimationFrame(() => this.animate())
         this.setState({width: w, height: h})
     }
 
     componentWillUnmount() {
-        window.removeEventListener("resize", () => {this.resize()})
+        window.removeEventListener("resize", this.resize)
         window.cancelAnimationFrame(this.frameID)
         if(this.renderer !== null) this.renderer = null; //destroy the webgl context
         if(this.network3D.current != null) this.network3D.current = null //destroy webgl context
@@ -219,7 +220,7 @@ class NetworkVisualizer3D extends React.Component{
     }
 
     saveAs(type){
-        alert("Saving not yet implemented for 3D networks")
+        alert("Saving not yet supported for 3D networks")
     }
 
     render() {

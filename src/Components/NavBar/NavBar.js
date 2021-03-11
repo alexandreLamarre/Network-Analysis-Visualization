@@ -59,7 +59,7 @@ class NavBar extends React.Component{
                                   onClick = {() => this.openDocumentation()}>
                             Documentation </IonLabel>
                         <IonToggle onIonChange = {(e) => this.setDarkMode(e)}/>
-                        <IonIcon icon = {moon}/>
+                        <IonIcon color = "moon" icon = {moon}/>
                     </IonItem>
                 </IonCol>
             </IonRow>

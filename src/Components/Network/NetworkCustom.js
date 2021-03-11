@@ -35,6 +35,8 @@ class NetworkCustom extends React.Component{
         this.boundingBoxes = [];
         this.edges = [];
         this.buffer = [];
+
+        this.resize = this.resize.bind(this);
     }
 
     componentDidMount(){
@@ -42,7 +44,7 @@ class NetworkCustom extends React.Component{
         const h = window.innerHeight * this.heightConstant
         this.network.current.width = w
         this.network.current.height = h
-        window.addEventListener("resize", () => {this.resize()})
+        window.addEventListener("resize", this.resize)
         window.requestAnimationFrame(() => this.animate());
         this.props.parent.setState({custom: true}) //disable animations for now
         this.addAction();
@@ -51,8 +53,18 @@ class NetworkCustom extends React.Component{
 
     componentWillUnmount() {
         this.props.parent.setState({custom: false}) //re-enable animations since we disabled them
-        window.cancelAnimationFrame("resize", () => {this.resize()})
+        window.removeEventListener("resize", this.resize)
         window.cancelAnimationFrame(this.maxFrame);
+    }
+
+    resize(){
+        const h = Math.max(window.innerHeight *this.heightConstant, this.minheight)
+        const w = window.innerWidth  * this.widthConstant
+        if (this.network.current !== null){
+            this.network.current.width = w
+            this.network.current.height = h
+            this.setState({height: h, width: w})
+        }
     }
 
     animate(){
@@ -502,16 +514,6 @@ class NetworkCustom extends React.Component{
         return {x : x*w*this.state.scale+ this.state.offsetX, y: y*this.state.scale*h +this.state.offsetY}
     }
 
-    resize(){
-        const h = Math.max(window.innerHeight *this.heightConstant, this.minheight)
-        const w = window.innerWidth  * this.widthConstant
-        if (this.network.current !== null){
-            this.network.current.width = w
-            this.network.current.height = h
-            this.setState({height: h, width: w})
-        }
-    }
-
 
 
     /** zoom camera**/
@@ -637,14 +639,36 @@ class NetworkCustom extends React.Component{
         this.resetCamera()
     }
 
+    /**
+     * Saves the network as a file
+     * @param type string: the extension type to save the file as
+     */
+    saveAs(type){
+        var link = document.createElement("a");
+        link.download = "Network." + type;
+        document.body.appendChild(link);
+
+        if(type === "csv"){
+            alert("csv format networks download is not supported yet")
+            // let csvContent = "data:text/csv;charset=utf-8,";
+            // csvContent += "Nothing here yet";
+            // link.href = csvContent;
+        } else{
+            const canvas = this.network.current;
+            link.href = canvas.toDataURL("network/"+type);
+        }
+        link.click();
+        document.body.removeChild(link)
+    }
+
     render() {
         return (
             <div>
                 <canvas ref = {this.network}
-                        style = {{
+                        style = {{backgroundColor: "rgba(255,255,255,0.5)",
                             cursor: this.state.drawTool === "move"? "move":
                                 this.state.drawTool === "select"? "cell": "default",
-                            outline: "1px solid black"
+                            outline: "1px solid blue",
                         }}
                         onMouseDown= {(e) => this.processDownOutcome(e, true)}
                         onMouseMove = {(e) => this.handleMouseMove(e)}
