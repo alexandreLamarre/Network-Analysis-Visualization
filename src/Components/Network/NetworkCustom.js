@@ -6,6 +6,8 @@ import {IonButton, IonIcon} from "@ionic/react";
 import {ellipse, move, analytics, expand, cameraReverse, save,
     arrowUndoCircle, arrowRedoCircle, refreshCircle} from "ionicons/icons"
 
+const MAXBUF = 10;
+
 class NetworkCustom extends React.Component{
     constructor(props){
         super(props)
@@ -24,6 +26,7 @@ class NetworkCustom extends React.Component{
             dragging: false,
             selectBox: null,
             selectedVertices : [],
+            currentBufferIndex: -1,
         }
         this.heightConstant= 8.5/10
         this.widthConstant = 7/10
@@ -41,12 +44,13 @@ class NetworkCustom extends React.Component{
         this.network.current.height = h
         window.addEventListener("resize", () => {this.resize()})
         window.requestAnimationFrame(() => this.animate());
-        this.props.parent.setState({custom: true})
+        this.props.parent.setState({custom: true}) //disable animations for now
+        this.addAction();
         this.setState({width: w, height: h})
     }
 
     componentWillUnmount() {
-        this.props.parent.setState({custom: false})
+        this.props.parent.setState({custom: false}) //re-enable animations since we disabled them
         window.cancelAnimationFrame("resize", () => {this.resize()})
         window.cancelAnimationFrame(this.maxFrame);
     }
@@ -188,7 +192,6 @@ class NetworkCustom extends React.Component{
         const w = this.network.current.width;
         const h = this.network.current.height;
         if(this.state.drawTool === "vertex"){
-            console.log("vertex");
             this.createVertex(canvasX, canvasY, w, h);
         } else if (this.state.drawTool === "edge"
             || this.state.drawTool === "select"
@@ -236,7 +239,6 @@ class NetworkCustom extends React.Component{
                 this.removeSelectedVertices();
             }
         }else if(this.state.drawTool === "edge"){
-            console.log("processing edge")
             const vertex = this.nearbyVertexExists(
                 this.state.currentDragX,
                 this.state.currentDragY,
@@ -256,12 +258,10 @@ class NetworkCustom extends React.Component{
                 })
             }
         } else if(this.state.drawTool === "move"){
-            console.log(this.state.startDragX, this.state.startDragY)
             const deltaX = this.state.startDragX - this.state.currentDragX;
             const deltaY = this.state.startDragY - this.state.currentDragY;
             const offsetX = this.state.offsetX - deltaX/this.state.scale;
             const offsetY = this.state.offsetY - deltaY/this.state.scale;
-            console.log(deltaX, deltaY)
             this.setState({
                 offsetX: offsetX,
                 offsetY: offsetY,
@@ -271,8 +271,7 @@ class NetworkCustom extends React.Component{
         }
     }
 
-    processDragOutcome(){
-        console.log("mouse up")
+    async processDragOutcome(){
         if(this.state.drawTool === "select" && this.state.selectBox === null
             && this.state.currentDragX !== this.state.startDragX
             && this.state.currentDragY !== this.state.startDragY){
@@ -295,10 +294,14 @@ class NetworkCustom extends React.Component{
                 endX : Math.max(x1, x2),
                 endY: Math.max(y1, y2)}
 
-            this.selectVerticesFromBox(selectBox);
-            this.setState({
+            await this.selectVerticesFromBox(selectBox);
+            await this.setState({
                 selectBox: selectBox});
-            }
+            this.addAction();
+        }
+        else if(this.state.selectBox !== null){
+            this.addAction();
+        }
         this.clearDragging()
     }
 
@@ -316,7 +319,6 @@ class NetworkCustom extends React.Component{
         const v = this.canvasSpaceToObjectSpace(canvasX, canvasY, w, h);
         const vx = v.x;
         const vy = v.y;
-        console.log(vx,vy)
         const vertex = new Vertex(vx, vy);
         const max = this.canvasSpaceToObjectSpace(
             canvasX + vertex.size + 10,
@@ -335,11 +337,10 @@ class NetworkCustom extends React.Component{
         const box = {
             vertex: vertex,
             box: {maxX: maxX, maxY: maxY, minX: minX, minY : minY},
-            selected: false,
         }
 
         this.boundingBoxes.push(box)
-        this.buffer.push({bbox: box});
+        this.addAction();
     }
 
     /**
@@ -351,12 +352,12 @@ class NetworkCustom extends React.Component{
         for(let i = 0; i < this.edges.length; i++){
             const e = this.edges[i];
             if(e.start === v1 && e.start === v2){
-                console.log("edge already exists")
                 return
             }
         }
         const e = new Edge(v1, v2);
-        this.edges.push(e)
+        this.edges.push(e);
+        this.addAction();
     }
 
     /**
@@ -364,7 +365,7 @@ class NetworkCustom extends React.Component{
      * @param box
      * @returns {[]}
      */
-    selectVerticesFromBox(box){
+    async selectVerticesFromBox(box){
         const selectedVertices = [];
         for(let i = 0; i < this.boundingBoxes.length; i++){
             const v = this.boundingBoxes[i].vertex;
@@ -372,9 +373,7 @@ class NetworkCustom extends React.Component{
                 selectedVertices.push(i)
             }
         }
-        console.log("SELECTED VERTICES", selectedVertices)
-
-        this.setState({selectedVertices: selectedVertices})
+        await this.setState({selectedVertices: selectedVertices})
     }
 
 
@@ -462,11 +461,10 @@ class NetworkCustom extends React.Component{
     }
 
     /**
-     *
+     * Clears any react states used for tracking dragging
      * @param e
      */
     clearDragging(){
-        console.log("drag cleared")
         this.setState({
             startDragX: null,
             startDragY: null,
@@ -538,6 +536,105 @@ class NetworkCustom extends React.Component{
      */
     saveAs(type){
         //TODO
+    }
+
+    /**
+     * Copies the current object space of the canvas
+     * @returns {{boundingBoxes: [], edges: [], selectBox: {}}}
+     */
+    copyState(){
+        const copyBoundBoxes = [];
+        for(let i = 0; i < this.boundingBoxes.length; i++){
+            const v = this.boundingBoxes[i].vertex.copyVertex();
+            const bb = this.boundingBoxes[i].box
+            copyBoundBoxes.push({vertex: v, box: bb});
+        }
+        const copyEdges = [];
+        for(let j = 0; j < this.edges.length; j++){
+            const e = this.edges[j].copyEdge();
+            copyEdges.push(e);
+        }
+        let selectBox = {}
+        if(this.state.selectBox === null){
+            selectBox = null
+        } else{
+            selectBox.startX = this.state.selectBox.startX;
+            selectBox.startY = this.state.selectBox.startY;
+            selectBox.endX = this.state.selectBox.endX;
+            selectBox.endY = this.state.selectBox.endY;
+        }
+        const selectedVertices = [];
+        for(let i = 0; i < this.state.selectedVertices.length; i++){
+            selectedVertices.push(this.state.selectedVertices[i])
+        }
+        return {boundingBoxes:  copyBoundBoxes, edges: copyEdges, selectBox: selectBox, selectedVertices: selectedVertices};
+    }
+
+    // /**
+    //  * undoes the last action stored in the action buffer
+    //  */
+    // undoAction(){
+    //     const index = this.state.currentBufferIndex - 1;
+    //     if(index < 0) return;
+    //     this.boundingBoxes = this.buffer[index].action.boundingBoxes;
+    //     this.edges = this.buffer[index].action.edges;
+    //     this.setState({
+    //         selectedVertices: this.buffer[index].action.selectedVertices,
+    //         selectBox: this.buffer[index].action.selectBox,
+    //         currentBufferIndex: index
+    //     });
+    //     this.forceUpdate();
+    // }
+    //
+    // /**
+    //  * redoes the next action stored in the action buffer
+    //  */
+    // redoAction(){
+    //     const index = this.state.currentBufferIndex + 1;
+    //     if(index > this.buffer.length -1) return;
+    //     this.boundingBoxes = this.buffer[index].action.boundingBoxes;
+    //     this.edges = this.buffer[index].action.edges;
+    //     this.setState({
+    //         selectedVertices: this.buffer[index].action.selectedVertices,
+    //         selectBox: this.buffer[index].action.selectBox,
+    //         currentBufferIndex: index
+    //     });
+    // }
+
+    /**
+     * adds an animation object to the custom network buffer
+     */
+    addAction(){
+        // const action = this.copyState();
+        // if(this.state.currentBufferIndex !== 0 && this.state.currentBufferIndex !== this.buffer.length -1){
+        //     const newBuffer =[]
+        //     for(let i = 0; i < this.state.currentBufferIndex; i++){
+        //         newBuffer.push(this.buffer[i])
+        //     }
+        //     this.buffer = newBuffer;
+        //
+        // }
+        // this.buffer.push({action: action});
+        // if(this.buffer.length > MAXBUF){
+        //     this.buffer = this.buffer.slice(1, this.buffer.length);
+        // }
+        // console.log(" ")
+        // for(let i = 0; i < this.buffer.length; i++){
+        //     console.log(this.buffer[i])
+        // }
+        // this.setState({currentBufferIndex: this.state.currentBufferIndex+1});
+    }
+
+    /**
+     * Clears the object space of the canvas
+     */
+    clearCanvas(){
+        this.buffer =[];
+        this.boundingBoxes = [];
+        this.edges = [];
+        this.setState({selectBox: null, selectedVertices: []});
+        this.clearDragging() //just in case
+        this.resetCamera()
     }
 
     render() {
@@ -618,7 +715,7 @@ class NetworkCustom extends React.Component{
                         <IonIcon
                             size = "large"
                             title = {false}
-                            color = "primary"
+                            color = {this.state.drawTool === "vertex"?"success":"primary"}
                             icon = {ellipse}>
                         </IonIcon>
                     </IonButton>
@@ -640,7 +737,7 @@ class NetworkCustom extends React.Component{
                         <IonIcon
                             size = "large"
                             title = {false}
-                            color = "primary"
+                            color = {this.state.drawTool === "edge"?"success":"primary"}
                             icon = {analytics}>
                         </IonIcon>
                     </IonButton>
@@ -662,7 +759,7 @@ class NetworkCustom extends React.Component{
                         <IonIcon
                             size = "large"
                             title = {false}
-                            color = "primary"
+                            color = {this.state.drawTool === "select"?"success":"primary"}
                             icon = {expand}>
                         </IonIcon>
                     </IonButton>
@@ -684,11 +781,12 @@ class NetworkCustom extends React.Component{
                         <IonIcon
                             size = "large"
                             title = {false}
-                            color = "primary"
+                            color = {this.state.drawTool === "move"?"success":"primary"}
                             icon = {move}>
                         </IonIcon>
                     </IonButton>
                 </div>
+                {/*
                 <div
                     title = "Undo action"
                     style = {{
@@ -701,7 +799,7 @@ class NetworkCustom extends React.Component{
                     }}>
                     <IonButton fill = "clear"
                                class = "no-ripple"
-
+                               onClick = {() => this.undoAction()}
                     >
                         <IonIcon
                             size = "large"
@@ -724,7 +822,7 @@ class NetworkCustom extends React.Component{
                     }}>
                     <IonButton fill = "clear"
                                class = "no-ripple"
-
+                               onClick = {() => this.redoAction()}
                     >
                         <IonIcon
                             size = "large"
@@ -733,7 +831,7 @@ class NetworkCustom extends React.Component{
                             icon = {arrowRedoCircle}>
                         </IonIcon>
                     </IonButton>
-                </div>
+                </div> */}
 
                 <div
                     title = "Reset canvas"
@@ -747,7 +845,7 @@ class NetworkCustom extends React.Component{
                     }}>
                     <IonButton fill = "clear"
                                class = "no-ripple"
-
+                               onClick = {() => this.clearCanvas()}
                     >
                         <IonIcon
                             size = "large"
@@ -757,9 +855,6 @@ class NetworkCustom extends React.Component{
                         </IonIcon>
                     </IonButton>
                 </div>
-
-
-
             </div>
         )
     }
