@@ -147,7 +147,6 @@ class ForceAtlasLinLog extends AbstractLayoutAlgorithm{
                     forceList[i].addVector(gravityForce)
                 }
             }
-            // console.log(forceList)
 
             //update global speed
             let sG = 0;
@@ -173,7 +172,6 @@ class ForceAtlasLinLog extends AbstractLayoutAlgorithm{
                 sG += traN/swgN
             }
 
-            console.log(sG)
 
             let sN = 0;
             currentVertices = this.createAnimationFrame(currentVertices);

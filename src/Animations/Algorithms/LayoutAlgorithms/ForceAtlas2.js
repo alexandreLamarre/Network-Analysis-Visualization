@@ -19,8 +19,8 @@ class ForceAtlas2 extends AbstractLayoutAlgorithm{
 
         this.kr = AlgorithmSettingObject.newRangeSetting(
             "Force of Repulsion",
-            0.01,
-            20,
+            0.1,
+            15,
             0.1,
             10)
 
@@ -147,7 +147,6 @@ class ForceAtlas2 extends AbstractLayoutAlgorithm{
                     forceList[i].addVector(gravityForce)
                 }
             }
-            // console.log(forceList)
 
             //update global speed
             let sG = 0;
@@ -173,7 +172,6 @@ class ForceAtlas2 extends AbstractLayoutAlgorithm{
                 sG += traN/swgN
             }
 
-            console.log(sG)
 
             let sN = 0;
             currentVertices = this.createAnimationFrame(currentVertices);
