@@ -80,27 +80,15 @@ class MisraGries extends AbstractEdgeColoringAlgorithm{
             return a1 - b1 !== 0?a1 - b1: a2-b2;
         })
         //ACTUAL ALGORITHM
-        let iterations = 0;
         while(uncoloredEdges.length > 0){
-            console.log("==================")
-            iterations ++
+
             const e = uncoloredEdges.pop();
             const [u, v] = this.getIndex(e.start, e.end)
 
             let fan = this.createFan(u,v);
-            console.log("fan",fan, "centered at", u)
-            // let fanFreeColors = [];
-            let fanColors = [];
-            for(let i = 0; i < fan.length; i++){
-                fanColors.push(this.edgeColors[this.getIndex(u, fan[i])])
-                // fanFreeColors.push(this.getFreeColors(fan[i]))
-            }
-            console.log("fan colors", fanColors)
-            // console.log("fan Free colors", fanFreeColors)
 
             let c = this.pickColor(u);
             let d = this.pickColor(fan[fan.length-1]);
-            // console.log("color1", c, "color2", d);
 
             this.invertPath(u, c, d)
 
@@ -113,12 +101,10 @@ class MisraGries extends AbstractEdgeColoringAlgorithm{
                 if(shouldAdd) fanPrime.push(fan[i])
 
             }
-            // console.log("subfan", fanPrime)
+
             this.rotateFan(fanPrime, u);
-            console.log(this.edgeColors[this.getIndex(fanPrime[fanPrime.length-1], u)])
+
             this.edgeColors[this.getIndex(fanPrime[fanPrime.length-1], u)] = d;
-            console.log("fanPrime last", fanPrime[fanPrime.length-1])
-            // console.log("assigned", d, "to", this.getIndex(fanPrime[fanPrime.length-1], 0))
 
             //update animations edges
             const newEdges = this.createAnimationFrame(currentEdges)
@@ -137,7 +123,7 @@ class MisraGries extends AbstractEdgeColoringAlgorithm{
             animations.push(newEdges);
             currentEdges = newEdges
         }
-        console.log(iterations)
+
 
         return animations;
     }
@@ -235,7 +221,6 @@ class MisraGries extends AbstractEdgeColoringAlgorithm{
         for(let i = 0; i < incident.length; i++){
             const color = this.edgeColors[this.getIndex(vertex, incident[i])]
             if(color !== null) {
-                // console.log("found taken color", color)
                 takenColors.push(color)
             }
         }
@@ -251,7 +236,6 @@ class MisraGries extends AbstractEdgeColoringAlgorithm{
             }
             if(valid) freeColors.push(c);
         }
-        // console.log("resulting free colors", freeColors)
         return freeColors;
     }
 
@@ -266,7 +250,6 @@ class MisraGries extends AbstractEdgeColoringAlgorithm{
         for(let i = 0; i < fan.length-1; i++){
             const curIndex = this.getIndex(centerVertex, fan[i]);
             const nextIndex = this.getIndex(centerVertex, fan[i+1]);
-            console.log("assigned in fan", this.edgeColors[nextIndex], "to", curIndex)
             this.edgeColors[curIndex] = this.edgeColors[nextIndex];
         }
         this.edgeColors[this.getIndex(centerVertex, fan[fan.length-1])] = null
@@ -285,7 +268,6 @@ class MisraGries extends AbstractEdgeColoringAlgorithm{
 
     /**
      * Checks if an edge is uncolored
-     * @param coloredEdges
      * @param u
      * @param v
      */
