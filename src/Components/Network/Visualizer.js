@@ -23,7 +23,10 @@ class Visualizer extends React.Component{
                     animator = {this.props.parent.animator}
                     parent = {this.props.parent}/>}
                 />
-                <Route path = "/Network-Analysis-Visualization/custom" render = {() => <NetworkCustom/>}/>
+                <Route path = "/Network-Analysis-Visualization/custom" render = {() => <NetworkCustom
+                    parent = {this.props.parent}/>}
+
+                />
 
             </IonCol>
         )
