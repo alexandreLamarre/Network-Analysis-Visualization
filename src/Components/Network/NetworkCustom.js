@@ -2,6 +2,10 @@ import React from "react";
 import Vertex from "../../datatypes/Vertex";
 import Edge from "../../datatypes/Edge";
 
+import {IonButton, IonIcon} from "@ionic/react";
+import {ellipse, move, analytics, expand, cameraReverse, save,
+    arrowUndoCircle, arrowRedoCircle, refreshCircle} from "ionicons/icons"
+
 class NetworkCustom extends React.Component{
     constructor(props){
         super(props)
@@ -73,7 +77,7 @@ class NetworkCustom extends React.Component{
             ctx.fillStyle = "rgb(0, 255, 0)"
             ctx.arc(v.x*w ,
                 v.y*h,
-                v.size + 5, 0, Math.PI*2)
+                v.size + 1, 0, Math.PI*2)
             ctx.fill();
             ctx.closePath()
         }
@@ -528,6 +532,14 @@ class NetworkCustom extends React.Component{
         this.setState({offsetX: 0, offsetY: 0, scale: 1})
     }
 
+    /**
+     * Saves the network/canvas as the given file type;
+     * @param type
+     */
+    saveAs(type){
+        //TODO
+    }
+
     render() {
         return (
             <div>
@@ -542,16 +554,212 @@ class NetworkCustom extends React.Component{
                         onMouseUp = {(e) => this.processDragOutcome(e)}
                         onMouseLeave = {() => this.clearDragging()}
                         onWheel = {(e) => this.zoomCamera(e)}/>
+                <div className = "dropdown"
+                     title = "Save as"
+                     style = {{
+                         cursor: "pointer",
+                         width: 10,
+                         height: 10,
+                         position: "absolute",
+                         top:this.state.height -36,
+                         left: this.state.width-47}}>
+                    <IonButton
+                        class = "no-ripple"
+                        fill = "clear">
+                        <IonIcon
+                            title = {false}
+                            size = "large"
+                            color = "primary"
+                            icon={save}/>
+                    </IonButton>
+                    <div className = "dropdown-content" style = {{top: -85}}>
+                        <a className = "aFile" onClick = {() => this.saveAs("csv")}>.csv</a>
+                        <a className = "aFile" onClick = {() => this.saveAs("png")}>.png</a>
+                        <a className = "aFile" onClick = {() => this.saveAs("jpg")}>.jpg</a>
+                    </div>
+                </div>
+                <div
+                    title = "Reset camera to default"
+                    style = {{
+                        cursor: "pointer",
+                        width: 10,
+                        height: 10,
+                        position: "absolute",
+                        top:this.state.height -36,
+                        left: this.state.width-85,
+                    }}>
+                    <IonButton fill = "clear"
+                               class = "no-ripple"
+                               onClick = {() => this.resetCamera()}
+                    >
+                        <IonIcon
+                            size = "large"
+                            title = {false}
+                            color = "primary"
+                            icon = {cameraReverse}>
+                        </IonIcon>
+                    </IonButton>
+                </div>
 
-                <button onClick = {() => this.setState({drawTool: "vertex"})}> Vertex </button>
-                <button onClick = {() => this.setState({drawTool: "edge"})}> Edge</button>
-                <button onClick = {() => this.setState({drawTool: "select"})}> Select </button>
-                <button onClick = {() => this.setState({drawTool: "move"})}> Move </button>
-                <button> Undo </button>
-                <button> Redo </button>
-                <button onClick = {() => this.resetCamera()}> Reset camera </button>
-                <button > Save as</button>
-                <input type = "color"/>
+                <div
+                    title = "Place vertex"
+                    style = {{
+                        cursor: "pointer",
+                        width: 10,
+                        height: 10,
+                        position: "absolute",
+                        top:this.state.height -36,
+                        left: 0,
+                    }}>
+                    <IonButton fill = "clear"
+                               class = "no-ripple"
+                               onClick = {() => this.setState({drawTool : "vertex"})}
+                    >
+                        <IonIcon
+                            size = "large"
+                            title = {false}
+                            color = "primary"
+                            icon = {ellipse}>
+                        </IonIcon>
+                    </IonButton>
+                </div>
+                <div
+                    title = "Connect vertices"
+                    style = {{
+                        cursor: "pointer",
+                        width: 10,
+                        height: 10,
+                        position: "absolute",
+                        top:this.state.height -36,
+                        left: 40,
+                    }}>
+                    <IonButton fill = "clear"
+                               class = "no-ripple"
+                               onClick = {() => this.setState({drawTool : "edge"})}
+                    >
+                        <IonIcon
+                            size = "large"
+                            title = {false}
+                            color = "primary"
+                            icon = {analytics}>
+                        </IonIcon>
+                    </IonButton>
+                </div>
+                <div
+                    title = "Select & Move tool"
+                    style = {{
+                        cursor: "pointer",
+                        width: 10,
+                        height: 10,
+                        position: "absolute",
+                        top:this.state.height -36,
+                        left: 80,
+                    }}>
+                    <IonButton fill = "clear"
+                               class = "no-ripple"
+                               onClick = {() => this.setState({drawTool : "select"})}
+                    >
+                        <IonIcon
+                            size = "large"
+                            title = {false}
+                            color = "primary"
+                            icon = {expand}>
+                        </IonIcon>
+                    </IonButton>
+                </div>
+                <div
+                    title = "Move tool"
+                    style = {{
+                        cursor: "pointer",
+                        width: 10,
+                        height: 10,
+                        position: "absolute",
+                        top:this.state.height -36,
+                        left: 120,
+                    }}>
+                    <IonButton fill = "clear"
+                               class = "no-ripple"
+                               onClick = {() => this.setState({drawTool : "move"})}
+                    >
+                        <IonIcon
+                            size = "large"
+                            title = {false}
+                            color = "primary"
+                            icon = {move}>
+                        </IonIcon>
+                    </IonButton>
+                </div>
+                <div
+                    title = "Undo action"
+                    style = {{
+                        cursor: "pointer",
+                        width: 10,
+                        height: 10,
+                        position: "absolute",
+                        top:this.state.height -36,
+                        left: 160,
+                    }}>
+                    <IonButton fill = "clear"
+                               class = "no-ripple"
+
+                    >
+                        <IonIcon
+                            size = "large"
+                            title = {false}
+                            color = "primary"
+                            icon = {arrowUndoCircle}>
+                        </IonIcon>
+                    </IonButton>
+                </div>
+
+                <div
+                    title = "Redo action"
+                    style = {{
+                        cursor: "pointer",
+                        width: 10,
+                        height: 10,
+                        position: "absolute",
+                        top:this.state.height -36,
+                        left: 200,
+                    }}>
+                    <IonButton fill = "clear"
+                               class = "no-ripple"
+
+                    >
+                        <IonIcon
+                            size = "large"
+                            title = {false}
+                            color = "primary"
+                            icon = {arrowRedoCircle}>
+                        </IonIcon>
+                    </IonButton>
+                </div>
+
+                <div
+                    title = "Reset canvas"
+                    style = {{
+                        cursor: "pointer",
+                        width: 10,
+                        height: 10,
+                        position: "absolute",
+                        top:0,
+                        left: this.state.width -50,
+                    }}>
+                    <IonButton fill = "clear"
+                               class = "no-ripple"
+
+                    >
+                        <IonIcon
+                            size = "large"
+                            title = {false}
+                            color = "primary"
+                            icon = {refreshCircle}>
+                        </IonIcon>
+                    </IonButton>
+                </div>
+
+
+
             </div>
         )
     }
