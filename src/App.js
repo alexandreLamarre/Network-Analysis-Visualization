@@ -203,12 +203,10 @@ class App extends React.Component{
   render() {
     return (
         <Router>
-            <Route exact path = "/">
+          <Route path = "/">
             <Redirect to ="/Network-Analysis-Visualization/2d"/>
           </Route>
-            <Route exact path = "/Network-Analysis-Visualization">
-              <Redirect to ="/Network-Analysis-Visualization/2d"/>
-            </Route>
+
 
         <IonApp>
 
