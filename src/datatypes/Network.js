@@ -1,7 +1,7 @@
-import LinearColorGradient from "../../datatypes/ColorGradient/LinearColorGradient";
-import Vertex from "../../datatypes/Vertex";
-import Edge from "../../datatypes/Edge";
-import PolarColorGradient from "../../datatypes/ColorGradient/PolarColorGradient";
+import LinearColorGradient from "./ColorGradient/LinearColorGradient";
+import Vertex from "./Vertex";
+import Edge from "./Edge";
+import PolarColorGradient from "./ColorGradient/PolarColorGradient";
 /**
  * Network is a class that handles the implementation of a network:
  *   - network settings

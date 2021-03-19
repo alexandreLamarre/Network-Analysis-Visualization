@@ -1,5 +1,5 @@
 import React from "react";
-import Network from "./Network";
+import Network from "../../datatypes/Network";
 import SpringEmbedding from "../../Animations/Algorithms/LayoutAlgorithms/springEmbedding";
 
 import {IonIcon, IonButton} from "@ionic/react"

@@ -1,7 +1,7 @@
 import React from "react";
 import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
-import Network from "./Network";
+import Network from "../../datatypes/Network";
 
 import {IonButton, IonIcon} from "@ionic/react";
 import {cameraReverse, save} from "ionicons/icons";
