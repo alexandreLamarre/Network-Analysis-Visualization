@@ -1,12 +1,34 @@
+/**
+ * Vertex: abstraction of a datapoint in a network
+ * @property x the x position in object space [0,1)
+ * @property y the y position in object space [0,1)
+ * @property z the z position in object space [0,1)
+ * @property label the (optional) strings to describe vertex data
+ * @property degree number of incident edges
+ * @property size size of a node in view space
+ * @property color color of a node
+ */
 class Vertex {
-  constructor(x, y, z){
+  /**
+   * Vertex instantiation, requires x,y,z coordinates, with the possibility of optional parameters.
+   * @param x the x position in object space [0,1)
+   * @param y the y position in object space [0,1)
+   * @param z the z position in object space [0,1)
+   * @param params {label} label: the array of string labels that describe the data
+   */
+  constructor(x, y, z, params){
     this.x = x;
     this.y = y;
     this.z = z;
+    this.label = null;
     if(this.z === undefined) this.z = null;
     this.degree = 0;
     this.size = 3;
     this.color = "rgb(0,255,255)";
+
+    if(params !== undefined && params){
+      if(params.label !== undefined && params.label) this.label = params.label
+    }
   }
 
   /**
