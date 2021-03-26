@@ -1,5 +1,6 @@
 /**
- * Defines a network property object, e.g. defines 'connected','cycle', 'bipartite', etc... for network types
+ * Defines a network property object, e.g. defines
+ * 'connected','cycle', 'bipartite', etc... for network types
  */
 class AbstractProperty{
     constructor(name){
@@ -20,9 +21,9 @@ class AbstractProperty{
      * Checks if the network satisfies this property
      * @param network
      */
-    checkProperties(network){
+    check(network){
         throw new Error("Cannot check if an abstract property is satisfied " +
-            "- must implement checkProperties method in child class ")
+            "- must implement check method in child class ")
     }
 
     /**
@@ -31,18 +32,10 @@ class AbstractProperty{
      * @param type
      * @returns {vertices[], edges[]}
      */
-    createRandomNetwork(type){
-        throw new Error("Cannot create a random network from an abstract property" +
-        "- must implement createRandomNetwork method in child class")
+    assignEdges(type){
+        throw new Error("Cannot assign edges of a random network from an abstract property" +
+        "- must implement assignEdges method in child class")
     }
-
-    /**
-     * Applies some rule based on network type - helper method for create random network.
-     * @param type the type of the network
-     */
-    rule(type){
-        throw new Error("Cannot apply rule to an abstract property - optional method for createRandomNetwork method")
-    }
-
-
 }
+
+export default AbstractProperty;
