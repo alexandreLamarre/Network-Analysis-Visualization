@@ -5,16 +5,58 @@
 class AbstractProperty{
     constructor(name){
         this.name = name
-        this.dependencies = [];
+        this.dependencies = new Set();
+        this.supportedTypes = new Set();
+    }
+
+    /**
+     * Checks if a property supports a network type
+     * @param type name string of the type to check
+     */
+    supports(type){
+        return this.supportedTypes.has(type)
+    }
+
+    /**
+     * Adds supported types
+     * @param types array of name strings of network types
+     */
+    addSupportedTypes(types){
+        for(let i = 0; i < types.length; i++){
+            this.supportedTypes.add(types[i]);
+        }
+    }
+
+    /**
+     * Adds dependant properties: for example cycle => connected
+     * @param deps
+     */
+    addDependencies(deps){
+        for(let i = 0; i < deps.length; i++){
+            this.dependencies.add(deps[i]);
+        }
+    }
+
+    /**
+     * Gets the max bounds on vertices and edges based on network property
+     */
+    getMaxBound(numV, numE, updateType, maxV, maxE){
+        throw new Error("Cannot get max bound for an abstract property")
+    }
+
+    /**
+     * Gets the min bounds on vertices and edges based on network property
+     */
+    getMinBound(numV, numE, updateType, minV, minE){
+        throw new Error("Cannot get max bound for an abstract property")
     }
 
     /**
      * Returns an array of dependant property names
-     * @returns{names[]}
+     * @returns{set}
      */
     getDependantProperties(){
-        throw new Error("Cannot get dependant properties of an abstract property - " +
-            "must implement getDependantProperties method in child class")
+        return this.dependencies;
     }
 
     /**
@@ -29,10 +71,12 @@ class AbstractProperty{
     /**
      * creates a random network of the given type
      * in the form of an array of vertices and an array of edges that satisfy this property
-     * @param type
+     * @param vertices vertices in the network
+     * @param unassignedEdges unnasigned edges to be assigned
+     * @param params {maxDegree, directed, multi, pseudo, hyper}
      * @returns {vertices[], edges[]}
      */
-    assignEdges(type){
+    assignEdges(vertices, unassignedEdges, params){
         throw new Error("Cannot assign edges of a random network from an abstract property" +
         "- must implement assignEdges method in child class")
     }
