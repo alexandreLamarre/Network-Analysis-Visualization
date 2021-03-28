@@ -35,15 +35,18 @@ class NetworkTypeComponent extends React.Component{
         })
     }
 
+    componentWillUnmount() {
+        //TODO: set network reset if the properties change from their defaults.
+    }
+
     /**
-     * Sets the active type. Updates the selected subtypes to their previous selections
-     * associated with the new active type.
+     * Sets the active type.
+     * (Automatically) Updates the selected subtypes to their
+     * previous selections associated with the new active type.
      * @param e event passed to this handler
      */
     setActiveType(e){
-        console.log("activeType changed")
         const typeName = e.detail.value;
-        console.log(typeName)
         let found;
         this.types.forEach((t) => {
             if(t.name === typeName){
@@ -57,26 +60,48 @@ class NetworkTypeComponent extends React.Component{
             throw new Error("Selected type" + typeName + " doesn't exist in defined network types");
         }
 
-        //TODO: set network update
-        this.setState({
-            activeType: found,
+        this.setState({activeType: found});
+    }
+
+    /**
+     * Sets the active property in the typesObject and udpates the activeProperty
+     * state
+     * @param e event passed to this handler
+     */
+    setActiveProperty(e){
+        const propertyName = e.detail.value;
+        let found;
+        this.properties.forEach((p) => {
+            if(p.name === propertyName){
+                this.typesObject.activeProperty = p;
+                found = p;
+            }
         });
+
+        if(found === undefined || !found) {
+            alert("Selected property " + propertyName + " doesn't exist in defined network properties - please submit" +
+                "a bug report");
+            throw new Error("Selected property " + propertyName + " doesn't exist in defined network properties");
+        }
+        this.setState({activeProperty: found})
     }
 
     /**
      * Adds/removes a subtype based on its occurence in the current edgesubtypes
-     * @param e event passed to the handler
+     * @param e event passed to this handler
      */
     setActiveEdgeSubtypes(e){
         const subtype = e.target.value;
         this.typesObject.activeType.toggleEdgeSubTypes(subtype);
-        //TODO: set network update
     }
 
+    /**
+     * Adds/removes a subtype based on its occurence in the current vertexsubtypes
+     * @param e event passed to this handler
+     */
     setActiveVertexSubTypes(e){
         const subtype = e.target.value;
         this.typesObject.activeType.toggleVertexSubTypes(subtype);
-        //TODO: set network update
     }
 
     render(){
@@ -137,7 +162,9 @@ class NetworkTypeComponent extends React.Component{
                 </IonList>
 
                 <IonList>
-                    <IonRadioGroup value = {this.state.activeProperty.name}>
+                    <IonRadioGroup
+                        onIonChange = {(e) => this.setActiveProperty(e)}
+                        value = {this.state.activeProperty.name}>
                         <div style = {{textAlign: "center"}}>
                             <b className = "noSelectText">
                                 Network Properties
