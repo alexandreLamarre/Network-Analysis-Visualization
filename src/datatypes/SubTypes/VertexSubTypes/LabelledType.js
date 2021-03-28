@@ -11,13 +11,15 @@ class LabelledType extends AbstractSubType{
     /**
      *
      * @param params the extra parameters for creating vertices
-     * @param label the label to add to a vertex
+     * @param label string label to add to a vertex
      */
     set(params, label){
-        if(label === undefined || !label) label = "unlabelled"
         if(params.labels === undefined || !params.labels){
             params.labels = []
-            params.labels.push(label)
+        } else{
+            if(label !== undefined && typeof(label) === "string"){
+                params.labels.push(label)
+            }
         }
     }
 }
