@@ -28,7 +28,6 @@ class AbstractType{
         this.name = name;
         this.edgesubtypes = new Set();
         this.vertexsubtypes = new Set();
-        this.property = "General"
     }
 
     /**
@@ -36,9 +35,11 @@ class AbstractType{
      * @param numV the number of vertices to create
      * @param numE the number of edges to create
      * @param is3D whether or not the network is 3D
+     * @param property, the active property of the network
      * @returns {[vertices,edges]}
      */
-    createRandomNetwork(numV, numE, is3D){
+    createRandomNetwork(numV, numE, is3D, property){
+        //TODO: error check property to see if it supports the type.
         const vertices = []
         for(let i = 0; i < numV; i++){
             let params = this.getVertexParams()
