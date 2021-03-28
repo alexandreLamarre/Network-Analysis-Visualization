@@ -88,30 +88,29 @@ class AbstractType{
     }
 
     /**
-     * Sets the property of a network type
-     * @param property the property object to set
-     */
-    setProperty(property){
-        this.property = property
-        if(this.property === undefined || !this.property) this.property = new GeneralProperty();
-    }
-
-    /**
      * Sets the edge subtypes of a network type
-     * @param subtypes the subtypes to set the edgesubtypes to
+     * @param subtype subtype to toggle on/off
      */
-    setEdgeSubTypes(subtypes){
-        this.edgesubtypes = subtypes;
-        if (this.edgesubtypes === undefined || (!this.edgesubtypes)) this.edgesubtypes = [];
+    toggleEdgeSubTypes(subtype){
+        if(this.edgesubtypes.has(subtype)){
+            this.edgesubtypes.delete(subtype);
+        } else {
+            this.edgesubtypes.add(subtype);
+        }
+        console.log("edge subtypes", this.edgesubtypes)
     }
 
     /**
      * Sets the vertex subtypes of a network type
-     * @param subtypes the subtypes to set the vertexsubtypes to
+     * @param subtype subtype to toggle on/off
      */
-    setVertexSubTypes(subtypes){
-        this.vertexsubtypes = subtypes
-        if(this.vertexsubtypes === undefined || (!this.vertexsubtypes)) this.vertexsubtypes = [];
+    toggleVertexSubTypes(subtype){
+        if(this.vertexsubtypes.has(subtype)){
+            this.vertexsubtypes.delete(subtype)
+        } else{
+            this.vertexsubtypes.add(subtype)
+        }
+        console.log("vertex subtypes", this.vertexsubtypes)
     }
 
     /**
@@ -120,9 +119,9 @@ class AbstractType{
      */
     getVertexParams(){
         let params = {}
-        for(const sub in this.vertexsubtypes){
-            sub.set(params)
-        }
+        this.vertexsubtypes.forEach((sub) => {
+            sub.set(params);
+        })
         return params
     }
 
@@ -132,10 +131,10 @@ class AbstractType{
      */
     getEdgeParams(){
         let params = {}
-        for(const sub in this.edgesubtypes){
-            sub.set(params)
-        }
-        return params
+        this.edgesubtypes.forEach((sub) => {
+            sub.set(params);
+        });
+        return params;
     }
 }
 

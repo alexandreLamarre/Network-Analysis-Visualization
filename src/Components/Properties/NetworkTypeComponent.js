@@ -1,5 +1,6 @@
 import React from "react";
-import {IonContent, IonItem, IonLabel, IonSelect, IonSelectOption} from "@ionic/react";
+import {IonContent, IonItem, IonLabel, IonSelect, IonSelectOption,
+IonList, IonRadioGroup, IonRadio, IonToggle} from "@ionic/react";
 
 /**
  * Component to update the network types & properties
@@ -13,54 +14,53 @@ class NetworkTypeComponent extends React.Component{
 
         this.typesObject = this.props.typesObject;
         this.types = this.typesObject.types;
-        const edgesubtypes = this.typesObject.activeType.edgesubtypes;
-        const vertexsubtypes = this.typesObject.activeType.vertexsubtypes;
+        this.edgesubtypes = this.typesObject.edgesubtypes;
+        this.vertexsubtypes = this.typesObject.vertexsubtypes;
+        this.properties = this.typesObject.properties;
         this.network = this.props.network;
 
-        const currentedgesubtypes = [];
-        edgesubtypes.forEach((st) => {
-            currentedgesubtypes.push(st)
-        });
 
-        const currentvertexsubtypes = [];
-        vertexsubtypes.forEach((vt) => {
-            currentvertexsubtypes.push(vt)
-        });
 
         this.state = {
             activeType: this.typesObject.activeType,
-            edgesubtypes: currentedgesubtypes,
-            vertexsubtypes: currentvertexsubtypes,
-        }
+            activeProperty: this.typesObject.activeProperty,
 
+        }
+    }
+
+    componentDidMount(){
+        this.setState({
+            activeType: this.typesObject.activeType,
+            activeProperty: this.typesObject.activeProperty,
+        })
     }
 
     /**
-     * Sets the active type.
+     * Sets the active type. Updates the selected subtypes to their previous selections
+     * associated with the new active type.
      * @param e event passed to this handler
      */
     setActiveType(e){
         console.log("activeType changed")
         const typeName = e.detail.value;
         console.log(typeName)
-        let found; let newedgesubtypes = [];
+        let found;
         this.types.forEach((t) => {
             if(t.name === typeName){
                 this.typesObject.activeType = t;
                 found = t;
-                t.edgesubtypes.forEach((st) => {
-                    newedgesubtypes.push(st.name);
-                });
             }
         });
-        console.log(found, newedgesubtypes)
         if(found === undefined || !found) {
-            alert("Selected type" + e.target.value + " doesn't exist in defined network types - please submit" +
+            alert("Selected type" + typeName + " doesn't exist in defined network types - please submit" +
                 "a bug report");
-            throw new Error("Selected type" + e.target.value + " doesn't exist in defined network types");
+            throw new Error("Selected type" + typeName + " doesn't exist in defined network types");
         }
+
         //TODO: set network update
-        this.setState({activeType: found,edgesubtypes:newedgesubtypes});
+        this.setState({
+            activeType: found,
+        });
     }
 
     /**
@@ -68,57 +68,89 @@ class NetworkTypeComponent extends React.Component{
      * @param e event passed to the handler
      */
     setActiveEdgeSubtypes(e){
-        console.log("edge subtypes changed")
-        const subtypeNames = e.detail.value;
-        for(let i = 0; i < subtypeNames; i++){
-            const subtypeName = subtypeNames[i];
-            if(this.typesObject.activeType.edgesubtypes.has(subtypeName)){
-                this.typesObject.activeType.edgesubtypes.delete(subtypeName);
-            } else{
-                this.typesObject.activeType.edgesubtypes.add(subtypeName);
-            }
-        }
-        const newedgesubtypes = [];
-        this.typesObject.activeType.edgesubtypes.forEach((st) => {
-            newedgesubtypes.push(st.name)
-        });
-        this.setState({edgesubtypes: newedgesubtypes});
+        const subtype = e.target.value;
+        this.typesObject.activeType.toggleEdgeSubTypes(subtype);
+        //TODO: set network update
+    }
+
+    setActiveVertexSubTypes(e){
+        const subtype = e.target.value;
+        this.typesObject.activeType.toggleVertexSubTypes(subtype);
+        //TODO: set network update
     }
 
     render(){
         return (
             <IonContent>
-                <IonLabel> Test Display for network types</IonLabel>
-                <IonItem>
-                    <IonLabel> Network Types </IonLabel>
-                    <IonSelect
-                        id = "type"
+                <br/>
+                <div style = {{textAlign: "center"}}>
+                    <b className = "noSelectText">
+                        Customize Network types and properties
+                    </b>
+                </div>
+                <br/>
+                <IonList>
+                    <IonRadioGroup
                         value = {this.state.activeType.name}
-                        onIonSubmit = {(e) => this.setActiveType(e)}>
-                        {this.types.map((t, i) =>
-                            <IonSelectOption key = {i} value = {t.name}> {t.name} </IonSelectOption>
-                        )}
-                    </IonSelect>
-                </IonItem>
-                <IonItem>
-                    <IonLabel> Network Edge Sub-Types </IonLabel>
-                    <IonSelect
-                        id = "edge sub type"
-                        value = {this.state.edgesubtypes}
-                        multiple = {true}
-                        onIonSubmit = {(e) => this.setActiveEdgeSubtypes(e)}>
-                        {this.state.edgesubtypes.map((st, i) =>
-                            <IonSelectOption key = {i} value = {st.name}> {st.name} </IonSelectOption>
-                        )}
-                    </IonSelect>
+                        onIonChange = {(e) => this.setActiveType(e)}>
+                        <div style = {{textAlign: "center"}}>
+                            <b className = "noSelectText">
+                                Network Types
+                            </b>
+                        </div>
 
-                </IonItem>
-                <IonItem>
-                    <IonLabel> Network Vertex Sub-types</IonLabel>
-                </IonItem>
-                <IonItem>
-                    <IonLabel> Network Properties Go here</IonLabel>
-                </IonItem>
+                        {this.types.map((t,i) =>
+                            <IonItem key = {i}>
+                                <IonLabel> {t.name} </IonLabel>
+                                <IonRadio value = {t.name} />
+                            </IonItem>
+                        )}
+                    </IonRadioGroup>
+                </IonList>
+
+                <IonList>
+                    <div style = {{textAlign: "center"}}>
+                        <b className = "noSelectText">
+                            Network Sub-Types
+                        </b>
+                    </div>
+                    {this.edgesubtypes.map((est, i) =>
+                        <IonItem key = {i}>
+                            <IonLabel> {est.name} </IonLabel>
+                            <IonToggle
+                                onClick = {(e) => this.setActiveEdgeSubtypes(e)}
+                                checked = {this.state.activeType.edgesubtypes.has(est)}
+                                value = {est}
+                                slot = "end"/>
+                        </IonItem>
+                    )}
+                    {this.vertexsubtypes.map((vst, i) =>
+                        <IonItem key = {i}>
+                            <IonLabel> {vst.name} </IonLabel>
+                            <IonToggle
+                                onClick = {(e) => this.setActiveVertexSubTypes(e)}
+                                checked = {this.state.activeType.vertexsubtypes.has(vst)}
+                                value = {vst}
+                                slot = "end"/>
+                        </IonItem>
+                    )}
+                </IonList>
+
+                <IonList>
+                    <IonRadioGroup value = {this.state.activeProperty.name}>
+                        <div style = {{textAlign: "center"}}>
+                            <b className = "noSelectText">
+                                Network Properties
+                            </b>
+                        </div>
+                        {this.properties.map((p, i) =>
+                            <IonItem key = {i}>
+                                <IonLabel> {p.name} </IonLabel>
+                                <IonRadio slot = "end" value = {p.name}/>
+                            </IonItem>
+                        )}
+                    </IonRadioGroup>
+                </IonList>
             </IonContent>
         )
     }
