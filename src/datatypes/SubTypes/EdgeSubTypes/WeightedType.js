@@ -1,4 +1,4 @@
-import AbstractSubType from "./AbstractSubType";
+import AbstractSubType from "../AbstractSubType";
 
 class WeightedType extends AbstractSubType{
     constructor(){

@@ -1,5 +1,4 @@
-import DirectedType from "./DirectedType";
-import WeightedType from "./WeightedType";
-import LabelledType from "./LabelledType";
+import * as EDGE from "./EdgeSubTypes";
+import * as VERTEX from "./VertexSubTypes";
 
-export {DirectedType, WeightedType, LabelledType};
+export{EDGE, VERTEX};

@@ -1,5 +1,6 @@
 import React from "react"
-import {IonItem, IonLabel, IonRange, IonCheckbox} from "@ionic/react";
+import {IonItem, IonButton, IonModal, IonLabel, IonRange, IonCheckbox} from "@ionic/react";
+import NetworkTypes from "../../datatypes/NetworkTypes";
 
 var MIN_VERTICES_NUM = 4
 var MAX_VERTICES_NUM = 200
@@ -16,7 +17,12 @@ var MAX_VERTEX_SIZE = 12
 class NetworkSettingsComponent extends React.Component{
     constructor(props){
         super(props)
+        //TODO: test types remove once done
+
+        //TODO:remove types state above
         this.state = {
+            open: false,
+            types: new NetworkTypes(),
             minV: MIN_VERTICES_NUM,
             minE : MIN_EDGES_NUM,
             maxV : MAX_VERTICES_NUM,
@@ -54,8 +60,6 @@ class NetworkSettingsComponent extends React.Component{
                 }
             }
         }
-
-
         this.setState({properties: properties, activeProperty: lastActive})
     }
 
@@ -68,7 +72,7 @@ class NetworkSettingsComponent extends React.Component{
     updateVertexEdgeBounds(numV, numE, updateV, activeProperty){
         if (activeProperty === "Connected"){
             const minE = numV -1
-            const maxE= Math.min(Math.floor(numV*(numV-1)/2), MAX_EDGES_NUM)
+            const maxE = Math.min(Math.floor(numV*(numV-1)/2), MAX_EDGES_NUM)
             const edges = numE > maxE? maxE: numE < minE? minE: numE
             this.settings.numE = edges
             this.settings.numV = numV
@@ -226,9 +230,15 @@ class NetworkSettingsComponent extends React.Component{
                     <div style = {{textAlign: "center"}}>
                         <b style = {{textAlign: "center"}}> {this.props.name}</b>
                     </div>
-
                 </IonItem >
+
                 <IonItem lines = "full" color = "light">
+                    <IonButton onClick = {() => this.setState({open: true})}> Customize </IonButton>
+                    <IonModal
+                        isOpen = {this.state.open}
+                        onDidDismiss = {() => this.setState({open:false})}>
+                        {this.state.types.toHTML(null)}
+                    </IonModal>
                     <p> Network Type </p>
                     <select style = {{marginLeft: "10px", color: "blue"}}
                         value = {this.state.activeProperty}

@@ -1,4 +1,4 @@
-import AbstractSubType from "./AbstractSubType";
+import AbstractSubType from "../AbstractSubType";
 
 class DirectedType extends AbstractSubType{
     constructor(){

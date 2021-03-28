@@ -6,7 +6,20 @@ import AbstractType from "./AbstractType";
  */
 class MultiType extends AbstractType{
     constructor(){
-        super("Multi", true)
+        super("Multi")
+    }
+
+    createEdges(numE, numV){
+        throw new Error("An abstract network type cannot create its edges -" +
+            "Must implement create edges method in child class")
+    }
+
+    getMaxBound(numV, numE, updateType) {
+        super.getMaxBound(numV, numE, updateType);
+    }
+
+    getMinBound(numV, numE, updateType) {
+        super.getMinBound(numV, numE, updateType);
     }
 }
 

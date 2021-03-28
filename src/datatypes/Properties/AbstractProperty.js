@@ -73,10 +73,11 @@ class AbstractProperty{
      * in the form of an array of vertices and an array of edges that satisfy this property
      * @param vertices vertices in the network
      * @param unassignedEdges unnasigned edges to be assigned
-     * @param params {maxDegree, directed, multi, pseudo, hyper}
+     * @param typeParams {directed, multi, pseudo, hyper}
+     * @param maxDegree max degree of the network type
      * @returns {vertices[], edges[]}
      */
-    assignEdges(vertices, unassignedEdges, params){
+    assignEdges(vertices, unassignedEdges, typeParams, maxDegree){
         throw new Error("Cannot assign edges of a random network from an abstract property" +
         "- must implement assignEdges method in child class")
     }

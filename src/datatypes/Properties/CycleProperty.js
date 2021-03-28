@@ -11,6 +11,9 @@ class CycleProperty extends AbstractProperty{
         this.addDependencies(dependencies);
     }
 
+    /**
+     * Checks if a network is a cycle.
+     */
     check(network) {
         if(network.settings.activeProperty === "Cycle") return true
         if(network.vertices.length !== network.edges.length) return false;
@@ -18,7 +21,6 @@ class CycleProperty extends AbstractProperty{
         for(let e = 1; e < network.edges.length; e ++){
             if(network.edges[e-1].end !== network.edges[e].start) return false
         }
-
         return network.edges[0].start === network.edges[network.edges.length - 1].end;
     }
 
@@ -26,9 +28,11 @@ class CycleProperty extends AbstractProperty{
      * Assigns edges so that the network type forms a cycle.
      * @param vertices
      * @param unassignedEdges
-     * @returns {[]}
+     * @param typeParams
+     * @param maxDegree
+     * @returns {[edges]}
      */
-    assignEdges(vertices, unassignedEdges, params) {
+    assignEdges(vertices, unassignedEdges, typeParams, maxDegree) {
         const edges = []
         const unvisited = []
         vertices.forEach((v, index) => unvisited.push(index));
