@@ -40,14 +40,14 @@ class AbstractProperty{
     /**
      * Gets the max bounds on vertices and edges based on network property
      */
-    getMaxBound(numV, numE, updateType, maxV, maxE){
+    getMaxBound(numV, numE, maxV, maxE){
         throw new Error("Cannot get max bound for an abstract property")
     }
 
     /**
      * Gets the min bounds on vertices and edges based on network property
      */
-    getMinBound(numV, numE, updateType, minV, minE){
+    getMinBound(numV, numE, minV, minE){
         throw new Error("Cannot get max bound for an abstract property")
     }
 
@@ -73,9 +73,9 @@ class AbstractProperty{
      * in the form of an array of vertices and an array of edges that satisfy this property
      * @param vertices vertices in the network
      * @param unassignedEdges unnasigned edges to be assigned
-     * @param typeParams {directed, multi, pseudo, hyper}
+     * @param typeParams {type, subtypes}
      * @param maxDegree max degree of the network type
-     * @returns {vertices[], edges[]}
+     * @returns {[]}
      */
     assignEdges(vertices, unassignedEdges, typeParams, maxDegree){
         throw new Error("Cannot assign edges of a random network from an abstract property" +

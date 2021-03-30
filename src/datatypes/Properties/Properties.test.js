@@ -17,13 +17,14 @@ test("General property constructor", () =>{
     const gProperty = new GeneralProperty();
     expect(gProperty.name).toBe("General");
     expect(gProperty.getDependantProperties().size).toBe(0);
-    expect(gProperty.supportedTypes.size).toBe(6)
+    expect(gProperty.supportedTypes.size).toBe(7)
     expect(gProperty.supportedTypes).toContain("Simple");
     expect(gProperty.supportedTypes).toContain("Pseudo");
     expect(gProperty.supportedTypes).toContain("Multi");
     expect(gProperty.supportedTypes).toContain("Hyper");
     expect(gProperty.supportedTypes).toContain("Directed");
-    expect(gProperty.supportedTypes).toContain("Weighted")
+    expect(gProperty.supportedTypes).toContain("Weighted");
+    expect(gProperty.supportedTypes).toContain("Labelled");
 })
 
 
@@ -50,13 +51,14 @@ test("Cycle property constructor", () => {
     expect(cProperty.name).toBe("Cycle")
     expect(cProperty.getDependantProperties()).toContain("Connected")
     expect(cProperty.getDependantProperties().size).toBe(1)
-    expect(cProperty.supportedTypes.size).toBe(6);
+    expect(cProperty.supportedTypes.size).toBe(7);
     expect(cProperty.supportedTypes).toContain("Simple");
     expect(cProperty.supportedTypes).toContain("Pseudo");
     expect(cProperty.supportedTypes).toContain("Multi");
     expect(cProperty.supportedTypes).toContain("Hyper");
     expect(cProperty.supportedTypes).toContain("Directed");
-    expect(cProperty.supportedTypes).toContain("Weighted")
+    expect(cProperty.supportedTypes).toContain("Weighted");
+    expect(cProperty.supportedTypes).toContain("Labelled");
 });
 
 test("Cycle property check", () => {
@@ -106,22 +108,22 @@ test("CycleProperty get bounds", () => {
 
     let maxV; let maxE;
     [maxV, maxE] = cProperty.getMaxBound(
-        4,4, "vertex", 200, 600);
+        4,4, 200, 600);
     expect(maxV).toBe(200);
     expect(maxE).toBe(200);
     [maxV, maxE] = cProperty.getMaxBound(
-        50,60, "vertex", 150, 800);
+        50,60,  150, 800);
     expect(maxV).toBe(150);
     expect(maxE).toBe(200);
 
     let minV; let minE;
     [minV, minE] = cProperty.getMinBound(
-        50,50, "vertex", 4, 3);
+        50,50,  4, 3);
     expect(minV).toBe(4);
     expect(minE).toBe(4);
 
     [minV, minE] = cProperty.getMinBound(
-        50, 50, "vertex", 10, 10);
+        50, 50, 10, 10);
     expect(minV).toBe(4);
     expect(minE).toBe(4);
 })

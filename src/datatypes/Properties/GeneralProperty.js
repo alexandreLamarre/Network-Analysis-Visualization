@@ -1,10 +1,18 @@
 import AbstractProperty from "./AbstractProperty";
-import {MAX_V, MAX_E, MIN_E, MIN_V} from "../Types/AbstractType";
+import {MAX_E, MAX_V, MIN_E, MIN_V} from "../Types/AbstractType";
 
+/**
+ * General property, a property whose topology only depends on
+ * the topology of the network type.
+ */
 class GeneralProperty extends AbstractProperty{
     constructor(){
         super("General");
-        const supported = ["Simple", "Pseudo", "Multi", "Hyper", "Directed", "Weighted"];
+        const supported = [
+            "Simple", "Pseudo", "Multi",
+            "Hyper", "Directed", "Weighted",
+            "Labelled"
+        ];
         this.addSupportedTypes(supported);
     }
 
@@ -18,7 +26,7 @@ class GeneralProperty extends AbstractProperty{
     }
 
     /**
-     *
+     * Assigns the edges of a network according to only their type.
      * @param vertices
      * @param unassignedEdges
      * @param typeParams {type, subtypes} type is the string name of the network type,
@@ -27,33 +35,34 @@ class GeneralProperty extends AbstractProperty{
      */
     assignEdges(vertices, unassignedEdges, typeParams, maxDegree) {
         if(!this.supportedTypes.has(typeParams.type)){
-
+            throw new Error("Property ", this.name, + " does not support the type " + typeParams.type + " provided")
         }
         const edges = []
         const degrees = []
         const indices = [];
         vertices.forEach((_, index) => {
-            indices.push(index)
-            degrees.push(0)
+            indices.push(index);
+            degrees.push(0);
         });
         let already_connected = new Map(); //manage already connected
         let curLen = indices.length;
-        let index1; let index2;
+        let index1; let index2; const otherConnections = [];
         while(unassignedEdges.length > 0){
             let curEdge = unassignedEdges.pop();
 
-            [index1, index2, curLen] = fastConnectAvaibleVertices(
-                indices,curLen,degrees,already_connected,typeParams
-            );
 
-            if(!typeParams.type === "Multi"){
-                already_connected.set([index1, index2], true);
-                if(!typeParams.subtype.has("Directed")){
-                    already_connected.set([index1, index2], true);
-                }
-            }
-
-            edges.push(curEdge)
+            if (typeParams.type === "Simple") [index1, index2, curLen] = fastConnectSimple(indices, degrees,
+                                                                            curLen, already_connected, typeParams, maxDegree)
+            else if (typeParams.type === "Pseudo") [index1, index2, curLen] = fastConnectPseudo(indices, degrees,
+                                                                            curLen, already_connected, typeParams, maxDegree)
+            else if (typeParams.type === "Multi") [index1, index2, curLen] = fastConnectMulti(indices, degrees,
+                                                                            curLen, already_connected, typeParams, maxDegree)
+            else if(typeParams.type === "Hyper") [index1, index2, curLen] = fastConnectHyper(indices, degrees,
+                                                                            curLen,already_connected, typeParams, maxDegree);
+            curEdge.start = index1;
+            curEdge.end = index2;
+            curEdge.otherConnections = otherConnections;
+            edges.push(curEdge);
         }
         return edges
     }
@@ -68,9 +77,9 @@ class GeneralProperty extends AbstractProperty{
      * @param updateType last type updated: 'vertex' or 'edge'
      * @param maxV maximum vertices based on network property
      * @param maxE maximum edges based on network property
-     * @returns {[maxV, maxE]}
+     * @returns {[Number, Number]} [maximum vertices, maximum edges]
      */
-    getMaxBound(numV, numE, updateType, maxV, maxE) {
+    getMaxBound(numV, numE, maxV, maxE) {
         return [Math.min(maxV, MAX_V), Math.min(maxE, MAX_E)]
     }
 
@@ -81,12 +90,11 @@ class GeneralProperty extends AbstractProperty{
      *
      * @param numV number of vertices in the network
      * @param numE number of edges in the network
-     * @param updateType last type updated: 'vertex' or 'edge'
      * @param minV minimum vertices based on network property
      * @param minE minimum edges based on network property
      * @returns {[minV, minE]}
      */
-    getMinBound(numV, numE, updateType, minV, minE) {
+    getMinBound(numV, numE, minV, minE) {
         return [Math.max(minV, MIN_V), Math.max(minE, MIN_E)]
     }
 }
@@ -94,47 +102,120 @@ class GeneralProperty extends AbstractProperty{
 export default GeneralProperty;
 
 /**
- * Helper to pick a random avaible vertex
- * @param arr array of vertex indices
- * @param len the length of the vertex indices array still available for picking
- * @param degrees the degrees of the vertices in the network
- * @param alreadyConnected
- * @param typeParams {type, subtypes} the extra network type parameters
- * @param maxDegree
+ * Connects two vertices based on simple network type.
+ * @param indices arr of indices, arr[0:curLen] is the arr of available vertices
+ * @param degrees array of degrees, to keep track of possible maxDegree violations
+ * @param curLen the current length of the indices subarray that represents available vertices
+ * @param typeParams{type, subtypes} the params of the network
+ * @param alreadyConnected hash map of already connected vertices
+ * @param maxDegree maximum degree of a vertex in the given network type
  */
-export function fastConnectAvaibleVertices(arr, len, degrees, alreadyConnected, typeParams, maxDegree){
-    if(len <= 0) return null;
-    let curLen = len;
-    //pick first vertex we want to connect to.
-    const randomIndex = Math.floor(Math.random()*len);
-    const index = arr[randomIndex];
-    degrees[index] += 1;
-    if(degrees[index] > maxDegree) throw new Error("Maximum degree " +
-        "limit exceeded in general property assign edges");
-    //swap out available vertices if the selected one achieves the maxDegree
-    if(degrees[index] === maxDegree){arr[index] = arr[len-1];curLen -= 1;}
+function fastConnectSimple(indices, degrees, curLen, alreadyConnected, typeParams, maxDegree){
+    if(curLen <= 0) throw new Error("expected connection curLen to be greater than 0");
 
-    const randomIndex2 = Math.floor(Math.random*curLen);
-    let index2 = arr[randomIndex2];
+    const tempIndex = Math.floor(Math.random()*curLen)
+    const index1 = indices[tempIndex];
+    degrees[index1] += 1;
+    if(degrees[index1] > maxDegree) throw new Error("maximum network degree exceeded while assigning edges to index1");
+    if(degrees[index1] === maxDegree) curLen = remove(indices, tempIndex, curLen)
 
-    //TODO: fast connect
-    if(typeParams.type === "Multi"){
+    const tempIndex2 = Math.floor(Math.random()*curLen);
+    let index2 = indices[tempIndex2];
+    let reassigned = false//keeps track of whether or not we need to do a O(n) operation to find the index location
 
+    // We delay the 'redundant' vertex logic so that instead of applying it for each vertex, we only apply it for vertices
+    // that violate the rules for connections => for large sparse networks (more common) then
+    // the average runtime is O(n) instead of O(n^2)
+    if(index1 === index2){
+        index2 = assignNonRedundantVertexSimple(indices, index1, curLen, alreadyConnected,typeParams);
+        reassigned = true;
+    } else if(typeParams.subtypes.has("Directed") && alreadyConnected[[index1,index2]]){
+        index2 = assignNonRedundantVertexSimple(indices, index1, curLen, alreadyConnected,typeParams);
+        reassigned = true;
+    } else if(alreadyConnected[[index1, index2]] || alreadyConnected[[index1,index2]]){
+        index2 = assignNonRedundantVertexSimple(indices, index1, curLen, alreadyConnected,typeParams);
+        reassigned = true;
     }
-    else if(typeParams.type === "Pseudo"){
+    if(degrees[index2] > maxDegree) throw new Error("maximum network degree exceeded while assigning edges to index2");
 
+    if(!reassigned){
+        if(degrees[index2] === maxDegree) curLen = remove(indices, tempIndex2, curLen);
+    } else{
+        //only use O(n) operation if we have to
+        const index = indices.indexOf(index2);
+        if(degrees[index2] === maxDegree) curLen = remove(indices, index, curLen);
     }
-    else if(typeParams.type === "Hyper"){
+    return [index1, index2, curLen];
+}
 
-    }
-    else if(typeParams.type === "UniformHyper"){
+/**
+ * Connects two vertices based on simple network type.
+ * @param indices arr of indices, arr[0:curLen] is the arr of available vertices
+ * @param degrees array of degrees, to keep track of possible maxDegree violations
+ * @param curLen the current length of the indices subarray that represents available vertices
+ * @param typeParams{type, subtypes} the params of the network
+ * @param maxDegree maximum degree of a vertex in the given network type
+ */
+function fastConnectPseudo(indices, degrees, curLen, typeParams, maxDegree){
+    if(curLen <= 0) return null;
+}
 
-    }
-    else{
+/**
+ * Connects two vertices based on simple network type.
+ * @param indices arr of indices, arr[0:curLen] is the arr of available vertices
+ * @param degrees array of degrees, to keep track of possible maxDegree violations
+ * @param curLen the current length of the indices subarray that represents available vertices
+ * @param typeParams{type, subtypes} the params of the network
+ * @param maxDegree maximum degree of a vertex in the given network type
+ */
+function fastConnectMulti(indices, degrees, curLen, typeParams, maxDegree){
+    if(curLen <= 0) return null;
+}
 
-    }
+/**
+ * Connects two vertices based on simple network type.
+ * @param indices arr of indices, arr[0:curLen] is the arr of available vertices
+ * @param degrees array of degrees, to keep track of possible maxDegree violations
+ * @param curLen the current length of the indices subarray that represents available vertices
+ * @param typeParams{type, subtypes} the params of the network
+ * @param maxDegree maximum degree of a vertex in the given network type
+ */
+function fastConnectHyper(indices, degrees, curLen, typeParams, maxDegree){
+    if(curLen <= 0) return null;
+}
 
+/**
+ * Helper to 'remove' in place the element at index
+ * @param arr array to remove from
+ * @param index index of element to remove
+ * @param len length of the array to consider
+ * @returns the update length
+ */
+function remove(arr, index, len){
+    arr[index] = arr[len-1];
+    return len -1;
+}
 
-    return [index, index2, curLen];
-
+/**
+ * Helper to Assign non redundant vertex in simple network
+ * @param indices array of indices
+ * @param index1 index already selected
+ * @param curLen length of the subarray that contains available vertices
+ * @param alreadyConnected hash map of already connected vertices
+ * @param typeParams{types, subtypes} additional parameters of the network type;
+ * @returns {*}
+ */
+function assignNonRedundantVertexSimple(indices, index1, curLen, alreadyConnected, typeParams){
+    const available = indices.filter((x, len) => {
+        let connected;
+        if(typeParams.subtypes.has("Directed")){
+            connected = alreadyConnected[[index1, x]]
+        } else{
+            connected = alreadyConnected[[index1,x]] || alreadyConnected[[x, index1]]
+        }
+        return len < curLen && !connected && x !== index1
+    });
+    if(available.length === 0) throw new Error("Could not find any available vertices");
+    const tempAvailableIndex = Math.floor(Math.random())*available.length();
+    return available[tempAvailableIndex];
 }

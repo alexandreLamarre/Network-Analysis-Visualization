@@ -5,7 +5,10 @@ import {MAX_V, MAX_E, MIN_V, MIN_E} from "../Types/AbstractType";
 class CycleProperty extends AbstractProperty{
     constructor(){
         super("Cycle");
-        const supported = ["Simple", "Pseudo", "Multi", "Hyper", "Directed", "Weighted"];
+        const supported = [
+            "Simple", "Pseudo", "Multi",
+            "Hyper", "Directed", "Weighted",
+            "Labelled"];
         this.addSupportedTypes(supported);
         const dependencies = ["Connected"];
         this.addDependencies(dependencies);
@@ -71,17 +74,17 @@ class CycleProperty extends AbstractProperty{
 
     /**
      * Gets the minimum bound for the network type based on the connected property.
-     * @returns [maxV, maxE]
+     * @returns [Number, Number] max vertices, max edges
      */
-    getMaxBound(numV, numE, updateType, maxV, maxE) {
+    getMaxBound(numV, numE, maxV, maxE) {
         return [Math.min(maxV, MAX_V), Math.min(MAX_V, MAX_E)];
     }
 
     /**
      * Gets the maximum bound for the network type based on the connected property.
-     * @returns {minV, minE}
+     * @returns {[Number, Number]} min vertices, min edges
      */
-    getMinBound(numV, numE, updateType, minV, minE) {
+    getMinBound(numV, numE, minV, minE) {
         return [Math.max(MIN_E, MIN_V), Math.max(MIN_V, MIN_E)];
     }
 }
