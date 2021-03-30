@@ -1,6 +1,4 @@
 import Vertex from "../Vertex";
-import Edge from "../Edge";
-import GeneralProperty from "../Properties/GeneralProperty";
 
 export const MAX_V = 200;
 export const MIN_V = 4;
@@ -39,7 +37,8 @@ class AbstractType{
      * @returns {[vertices,edges]}
      */
     createRandomNetwork(numV, numE, is3D, property){
-        //TODO: error check property to see if it supports the type.
+        if(!property.supports(this.name)) throw new Error("Property ", property.name, "does not support " +
+                                                         "the current type " , this.name);
         const vertices = []
         for(let i = 0; i < numV; i++){
             let params = this.getVertexParams()
@@ -51,8 +50,8 @@ class AbstractType{
         typeParams.type = this.name
         typeParams.edgesubtypes = this.edgesubtypes
         const unassignedEdges = this.createEdges(numE, numV)
-        let maxDegree; //TODO: calculate this based on network type
-        const edges = this.property.assignEdges(vertices, unassignedEdges, typeParams)
+        let maxDegree = this.calculateMaxDegree(numV);
+        const edges = property.assignEdges(vertices, unassignedEdges, typeParams, maxDegree)
         return [vertices, edges]
     }
 
@@ -70,9 +69,9 @@ class AbstractType{
      * Returns the maximum bound of vertices and edges in the network
      * @param numV current number of vertices
      * @param numE current number of edges
-     * @param updateType last updated type: 'vertex' or 'edge'
+     * @param property active property object of the network
      */
-    getMaxBound(numV, numE, updateType){
+    getMaxBound(numV, numE, property){
         throw new Error("Cannot get max edge bounds of an abstract type -" +
             "Must implement getMaxEdgeBound method in child class ")
     }
@@ -81,11 +80,20 @@ class AbstractType{
      * Returns the minimum bound of vertices and edges in the network
      * @param numV current number of vertices
      * @param numE current number of edges
-     * @param updateType last updated type: 'vertex' or 'edge'
+     * @param property active property object of the network
      */
-    getMinBound(numV, numE, updateType){
+    getMinBound(numV, numE, property){
         throw new Error("Cannot get min edge bounds of an abstract type -" +
             "Must implement getMinEdgeBound method in child class ")
+    }
+
+    /**
+     * Calculates the upper bound on vertex degree in the network
+     * @param numV number of vertices in the network
+     */
+    calculateMaxDegree(numV){
+        throw new Error("Cannot calculate max degree in an abstract type -" +
+            "must implement calculate Max Degree in child types")
     }
 
     /**
@@ -98,7 +106,6 @@ class AbstractType{
         } else {
             this.edgesubtypes.add(subtype);
         }
-        console.log("edge subtypes", this.edgesubtypes)
     }
 
     /**
@@ -111,7 +118,6 @@ class AbstractType{
         } else{
             this.vertexsubtypes.add(subtype)
         }
-        console.log("vertex subtypes", this.vertexsubtypes)
     }
 
     /**
@@ -123,7 +129,7 @@ class AbstractType{
         this.vertexsubtypes.forEach((sub) => {
             sub.set(params);
         })
-        return params
+        return params;
     }
 
     /**

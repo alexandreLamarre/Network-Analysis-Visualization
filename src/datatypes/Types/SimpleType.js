@@ -1,4 +1,4 @@
-import AbstractType from "./AbstractType"
+import AbstractType, {MAX_E, MAX_V, MIN_E, MIN_V} from "./AbstractType"
 import Edge from "../Edge";
 
 /**
@@ -28,14 +28,37 @@ class SimpleType extends AbstractType {
         return edges
     }
 
-    getMaxBound(numV, numE, updateType) {
-        let [maxV, maxE] = this.property.getMaxBound(numV, numE, updateType, maxV, maxE)
-        return [maxV, maxE]
+    /**
+     * calculates the max degree in a simple network
+     * @param numV number of vertices in the network
+     * @returns {Number} max degree
+     */
+    calculateMaxDegree(numV) {
+        return numV - 1;
     }
 
-    getMinBound(numV, numE, updateType) {
-        let [minV, minE] =  this.property.getMinBound(numV, numE, updateType, minV, minE);
-        return [minV, minE]
+    /**
+     * Get max bound on vertices and edges for simple networks.
+     * Check
+     * @param numV number of vertices
+     * @param numE number of edges
+     * @param property property to check the bounds against
+     * @returns {[Number, Number]} max vertices, max edges
+     */
+    getMaxBound(numV, numE, property) {
+        return property.getMaxBound(numV, numE, MAX_V, MAX_E)
+
+    }
+
+    /**
+     * Get min bound on vertices and edges for simple networks
+     * @param numV number of vertices in the network
+     * @param numE number of edges in the network
+     * @param property property to check the bounds against
+     * @returns {[Number, Number]} min vertices, min edges
+     */
+    getMinBound(numV, numE, property) {
+        return property.getMinBound(numV, numE, MIN_V, MIN_E);
     }
 }
 

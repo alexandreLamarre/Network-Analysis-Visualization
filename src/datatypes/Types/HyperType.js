@@ -13,12 +13,22 @@ class HyperType extends AbstractType{
             "Must implement create edges method in child class")
     }
 
-    getMaxBound(numV, numE, updateType) {
-        super.getMaxBound(numV, numE, updateType);
+    /**
+     * Hyper Graph max degree isn't necessarily useful, so we'll use
+     * Infinity to bypass any edge assignment restrictions
+     * @param numV number of vertices in the network
+     * @returns {Number}
+     */
+    calculateMaxDegree(numV) {
+        return Infinity;
     }
 
-    getMinBound(numV, numE, updateType) {
-        super.getMinBound(numV, numE, updateType);
+    getMaxBound(numV, numE, property) {
+        super.getMaxBound(numV, numE, property);
+    }
+
+    getMinBound(numV, numE, property) {
+        super.getMinBound(numV, numE, property);
     }
 }
 
