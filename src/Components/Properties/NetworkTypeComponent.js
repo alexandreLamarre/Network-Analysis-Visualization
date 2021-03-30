@@ -60,6 +60,15 @@ class NetworkTypeComponent extends React.Component{
             throw new Error("Selected type" + typeName + " doesn't exist in defined network types");
         }
 
+        //Update active property if it is not supported by the active type;
+        if(!this.state.activeProperty.supports(found.name)){
+            for(let i = 0; i < this.properties.length; i++){
+                if(this.properties[i].name === "General"){
+                    this.setState({activeProperty: this.properties[i]});
+                }
+            }
+        }
+
         this.setState({activeType: found});
     }
 
@@ -171,7 +180,10 @@ class NetworkTypeComponent extends React.Component{
                             </b>
                         </div>
                         {this.properties.map((p, i) =>
-                            <IonItem key = {i}>
+                            <IonItem key = {i} hidden = {
+                                !p.supports(this.state.activeType.name)|| ![this.state.activeType.edgesubtypes].concat(
+                                    [this.state.activeType.vertexsubtypes]).filter((x) => p.supports(x.name))}
+                                >
                                 <IonLabel> {p.name} </IonLabel>
                                 <IonRadio slot = "end" value = {p.name}/>
                             </IonItem>
