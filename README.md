@@ -1,9 +1,6 @@
-# Network Algorithm Visualization
+# Network mnalysis Visualization
 
-The goal of the Network Algorithm Visualization, or NAV for short, is to be able to visualize important network layout algorithms with little to no 
-knowledge about the inner workings of a network. Indeed, it should be used as an educational tool to help familiarize yourself with networks
-and representation of data by networks. The app should also highlight the usefuleness and power of the heuristics used to create these amazing network 
-layouts.
+The goal of the Network Analysis Visualization project is to provide an open source driven network algorithm visualizer, for the purpose of visualizing uncommon network analysis techniques and preprocessing algorithms.
 
 ## Table of contents:
 
@@ -29,17 +26,15 @@ layouts.
 Force directed layout algorithms are a class of Algorithms that model a Network based on a <b> dynamical system </b>. Dynamical systems describe a set
 of forces acting on a set of Objects. In this case, the objects being acted upon by forces are the vertices of the network. Each Algorithm defines its own set of 
 forces and heuristics to accompany those forces. The goal of these algorithms is to find a layout with minimal total potential energy. In other words,
-a layout of vertices that reduces the stress of the forces on the network: achive a state of equilibrium.
+the algorithms try to find a layout of vertices that reduces the stress of the forces on the network - layouts that achieve a state of equilibrium.
 
-The ulterior motive of these equilibirum states is generally to: 
- - Preserve the original sense of symmetry of the network
- - Cluster related vertices
- - Distance unrelated or poorly related vertices
- - Minimize Edge crossings
+The qualities we generally attribute to these equilibirum states are: 
+ - Preserving the original sense of symmetry of the network
+ - Clustering related vertices
+ - Distancing unrelated or poorly related vertices
+ - Minimizing Edge crossings
 
-In essence the goal, is to produce a aesthetic layout of a network to analyze its properties. Curiously, it has also been observed by many researchs
-that these network layout algorithms also seem to "generally optimize" other attributes of the network, such as average path distance, vertex coloring selections
-and many other properties of interest, despite a lack of theoretical knowledge.
+In essence, the goal is to produce an aesthetic layout of a network in order to better analyze its properties. Curiously, researchers have often noticed (specifically in Spectral graph theory and probabilistic analysis of graphs) that such aesthetic network layouts also seem to "generally optimize" other attributes of the network, such as average path distance, vertex coloring selections, and many other properties of interest despite a concrete mathematical proof to justify these observations.
 
 <b> Fields of Application:</b> Software Engineering, Telecommunications Traffic, Computational Biology, Social Network Analysis, Cartography, Linguistics
 
