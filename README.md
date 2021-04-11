@@ -18,11 +18,11 @@ The system design follows a monolithic architecture for a couple of reasons:
 - To animate and propagate changes to the network data during the animations, we need to always update all network data in the algorithm and rendering software in
 <35ms to maintain fluid data visualization.
 
-Therefore any form of network latency (and also copying the data to send, and copying back the result data) could result in huge performance drops (and result in increased costs to maintain any of the potential backend servers and databases).
+Therefore any form of network latency (and also copying the data to send, and copying back the result data) could result in huge performance drops as well as result in increased costs to maintain any of the potential backend servers and databases needed to maintain such animation speeds.
 
-The monolothic architecture comes with more than a couple of nasty draw backs: the client's hardware and browser is responsible for the performance of the app and it is difficult to decouple the application code. To combat these drawbacks, network data is capped and design patterns are used to decouple the code as much as possible.
+The monolothic architecture comes with a couple of nasty draw backs: the client's hardware and browser is responsible for the performance of the app and it is difficult to decouple the application code. To combat these drawbacks, network data is capped and design patterns are used to decouple the code as much as possible.
 
-Here is an overview of the application structure, which follows a Model-View-Controller design patter (for obvious reasons):
+Here is an overview of the application structure, which follows a Model-View-Controller design pattern (for obvious reasons):
 
 ![](https://github.com/alexandreLamarre/Network-Analysis-Visualization/blob/master/NAV%20schema.png)
 
