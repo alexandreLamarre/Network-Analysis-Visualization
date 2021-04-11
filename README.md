@@ -4,10 +4,35 @@ The goal of the Network Analysis Visualization project is to provide an open sou
 
 ## Table of contents:
 
+- [System Architecture](#System-Architecture)
 - [Algorithms](#Algorithms)
 - [Random Network Generation](#Random-Network-Generation)
 - [Uploading Data](#Uploading-Data)
 - [References](#References)
+ 
+## System Architecture
+
+The system design follows a monolithic architecture for a couple of reasons:
+- To render the network data in the browser, we need to have a physical copy of the data
+- To ensure the network data visualization is interactive, we need to update the data frequently
+- To animate and propagate changes to the network data during the animations, we need to always update all network data in the algorithm and rendering software in
+<35ms to maintain fluid data visualization.
+
+Therefore any form of network latency (and also copying the data to send, and copying back the result data) could result in huge performance drops (and result in increased costs to maintain any of the potential backend servers and databases).
+
+The monolothic architecture comes with more than a couple of nasty draw backs: the client's hardware and browser is responsible for the performance of the app and it is difficult to decouple the application code. To combat these drawbacks, network data is capped and design patterns are used to decouple the code as much as possible.
+
+Here is an overview of the application structure, which follows a Model-View-Controller design patter (for obvious reasons):
+
+![](https://github.com/alexandreLamarre/Network-Analysis-Visualization/blob/master/NAV%20schema.png)
+
+Here is an overview of how the network data is handled in the model:
+
+![](https://github.com/alexandreLamarre/Network-Analysis-Visualization/blob/master/NAV%20network%20data%20schema.png)
+
+Here is an overview of how the animation logic and algorithms are handled in the model:
+
+![](https://github.com/alexandreLamarre/Network-Analysis-Visualization/blob/master/NAV%20animator%20schema.png)
 
 
 ## Algorithms
