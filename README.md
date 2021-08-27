@@ -2,6 +2,8 @@
 
 The goal of the Network Analysis Visualization project is to provide an open source driven network algorithm visualizer, for the purpose of visualizing uncommon network analysis techniques and preprocessing algorithms.
 
+[Link](https://alexandrelamarre.github.io/Network-Analysis-Visualization)
+
 ## Table of contents:
 
 - [System Architecture](#System-Architecture)
